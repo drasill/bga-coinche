@@ -10,25 +10,25 @@
 
 */
 
-$gameinfos = array( 
+$gameinfos = array(
 
-// Name of the game in English (will serve as the basis for translation) 
-'game_name' => "My Great Game",
+// Name of the game in English (will serve as the basis for translation)
+'game_name' => "Coinche",
 
 // Game designer (or game designers, separated by commas)
-'designer' => 'John Doe',       
+'designer' => '',
 
 // Game artist (or game artists, separated by commas)
-'artist' => 'Jane Doe',         
+'artist' => '',
 
 // Year of FIRST publication of this game. Can be negative.
-'year' => 2000,                 
+'year' => 0,
 
 // Game publisher
-'publisher' => 'My Publishing Company',                     
+'publisher' => '',
 
 // Url of game publisher website
-'publisher_website' => 'http://www.mypublishingcompany.com/',   
+'publisher_website' => '',
 
 // Board Game Geek ID of the publisher
 'publisher_bgg_id' => 1234,
@@ -38,7 +38,7 @@ $gameinfos = array(
 
 
 // Players configuration that can be played (ex: 2 to 4 players)
-'players' => array( 2,3,4 ),    
+'players' => array( 4 ),
 
 // Suggest players to play with this number of players. Must be null if there is no such advice, or if there is only one possible player configuration.
 'suggest_player_number' => null,
@@ -49,16 +49,16 @@ $gameinfos = array(
 
 
 // Estimated game duration, in minutes (used only for the launch, afterward the real duration is computed)
-'estimated_duration' => 30,           
+'estimated_duration' => 30,
 
 // Time in second add to a player when "giveExtraTime" is called (speed profile = fast)
-'fast_additional_time' => 30,           
+'fast_additional_time' => 30,
 
 // Time in second add to a player when "giveExtraTime" is called (speed profile = medium)
-'medium_additional_time' => 40,           
+'medium_additional_time' => 40,
 
 // Time in second add to a player when "giveExtraTime" is called (speed profile = slow)
-'slow_additional_time' => 50,           
+'slow_additional_time' => 50,
 
 // If you are using a tie breaker in your game (using "player_score_aux"), you must describe here
 // the formula used to compute "player_score_aux". This description will be used as a tooltip to explain
@@ -68,28 +68,28 @@ $gameinfos = array(
 // Example: 'tie_breaker_description' => totranslate( "Number of remaining cards in hand" ),
 'tie_breaker_description' => "",
 
-// If in the game, all losers are equal (no score to rank them or explicit in the rules that losers are not ranked between them), set this to true 
+// If in the game, all losers are equal (no score to rank them or explicit in the rules that losers are not ranked between them), set this to true
 // The game end result will display "Winner" for the 1st player and "Loser" for all other players
 'losers_not_ranked' => false,
 
 // Game is "beta". A game MUST set is_beta=1 when published on BGA for the first time, and must remains like this until all bugs are fixed.
-'is_beta' => 1,                     
+'is_beta' => 1,
 
 // Is this game cooperative (all players wins together or loose together)
-'is_coop' => 0, 
+'is_coop' => 0,
 
 
 // Complexity of the game, from 0 (extremely simple) to 5 (extremely complex)
-'complexity' => 3,    
+'complexity' => 3,
 
 // Luck of the game, from 0 (absolutely no luck in this game) to 5 (totally luck driven)
-'luck' => 3,    
+'luck' => 3,
 
 // Strategy of the game, from 0 (no strategy can be setup) to 5 (totally based on strategy)
-'strategy' => 3,    
+'strategy' => 3,
 
 // Diplomacy of the game, from 0 (no interaction in this game) to 5 (totally based on interaction and discussion between players)
-'diplomacy' => 3,    
+'diplomacy' => 3,
 
 // Colors attributed to players
 'player_colors' => array( "ff0000", "008000", "0000ff", "ffa500", "773300" ),
