@@ -198,7 +198,7 @@ define([
 					y: this.cardheight * (color - 1),
 					player_id: player_id
 				}),
-				'playertablecard_' + player_id
+				'playerTables__card--' + player_id
 			)
 
 			if (player_id != this.player_id) {
@@ -225,7 +225,7 @@ define([
 			// In any case: move it to its final destination
 			this.slideToObject(
 				'cardontable_' + player_id,
-				'playertablecard_' + player_id
+				'playerTables__card--' + player_id
 			).play()
 		},
 

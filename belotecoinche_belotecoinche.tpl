@@ -14,13 +14,13 @@
 <div class="currentBidInfo" id="currentBidInfo">
 </div>
 
-<div class="playertables">
+<div class="playerTables">
 
     <!-- BEGIN player -->
-    <div class="playertable playertable_{DIR}">
-        <div class="playertablecard whiteblock" id="playertablecard_{PLAYER_ID}">
+    <div class="playerTables__table playerTables__table--{DIR}">
+        <div class="playerTables__card whiteblock" id="playerTables__card--{PLAYER_ID}">
         </div>
-        <div class="playertablename" style="color:#{PLAYER_COLOR}">
+        <div class="playerTables__name" style="color:#{PLAYER_COLOR}">
             {PLAYER_NAME}
         </div>
     </div>
