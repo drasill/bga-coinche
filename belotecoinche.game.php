@@ -28,7 +28,7 @@ class BeloteCoinche extends Table {
 		// Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
 		parent::__construct();
 
-		self::initGameStateLabels(array(
+		self::initGameStateLabels([
 			'currentHandType' => 10,
 			'trickColor' => 11,
 			'trumpColor' => 12,
@@ -36,7 +36,8 @@ class BeloteCoinche extends Table {
 			'countered' => 14,
 			'passCount' => 15,
 			'bidPlayer' => 16,
-		));
+			'firstPlayer' => 17,
+		]);
 
 		$this->cards = self::getNew('module.common.deck');
 		$this->cards->init('card');
@@ -53,7 +54,7 @@ class BeloteCoinche extends Table {
 	 *  In this method, you must setup the game according to the game rules, so that
 	 *  the game is ready to be played.
 	 */
-	protected function setupNewGame($players, $options = array()) {
+	protected function setupNewGame($players, $options = []) {
 		// Set the colors of the players with HTML color code
 		// The default below is red/green/blue/orange/brown
 		// The number of colors defined here must correspond to the maximum number of players allowed for the gams
@@ -64,7 +65,7 @@ class BeloteCoinche extends Table {
 		// Note: if you added some extra field on "player" table in the database (dbmodel.sql), you can initialize it there.
 		$sql =
 			'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ';
-		$values = array();
+		$values = [];
 		foreach ($players as $playerId => $player) {
 			$color = array_shift($default_colors);
 			$values[] =
@@ -110,17 +111,20 @@ class BeloteCoinche extends Table {
 		// Count player passes
 		self::setGameStateInitialValue('passCount', 0);
 
+		$firstPlayerId = array_rand($players, 1);
+		self::setGameStateInitialValue('firstPlayer', $firstPlayerId);
+
 		// Create cards
-		$cards = array();
+		$cards = [];
 		foreach ($this->colors as $color_id => $color) {
 			// spade, heart, diamond, club
 			for ($value = 7; $value <= 14; $value++) {
 				//  7, 8, 9, 10, J, Q, K, A
-				$cards[] = array(
+				$cards[] = [
 					'type' => $color_id,
 					'type_arg' => $value,
 					'nbr' => 1,
-				);
+				];
 			}
 		}
 		$this->cards->createCards($cards, 'deck');
@@ -156,7 +160,7 @@ class BeloteCoinche extends Table {
         _ when a player refreshes the game page (F5)
     */
 	protected function getAllDatas() {
-		$result = array();
+		$result = [];
 
 		$current_player_id = self::getCurrentPlayerId(); // !! We must only return informations visible by this player !!
 
@@ -180,12 +184,14 @@ class BeloteCoinche extends Table {
 		$trumpColor = self::getGameStateValue('trumpColor');
 		$bid = self::getGameStateValue('bid');
 		$bidPlayer = self::getGameStateValue('bidPlayer');
+		$firstPlayer = self::getGameStateValue('firstPlayer');
 
 		$result['trumpColor'] = $trumpColor;
 		$result['trumpColorDisplay'] = $this->colors[$trumpColor]['name'] ?? null;
 		$result['bid'] = $bid;
 		$result['bidPlayer'] = $bidPlayer;
 		$result['bidPlayerDisplay'] = $players[$bidPlayer]['player_name'] ?? null;
+		$result['firstPlayer'] = $firstPlayer;
 
 		return $result;
 	}
@@ -260,6 +266,26 @@ class BeloteCoinche extends Table {
 		return $strengths;
 	}
 
+	function setNextFirstPlayer() {
+		$firstPlayerId = self::getGameStateValue('firstPlayer');
+		$players = self::loadPlayersBasicInfos();
+		$firstPlayerIndex = array_search($firstPlayerId, array_keys($players));
+		$firstPlayerIndex = ($firstPlayerIndex + 1) % 4;
+		$firstPlayerId = array_keys($players)[$firstPlayerIndex];
+		$firstPlayer = $players[$firstPlayerId];
+		self::setGameStateValue('firstPlayer', $firstPlayerId);
+
+		self::notifyAllPlayers(
+			'firstPlayerChange',
+			clienttranslate('${player_name} is now the first player'),
+			[
+				'i18n' => ['player_name'],
+				'player_id' => $firstPlayerId,
+				'player_name' => $firstPlayer['player_name'],
+			]
+		);
+	}
+
 	/*
         In this space, you can put any utility methods useful for your game logic
     */
@@ -285,7 +311,7 @@ class BeloteCoinche extends Table {
 		// Bid must change color if same player
 		if ($previousColor == $color && $playerId == $previousBidPlayer) {
 			throw new BgaUserException(
-				self::_("You must change color to bid higher on yourself")
+				self::_('You must change color to bid higher on yourself')
 			);
 		}
 
@@ -298,8 +324,8 @@ class BeloteCoinche extends Table {
 		self::notifyAllPlayers(
 			'updateBid',
 			clienttranslate('${player_name} bids ${bid} ${trumpColorDisplay}'),
-			array(
-				'i18n' => array('trumpColorDisplay'),
+			[
+				'i18n' => ['trumpColorDisplay'],
 				'player_id' => $playerId,
 				'player_name' => self::getActivePlayerName(),
 				'bid' => $value,
@@ -307,7 +333,7 @@ class BeloteCoinche extends Table {
 				'trumpColorDisplay' => $this->colors[$color]['name'],
 				'bidPlayer' => $playerId,
 				'bidPlayerDisplay' => self::getActivePlayerName(),
-			)
+			]
 		);
 		// Next player
 		$this->gamestate->nextState('nextPlayerBid');
@@ -321,10 +347,10 @@ class BeloteCoinche extends Table {
 		self::notifyAllPlayers(
 			'updateBidPass',
 			clienttranslate('${player_name} passes'),
-			array(
+			[
 				'player_id' => $playerId,
 				'player_name' => self::getActivePlayerName(),
-			)
+			]
 		);
 
 		// Next player
@@ -352,8 +378,8 @@ class BeloteCoinche extends Table {
 			clienttranslate(
 				'${player_name} plays ${value_displayed} ${color_displayed}'
 			),
-			array(
-				'i18n' => array('color_displayed', 'value_displayed'),
+			[
+				'i18n' => ['color_displayed', 'value_displayed'],
 				'card_id' => $cardId,
 				'player_id' => $playerId,
 				'player_name' => self::getActivePlayerName(),
@@ -361,7 +387,7 @@ class BeloteCoinche extends Table {
 				'value_displayed' => $this->values_label[$currentCard['type_arg']],
 				'color' => $currentCard['type'],
 				'color_displayed' => $this->colors[$currentCard['type']]['name'],
-			)
+			]
 		);
 		// Next player
 		$this->gamestate->nextState('playCard');
@@ -388,9 +414,9 @@ class BeloteCoinche extends Table {
 		foreach ($players as $playerId => $player) {
 			$cards = $this->cards->pickCards(8, 'deck', $playerId);
 			// Notify player about his cards
-			self::notifyPlayer($playerId, 'newHand', '', array(
+			self::notifyPlayer($playerId, 'newHand', '', [
 				'cards' => $cards,
-			));
+			]);
 		}
 		self::setGameStateInitialValue('trumpColor', 0);
 		self::setGameStateInitialValue('bid', 0);
@@ -411,15 +437,27 @@ class BeloteCoinche extends Table {
 		$passCount = self::getGameStateValue('passCount');
 		if ($passCount >= 4) {
 			// Last pass
-			$this->gamestate->nextState('endBidding');
-			// Active 'first' player
-			$players = self::loadPlayersBasicInfos();
-			foreach ($players as $player) {
-				if ($player['player_first']) {
-					$this->gamestate->changeActivePlayer($player['player_id']);
-					break;
-				}
+			$bid = self::getGameStateValue('bid');
+
+			// No bid -> new hand
+			if ($bid == 0) {
+				self::notifyAllPlayers(
+					'passNoBid',
+					clienttranslate('Everybody passes'),
+					[]
+				);
+				$this->setNextFirstPlayer();
+				$firstPlayerId = self::getGameStateValue('firstPlayer');
+				$this->gamestate->changeActivePlayer($firstPlayerId);
+				$this->gamestate->nextState('newHand');
+				return;
 			}
+
+			// Bid ok, activate 'first' player and start playing
+			$firstPlayerId = self::getGameStateValue('firstPlayer');
+			$this->gamestate->changeActivePlayer($firstPlayerId);
+			$this->gamestate->nextState('endBidding');
+			// TODO notify bidding
 			return;
 		}
 
@@ -487,14 +525,14 @@ class BeloteCoinche extends Table {
 			self::notifyAllPlayers(
 				'trickWin',
 				clienttranslate('${player_name} wins the trick'),
-				array(
+				[
 					'player_id' => $bestValuePlayerId,
 					'player_name' => $players[$bestValuePlayerId]['player_name'],
-				)
+				]
 			);
-			self::notifyAllPlayers('giveAllCardsToPlayer', '', array(
+			self::notifyAllPlayers('giveAllCardsToPlayer', '', [
 				'player_id' => $bestValuePlayerId,
-			));
+			]);
 
 			if ($this->cards->countCardInLocation('hand') == 0) {
 				// End of the hand
@@ -514,21 +552,9 @@ class BeloteCoinche extends Table {
 	}
 
 	function stEndHand() {
+		// TODO Set next "first player"
 		$this->gamestate->nextState('nextHand');
 	}
-
-	/*
-    
-    Example for game state "MyGameState":
-
-    function stMyGameState()
-    {
-        // Do some stuff ...
-        
-        // (very often) go to another gamestate
-        $this->gamestate->nextState( 'some_gamestate_transition' );
-    }    
-    */
 
 	//////////////////////////////////////////////////////////////////////////////
 	//////////// Zombie

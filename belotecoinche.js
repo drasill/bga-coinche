@@ -78,7 +78,11 @@ define([
 				'onPlayerHandSelectionChanged'
 			)
 
+			// Buttons of bidPanel
 			this.connectClass('bidPanel__btn', 'onclick', 'onBidPanelBtnClick')
+
+			// First Player
+			this.updateFirstPlayer(gamedatas.firstPlayer)
 
 			// Cards in player's hand
 			for (var i in this.gamedatas.hand) {
@@ -100,6 +104,7 @@ define([
 				this.playCardOnTable(player_id, color, value, card.id)
 			}
 
+			// Bid informations
 			this.updateBidInfo({
 				trumpColor: gamedatas.trumpColor,
 				trumpColorDisplay: gamedatas.trumpColorDisplay,
@@ -121,22 +126,19 @@ define([
 		//                  You can use this method to perform some user interface changes at this moment.
 		//
 		onEnteringState: function(stateName, args) {
-			console.log('Entering state: ' + stateName)
+			console.log('Entering state: ' + stateName, args)
+
+			let isBidPanelVisible = false
 
 			switch (stateName) {
-				/* Example:
-            
-            case 'myGameState':
-            
-                // Show some HTML block at this game state
-                dojo.style( 'my_html_block_id', 'display', 'block' );
-                
-                break;
-           */
-
-				case 'dummmy':
+				case 'playerBid':
+					if (this.isCurrentPlayerActive()) {
+						isBidPanelVisible = true
+					}
 					break
 			}
+
+			dojo.query('.bidPanel')[isBidPanelVisible ? 'addClass' : 'removeClass']('bidPanel--visible')
 		},
 
 		// onLeavingState: this method is called each time we are leaving a game state.
@@ -230,7 +232,6 @@ define([
 		},
 
 		updateBidInfo(data) {
-			console.log(data)
 			if (!data.bid || !data.bidPlayerDisplay) {
 				return
 			}
@@ -239,6 +240,16 @@ define([
 				'currentBidInfo',
 				'replace'
 			)
+		},
+
+		updateFirstPlayer(playerId) {
+			console.log('updateFirstPlayer', playerId)
+			dojo
+				.query('.playerTables__table')
+				.removeClass('playerTables__table--first')
+			dojo
+				.query('.playerTables__table--id--' + playerId)
+				.addClass('playerTables__table--first')
 		},
 
 		updatePlayerBid(clearValue = false) {
@@ -422,6 +433,7 @@ define([
         */
 		setupNotifications: function() {
 			dojo.subscribe('newHand', this, 'notif_newHand')
+			dojo.subscribe('firstPlayerChange', this, 'notif_firstPlayerChange')
 			dojo.subscribe('updateBid', this, 'notif_updateBid')
 			dojo.subscribe('playCard', this, 'notif_playCard')
 			dojo.subscribe('trickWin', this, 'notif_trickWin')
@@ -442,6 +454,10 @@ define([
 					card.id
 				)
 			}
+		},
+
+		notif_firstPlayerChange: function(notif) {
+			this.updateFirstPlayer(notif.args.player_id)
 		},
 
 		notif_updateBid: function(notif) {

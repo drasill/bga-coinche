@@ -16,5 +16,3 @@ CREATE TABLE IF NOT EXISTS `card` (
   PRIMARY KEY (`card_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
- -- add info about first player
- ALTER TABLE `player` ADD `player_first` BOOLEAN NOT NULL DEFAULT '0';

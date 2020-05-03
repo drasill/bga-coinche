@@ -16,15 +16,20 @@
 
 <div class="playerTables">
 
-    <!-- BEGIN player -->
-    <div class="playerTables__table playerTables__table--{DIR}">
-        <div class="playerTables__card whiteblock" id="playerTables__card--{PLAYER_ID}">
-        </div>
-        <div class="playerTables__name" style="color:#{PLAYER_COLOR}">
-            {PLAYER_NAME}
-        </div>
-    </div>
-    <!-- END player -->
+	<div class="playerTables__wrapper">
+
+		<!-- BEGIN player -->
+		<div class="playerTables__table playerTables__table--{DIR} playerTables__table--id--{PLAYER_ID}">
+			<div class="playerTables__card whiteblock" id="playerTables__card--{PLAYER_ID}">
+			</div>
+			<div class="playerTables__name" style="color:#{PLAYER_COLOR}">
+				{PLAYER_NAME}
+			</div>
+			<div class="playerTables__table__firstMarker">1</div>
+		</div>
+		<!-- END player -->
+
+	</div>
 
 </div>
 
@@ -68,17 +73,16 @@
 </div>
 
 <div id="myhand_wrap" class="whiteblock">
-    <h3>{MY_HAND}</h3>
-    <div id="myhand">
-    </div>
+	<h3>{MY_HAND}</h3>
+	<div id="myhand">
+	</div>
 </div>
 
 <script type="text/javascript">
 
-// Javascript HTML templates
-
-var jstpl_cardontable = '<div class="cardontable" id="cardontable_${player_id}" style="background-position:-${x}px -${y}px"></div>';
-var jstpl_currentbidinfo = '<div class="currentBidInfo whiteblock" id="currentBidInfo">Enchère : <span class="card-color-icon card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span></div>';
+	// Javascript HTML templates
+	var jstpl_cardontable = '<div class="cardontable" id="cardontable_${player_id}" style="background-position:-${x}px -${y}px"></div>';
+	var jstpl_currentbidinfo = '<div class="currentBidInfo whiteblock" id="currentBidInfo">Enchère : <span class="card-color-icon card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span></div>';
 
 </script>
 
