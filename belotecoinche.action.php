@@ -40,6 +40,20 @@ class action_belotecoinche extends APP_GameAction {
 		self::ajaxResponse();
 	}
 
+	public function bid() {
+		self::setAjaxMode();
+		$value = self::getArg('value', AT_posint, true);
+		$color = self::getArg('color', AT_posint, true);
+		$this->game->bid($color, $value);
+		self::ajaxResponse();
+	}
+
+	public function pass() {
+		self::setAjaxMode();
+		$this->game->pass();
+		self::ajaxResponse();
+	}
+
 	/*
     
     Example:

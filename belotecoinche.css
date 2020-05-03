@@ -60,3 +60,68 @@
     height: 96px;
     background-image: url('img/cards.jpg'); 
 }
+
+.bidPanel {
+	text-align: center;
+	margin: 10px;
+}
+.bidPanel__title {
+	font-weight: bold;
+	padding: 5px;
+}
+.bidPanel__colors,
+.bidPanel__values {
+	display: flex;
+}
+.bidPanel__btn {
+	display: block;
+	padding: 5px;
+	margin: 1px;
+	font-size: 1.3rem;
+	overflow: visible;
+}
+.bidPanel__btn--pass {
+	display:  inline-block;
+	background-color: #436AAB;
+	margin: 0;
+	margin-left: 5px;
+	font-size: 1.0rem;
+}
+
+.currentBidInfo {
+	display: flex;
+	margin: 10px;
+	place-content: center;
+	place-items: center;
+}
+
+.currentBidInfo__bid {
+	font-size: 20px;
+	font-weight: bold;
+}
+
+.currentBidInfo__player {
+	color: #777;
+	margin-left: 20px;
+}
+
+.card-color-icon {
+	width: 32px;
+	height: 32px;
+	display: inline-block;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+}
+.card-color-icon--spade {
+	background-image: url('img/spade.svg');
+}
+.card-color-icon--heart {
+	background-image: url('img/heart.svg');
+}
+.card-color-icon--diamond {
+	background-image: url('img/diamond.svg');
+}
+.card-color-icon--club {
+	background-image: url('img/club.svg');
+}

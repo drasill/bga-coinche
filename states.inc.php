@@ -40,70 +40,98 @@
  *                           method).
  */
 
-$machinestates = array(
+$machinestates = [
 	// The initial state. Please do not modify.
-	1 => array(
+	1 => [
 		'name' => 'gameSetup',
 		'description' => '',
 		'type' => 'manager',
 		'action' => 'stGameSetup',
-		'transitions' => array('' => 20),
-	),
+		'transitions' => ['' => 20],
+	],
 
 	// New hand
-	20 => array(
+	20 => [
 		'name' => 'newHand',
 		'description' => '',
 		'type' => 'game',
 		'action' => 'stNewHand',
 		'updateGameProgression' => true,
 		'transitions' => array('' => 30),
-	),
+	],
+
+	// Bidding
+	30 => [
+		'name' => 'startBidding',
+		'description' => '',
+		'type' => 'game',
+		'action' => 'stStartBidding',
+		'transitions' => ['' => 31],
+	],
+	31 => [
+		'name' => 'playerBid',
+		'description' => clienttranslate('${actplayer} must bid or pass'),
+		'descriptionmyturn' => clienttranslate('${you} must bid or pass'),
+		'type' => 'activeplayer',
+		'possibleactions' => ['bid', 'pass'],
+		'transitions' => ['nextPlayerBid' => 32],
+	],
+	32 => [
+		'name' => 'nextPlayerBid',
+		'description' => '',
+		'type' => 'game',
+		'action' => 'stNextPlayerBid',
+		'transitions' => [
+			'nextPlayerBid' => 31,
+			'newHand' => 20,
+			'endBidding' => 40,
+		],
+	],
 
 	// Trick
-	30 => array(
+	40 => [
 		'name' => 'newTrick',
 		'description' => '',
 		'type' => 'game',
 		'action' => 'stNewTrick',
-		'transitions' => array('' => 31),
-	),
-	31 => array(
+		'transitions' => ['' => 41],
+	],
+	41 => [
 		'name' => 'playerTurn',
 		'description' => clienttranslate('${actplayer} must play a card'),
 		'descriptionmyturn' => clienttranslate('${you} must play a card'),
 		'type' => 'activeplayer',
-		'possibleactions' => array('playCard'),
-		'transitions' => array('playCard' => 32),
-	),
-	32 => array(
+		'possibleactions' => ['playCard'],
+		'transitions' => ['playCard' => 42],
+	],
+	42 => [
 		'name' => 'nextPlayer',
 		'description' => '',
 		'type' => 'game',
 		'action' => 'stNextPlayer',
-		'transitions' => array(
-			'nextPlayer' => 31,
-			'nextTrick' => 30,
-			'endHand' => 40,
-		),
-	),
+		'transitions' => [
+			'nextPlayer' => 41,
+			'nextTrick' => 40,
+			'endHand' => 50,
+		],
+	],
 
 	// End of the hand (scoring, etc...)
-	40 => array(
+	50 => [
 		'name' => 'endHand',
 		'description' => '',
 		'type' => 'game',
 		'action' => 'stEndHand',
-		'transitions' => array('nextHand' => 20, 'endGame' => 99),
-	),
+		'transitions' => ['nextHand' => 20, 'endGame' => 99],
+	],
 
 	// Final state.
 	// Please do not modify (and do not overload action/args methods).
-	99 => array(
+	99 => [
 		'name' => 'gameEnd',
 		'description' => clienttranslate('End of game'),
 		'type' => 'manager',
 		'action' => 'stGameEnd',
 		'args' => 'argGameEnd',
-	),
-);
+	],
+];

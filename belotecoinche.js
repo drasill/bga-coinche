@@ -45,11 +45,13 @@ define([
 			// Setting up player boards
 			for (var player_id in gamedatas.players) {
 				var player = gamedatas.players[player_id]
-
-				// TODO: Setting up players boards if needed
 			}
 
-			// TODO: Set up your game interface here, according to "gamedatas"
+			this.playerBid = {
+				color: null,
+				value: null
+			}
+			this.updatePlayerBid()
 
 			this.playerHand = new ebg.stock() // new stock object for hand
 			this.playerHand.create(this, $('myhand'), this.cardwidth, this.cardheight)
@@ -76,6 +78,8 @@ define([
 				'onPlayerHandSelectionChanged'
 			)
 
+			this.connectClass('bidPanel__btn', 'onclick', 'onBidPanelBtnClick')
+
 			// Cards in player's hand
 			for (var i in this.gamedatas.hand) {
 				var card = this.gamedatas.hand[i]
@@ -95,6 +99,14 @@ define([
 				var player_id = card.location_arg
 				this.playCardOnTable(player_id, color, value, card.id)
 			}
+
+			this.updateBidInfo({
+				trumpColor: gamedatas.trumpColor,
+				trumpColorDisplay: gamedatas.trumpColorDisplay,
+				bid: gamedatas.bid,
+				bidPlayer: gamedatas.bidPlayer,
+				bidPlayerDisplay: gamedatas.bidPlayerDisplay
+			})
 
 			// Setup game notifications to handle (see "setupNotifications" method below)
 			this.setupNotifications()
@@ -154,36 +166,24 @@ define([
 		//
 		onUpdateActionButtons: function(stateName, args) {
 			console.log('onUpdateActionButtons: ' + stateName)
-
 			if (this.isCurrentPlayerActive()) {
-				switch (
-					stateName
-					/*               
-                 Example:
- 
-                 case 'myGameState':
-                    
-                    // Add 3 action buttons in the action status bar:
-                    
-                    this.addActionButton( 'button_1_id', _('Button 1 label'), 'onMyMethodToCall1' ); 
-                    this.addActionButton( 'button_2_id', _('Button 2 label'), 'onMyMethodToCall2' ); 
-                    this.addActionButton( 'button_3_id', _('Button 3 label'), 'onMyMethodToCall3' ); 
-                    break;
-*/
-				) {
+				switch (stateName) {
+					case 'playerBid':
+						this.addActionButton(
+							'pass_button',
+							_('Pass'),
+							'onPlayerPass',
+							null,
+							false,
+							'gray'
+						)
+						break
 				}
 			}
 		},
 
 		///////////////////////////////////////////////////
 		//// Utility methods
-
-		/**
-		 *
-		 * Here, you can defines some utility methods that you can use everywhere in your javascript
-		 * script.
-		 *
-		 */
 
 		// Get card unique identifier based on its color and value
 		getCardUniqueId: function(color, value) {
@@ -212,6 +212,7 @@ define([
 				// You played a card. If it exists in your hand, move card from there and remove
 				// corresponding item
 
+				console.log(card_id)
 				if ($('myhand_item_' + card_id)) {
 					this.placeOnObject(
 						'cardontable_' + player_id,
@@ -226,6 +227,42 @@ define([
 				'cardontable_' + player_id,
 				'playertablecard_' + player_id
 			).play()
+		},
+
+		updateBidInfo(data) {
+			console.log(data)
+			if (!data.bid || !data.bidPlayerDisplay) {
+				return
+			}
+			dojo.place(
+				this.format_block('jstpl_currentbidinfo', data),
+				'currentBidInfo',
+				'replace'
+			)
+		},
+
+		updatePlayerBid(clearValue = false) {
+			if (clearValue) {
+				this.playerBid = {
+					color: null,
+					value: null
+				}
+			}
+			dojo.query('.bidPanel__btn').removeClass('bgabutton_blue')
+			if (this.playerBid.value) {
+				dojo
+					.query(
+						'.bidPanel__btn--value[data-value="' + this.playerBid.value + '"]'
+					)
+					.addClass('bgabutton_blue')
+			}
+			if (this.playerBid.color) {
+				dojo
+					.query(
+						'.bidPanel__btn--color[data-color="' + this.playerBid.color + '"]'
+					)
+					.addClass('bgabutton_blue')
+			}
 		},
 
 		///////////////////////////////////////////////////
@@ -267,11 +304,73 @@ define([
 					)
 
 					this.playerHand.unselectAll()
-				} else if (this.checkAction('giveCards')) {
-					// Can give cards => let the player select some cards
 				} else {
 					this.playerHand.unselectAll()
 				}
+			}
+		},
+
+		onPlayerBid: function() {
+			if (this.checkAction('bid')) {
+				this.ajaxcall(
+					'/' + this.game_name + '/' + this.game_name + '/' + 'bid' + '.html',
+					{
+						value: 100,
+						color: 2,
+						lock: true
+					},
+					this,
+					function(result) {},
+					function(is_error) {}
+				)
+			}
+		},
+
+		onPlayerPass: function() {
+			if (this.checkAction('pass')) {
+				this.ajaxcall(
+					'/' + this.game_name + '/' + this.game_name + '/' + 'pass' + '.html',
+					{
+						lock: true
+					},
+					this,
+					function(result) {},
+					function(is_error) {}
+				)
+			}
+		},
+
+		onBidPanelBtnClick: function(e) {
+			const target = e.currentTarget
+			console.log(e, target)
+			if (target.classList.contains('bidPanel__btn--pass')) {
+				this.updatePlayerBid(true)
+				this.onPlayerPass()
+				return
+			}
+			if (target.classList.contains('bidPanel__btn--color')) {
+				this.playerBid.color = target.getAttribute('data-color')
+			}
+			if (target.classList.contains('bidPanel__btn--value')) {
+				this.playerBid.value = target.getAttribute('data-value')
+			}
+			this.updatePlayerBid()
+			if (this.playerBid.value && this.playerBid.color) {
+				this.ajaxcall(
+					'/' + this.game_name + '/' + this.game_name + '/' + 'bid' + '.html',
+					{
+						value: this.playerBid.value,
+						color: this.playerBid.color,
+						lock: true
+					},
+					this,
+					function(result) {
+						this.updatePlayerBid(true)
+					},
+					function(is_error) {
+						this.updatePlayerBid(true)
+					}
+				)
 			}
 		},
 
@@ -323,6 +422,7 @@ define([
         */
 		setupNotifications: function() {
 			dojo.subscribe('newHand', this, 'notif_newHand')
+			dojo.subscribe('updateBid', this, 'notif_updateBid')
 			dojo.subscribe('playCard', this, 'notif_playCard')
 			dojo.subscribe('trickWin', this, 'notif_trickWin')
 			this.notifqueue.setSynchronous('trickWin', 1000)
@@ -342,6 +442,10 @@ define([
 					card.id
 				)
 			}
+		},
+
+		notif_updateBid: function(notif) {
+			this.updateBidInfo(notif.args)
 		},
 
 		notif_playCard: function(notif) {
