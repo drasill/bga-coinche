@@ -17,11 +17,11 @@
 <div class="playertables">
 
     <!-- BEGIN player -->
-    <div class="playertable whiteblock playertable_{DIR}">
+    <div class="playertable playertable_{DIR}">
+        <div class="playertablecard whiteblock" id="playertablecard_{PLAYER_ID}">
+        </div>
         <div class="playertablename" style="color:#{PLAYER_COLOR}">
             {PLAYER_NAME}
-        </div>
-        <div class="playertablecard" id="playertablecard_{PLAYER_ID}">
         </div>
     </div>
     <!-- END player -->
