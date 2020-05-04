@@ -128,10 +128,14 @@
 }
 
 .currentBidInfo {
-	display: flex;
+	display: none;
 	margin: 10px;
 	place-content: center;
 	place-items: center;
+}
+
+.currentBidInfo--visible {
+	display: flex;
 }
 
 .currentBidInfo__bid {

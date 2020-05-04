@@ -82,7 +82,7 @@
 
 	// Javascript HTML templates
 	var jstpl_cardontable = '<div class="cardontable" id="cardontable_${player_id}" style="background-position:-${x}px -${y}px"></div>';
-	var jstpl_currentbidinfo = '<div class="currentBidInfo whiteblock" id="currentBidInfo">Enchère : <span class="card-color-icon card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span></div>';
+	var jstpl_currentbidinfo = '<div class="currentBidInfo currentBidInfo--visible whiteblock" id="currentBidInfo">Enchère : <span class="card-color-icon card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span></div>';
 
 </script>
 

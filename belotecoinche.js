@@ -24,8 +24,6 @@ define([
 ], function(dojo, declare) {
 	return declare('bgagame.belotecoinche', ebg.core.gamegui, {
 		constructor: function() {
-			console.log('belotecoinche constructor')
-
 			this.cardwidth = 72
 			this.cardheight = 96
 		},
@@ -40,8 +38,6 @@ define([
 		 * "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
 		 */
 		setup: function(gamedatas) {
-			console.log('Starting game setup')
-
 			// Setting up player boards
 			for (var player_id in gamedatas.players) {
 				var player = gamedatas.players[player_id]
@@ -115,16 +111,11 @@ define([
 
 			// Setup game notifications to handle (see "setupNotifications" method below)
 			this.setupNotifications()
-
-			console.log('Ending game setup')
 		},
 
 		///////////////////////////////////////////////////
 		//// Game & client states
 
-		// onEnteringState: this method is called each time we are entering into a new game state.
-		//                  You can use this method to perform some user interface changes at this moment.
-		//
 		onEnteringState: function(stateName, args) {
 			console.log('Entering state: ' + stateName, args)
 
@@ -141,33 +132,11 @@ define([
 			dojo.query('.bidPanel')[isBidPanelVisible ? 'addClass' : 'removeClass']('bidPanel--visible')
 		},
 
-		// onLeavingState: this method is called each time we are leaving a game state.
-		//                 You can use this method to perform some user interface changes at this moment.
-		//
 		onLeavingState: function(stateName) {
 			console.log('Leaving state: ' + stateName)
-
-			switch (stateName) {
-				/* Example:
-            
-            case 'myGameState':
-            
-                // Hide the HTML block we are displaying only during this game state
-                dojo.style( 'my_html_block_id', 'display', 'none' );
-                
-                break;
-           */
-
-				case 'dummmy':
-					break
-			}
 		},
 
-		// onUpdateActionButtons: in this method you can manage "action buttons" that are displayed in the
-		//                        action status bar (ie: the HTML links in the status bar).
-		//
 		onUpdateActionButtons: function(stateName, args) {
-			console.log('onUpdateActionButtons: ' + stateName)
 			if (this.isCurrentPlayerActive()) {
 				switch (stateName) {
 					case 'playerBid':
@@ -213,8 +182,6 @@ define([
 			} else {
 				// You played a card. If it exists in your hand, move card from there and remove
 				// corresponding item
-
-				console.log(card_id)
 				if ($('myhand_item_' + card_id)) {
 					this.placeOnObject(
 						'cardontable_' + player_id,
@@ -232,7 +199,8 @@ define([
 		},
 
 		updateBidInfo(data) {
-			if (!data.bid || !data.bidPlayerDisplay) {
+			if (!(data.bid > 0) || !data.bidPlayerDisplay) {
+				dojo.query('.currentBidInfo').removeClass('currentBidInfo--visible')
 				return
 			}
 			dojo.place(
@@ -243,7 +211,6 @@ define([
 		},
 
 		updateFirstPlayer(playerId) {
-			console.log('updateFirstPlayer', playerId)
 			dojo
 				.query('.playerTables__table')
 				.removeClass('playerTables__table--first')
@@ -353,7 +320,6 @@ define([
 
 		onBidPanelBtnClick: function(e) {
 			const target = e.currentTarget
-			console.log(e, target)
 			if (target.classList.contains('bidPanel__btn--pass')) {
 				this.updatePlayerBid(true)
 				this.onPlayerPass()
@@ -385,52 +351,9 @@ define([
 			}
 		},
 
-		/* Example:
-        
-        onMyMethodToCall1: function( evt )
-        {
-            console.log( 'onMyMethodToCall1' );
-            
-            // Preventing default browser reaction
-            dojo.stopEvent( evt );
-
-            // Check that this action is possible (see "possibleactions" in states.inc.php)
-            if( ! this.checkAction( 'myAction' ) )
-            {   return; }
-
-            this.ajaxcall( "/belotecoinche/belotecoinche/myAction.html", { 
-                                                                    lock: true, 
-                                                                    myArgument1: arg1, 
-                                                                    myArgument2: arg2,
-                                                                    ...
-                                                                 }, 
-                         this, function( result ) {
-                            
-                            // What to do after the server call if it succeeded
-                            // (most of the time: nothing)
-                            
-                         }, function( is_error) {
-
-                            // What to do after the server call in anyway (success or failure)
-                            // (most of the time: nothing)
-
-                         } );        
-        },        
-        
-        */
-
 		///////////////////////////////////////////////////
 		//// Reaction to cometD notifications
 
-		/*
-            setupNotifications:
-            
-            In this method, you associate each of your game notifications with your local method to handle it.
-            
-            Note: game notification names correspond to "notifyAllPlayers" and "notifyPlayer" calls in
-                  your belotecoinche.game.php file.
-        
-        */
 		setupNotifications: function() {
 			dojo.subscribe('newHand', this, 'notif_newHand')
 			dojo.subscribe('firstPlayerChange', this, 'notif_firstPlayerChange')
