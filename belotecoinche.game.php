@@ -20,12 +20,6 @@ require_once APP_GAMEMODULE_PATH . 'module/table/table.game.php';
 
 class BeloteCoinche extends Table {
 	function __construct() {
-		// Your global variables labels:
-		//  Here, you can assign labels to global variables you are using for this game.
-		//  You can use any number of global variables with IDs between 10 and 99.
-		//  If your game has options (variants), you also have to associate here a label to
-		//  the corresponding ID in gameoptions.inc.php.
-		// Note: afterwards, you can get/set the global variables with getGameStateValue/setGameStateInitialValue/setGameStateValue
 		parent::__construct();
 
 		self::initGameStateLabels([
@@ -215,6 +209,37 @@ class BeloteCoinche extends Table {
 	//////////////////////////////////////////////////////////////////////////////
 	//////////// Utility functions
 	////////////
+
+	/**
+	 * Return players => direction (N/S/E/W) from the point of view of
+	 * current player (current player must be on south)
+	 */
+	function getPlayersToDirection() {
+		$result = [];
+		$players = self::loadPlayersBasicInfos();
+		$nextPlayer = self::createNextPlayerTable(array_keys($players));
+		$current_player = self::getCurrentPlayerId();
+
+		// counterclockwise order
+		$directions = ['S', 'W', 'N', 'E'];
+
+		if (!isset($nextPlayer[$current_player])) {
+			// Spectator mode: take any player for south
+			$player_id = $nextPlayer[0];
+			$result[$player_id] = array_shift($directions);
+		} else {
+			// Normal mode: current player is on south
+			$player_id = $current_player;
+			$result[$player_id] = array_shift($directions);
+		}
+
+		while (count($directions) > 0) {
+			$player_id = $nextPlayer[$player_id];
+			$result[$player_id] = array_shift($directions);
+		}
+
+		return $result;
+	}
 
 	/**
 	 * Returns array[color][arg] => strength according to current trick

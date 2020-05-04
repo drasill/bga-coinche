@@ -11,7 +11,8 @@
 
 -->
 
-<div class="currentBidInfo" id="currentBidInfo">
+<div class="currentBidInfo">
+	<div class="currentBidInfo__wrapper"></div>
 </div>
 
 <div class="playerTables">
@@ -22,7 +23,7 @@
 		<div class="playerTables__table playerTables__table--{DIR} playerTables__table--id--{PLAYER_ID}">
 			<div class="playerTables__card whiteblock" id="playerTables__card--{PLAYER_ID}">
 			</div>
-			<div class="playerTables__name" style="color:#{PLAYER_COLOR}">
+			<div class="playerTables__name whiteblock" style="color:#{PLAYER_COLOR}">
 				{PLAYER_NAME}
 			</div>
 			<div class="playerTables__table__firstMarker">1</div>
@@ -82,7 +83,7 @@
 
 	// Javascript HTML templates
 	var jstpl_cardontable = '<div class="cardontable" id="cardontable_${player_id}" style="background-position:-${x}px -${y}px"></div>';
-	var jstpl_currentbidinfo = '<div class="currentBidInfo currentBidInfo--visible whiteblock" id="currentBidInfo">Enchère : <span class="card-color-icon card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span></div>';
+	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="card-color-icon card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span></div>';
 
 </script>
 

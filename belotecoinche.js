@@ -203,9 +203,11 @@ define([
 				dojo.query('.currentBidInfo').removeClass('currentBidInfo--visible')
 				return
 			}
+			dojo.query('.currentBidInfo').addClass('currentBidInfo--visible')
+
 			dojo.place(
 				this.format_block('jstpl_currentbidinfo', data),
-				'currentBidInfo',
+				dojo.query('.currentBidInfo__wrapper')[0],
 				'replace'
 			)
 		},

@@ -35,7 +35,7 @@
 	position: absolute;
 	text-align: center;
 	width: 180px;
-	height: 130px;
+	height: 180px;
 	display: flex;
 	flex-direction: column;
 }
@@ -72,12 +72,12 @@
 .playerTables__table--W {
 	left: 0px;
 	top: 50%;
-	margin-top: -55px; /* half of 130 */
+	margin-top: -90px; /* half of 130 */
 }
 .playerTables__table--E {
 	right: 0px;
 	top: 50%;
-	margin-top: -55px; /* half of 130 */
+	margin-top: -90px; /* half of 130 */
 }
 
 /*** cards on table ***/
