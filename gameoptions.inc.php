@@ -12,9 +12,9 @@
  * gameoptions.inc.php
  *
  * BeloteCoinche game options description
- * 
+ *
  * In this file, you can define your game options (= game variants).
- *   
+ *
  * Note: If your game has no variant, you don't have to modify this file.
  *
  * Note²: All options defined in this file should have a corresponding "game state labels"
@@ -24,13 +24,27 @@
  *
  */
 
-$game_options = array(
+$game_options = [
+	100 => [
+		'name' => totranslate('Game length'),
+		'values' => [
+			1 => ['name' => totranslate('Classic (2000 points)')],
+			2 => ['name' => totranslate('Half-game (1000 points)')],
+		],
+	],
+	101 => [
+		'name' => totranslate('Score type'),
+		'values' => [
+			1 => ['name' => totranslate('Points + Bid')],
+			2 => ['name' => totranslate('Bid only')],
+		],
+	],
 
-    /*
-    
+	/*
+
     // note: game variant ID should start at 100 (ie: 100, 101, 102, ...). The maximum is 199.
     100 => array(
-                'name' => totranslate('my game option'),    
+                'name' => totranslate('my game option'),
                 'values' => array(
 
                             // A simple value for this option:
@@ -49,7 +63,4 @@ $game_options = array(
             )
 
     */
-
-);
-
-
+];

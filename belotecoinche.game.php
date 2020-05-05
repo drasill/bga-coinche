@@ -39,6 +39,12 @@ class BeloteCoinche extends Table {
 			'counteringPlayer' => 17,
 			// Number of successive player passes (to trigger end of bidding)
 			'passCount' => 18,
+
+			// Options
+			// Game length -> max score
+			'gameLength' => 100,
+			// Score type
+			'scoreType' => 101,
 		]);
 
 		$this->cards = self::getNew('module.common.deck');
@@ -133,8 +139,9 @@ class BeloteCoinche extends Table {
 		//self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
 		//self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
 
-		// Activate first player (which is in general a good idea :) )
-		$this->activeNextPlayer();
+		// Activate first player
+		$firstPlayerId = self::getGameStateValue('firstPlayer');
+		$this->gamestate->changeActivePlayer($firstPlayerId);
 
 		/************ End of the game initialization *****/
 	}
@@ -212,10 +219,26 @@ class BeloteCoinche extends Table {
 	////////////
 
 	/**
+	 * Returns the maximum score to end the game
+	 */
+	private function getMaxScore() {
+		$gameLength = self::getGameStateValue('gameLength');
+		if ($gameLength == 1) {
+			return 2000;
+		}
+		if ($gameLength == 2) {
+			return 1000;
+		}
+		throw new BgaVisibleSystemException(
+			'Error, gameLength value is not in [1,2]'
+		);
+	}
+
+	/**
 	 * Return players => direction (N/S/E/W) from the point of view of
 	 * current player (current player must be on south)
 	 */
-	function getPlayersToDirection() {
+	public function getPlayersToDirection() {
 		$result = [];
 		$players = self::loadPlayersBasicInfos();
 		$nextPlayer = self::createNextPlayerTable(array_keys($players));
@@ -882,6 +905,7 @@ class BeloteCoinche extends Table {
 		$cardsPoints = $this->getCardsPoints();
 
 		$bid = $this->getGameStateValue('bid');
+		$trumpColor = self::getGameStateValue('trumpColor');
 		$countered = self::getGameStateValue('countered');
 
 		// Players informations
@@ -899,6 +923,9 @@ class BeloteCoinche extends Table {
 			$player3Id => 0,
 			$player4Id => 1,
 		];
+
+		// Remember who has belote
+		$belotePlayerIds = [];
 
 		// Current player scores by Id
 		$playerScores = self::getCollectionFromDb(
@@ -922,16 +949,37 @@ class BeloteCoinche extends Table {
 			1 => 0,
 		];
 
+		// Score type: count points, or only the bid value ?
+		$doAddPointsToScore = self::getGameStateValue('scoreType') == 1;
+
 		// Compute points based on cards won
 		$cards = $this->cards->getCardsInLocation('cardswon');
 		foreach ($cards as $card) {
 			$playerId = $card['location_arg'];
 			$teamId = $playerIdTeam[$playerId];
 			$teamPoints[$teamId] += $cardsPoints[$card['type']][$card['type_arg']];
+
+			// Check for belote
+			$isBelote =
+				$card['type'] == $trumpColor &&
+				in_array($card['type_arg'], [12, 13]);
+			if ($isBelote) {
+				$belotePlayerIds[] = $playerId;
+			}
+		}
+
+		$beloteTeamId = null;
+		if (count(array_unique($belotePlayerIds)) == 1) {
+			$beloteTeamId = $playerIdTeam[$belotePlayerIds[0]];
 		}
 
 		// Adds "10 de der" for last trick
 		$teamPoints[$teamId] += 10;
+
+		// Adds "20" for belote
+		if ($beloteTeamId) {
+			$teamPoints[$beloteTeamId] += 20;
+		}
 
 		// If a team scored zero points, it's a "capot", so 250pts
 		if ($teamPoints[0] === 0) {
@@ -947,25 +995,43 @@ class BeloteCoinche extends Table {
 		if ($teamPoints[$bidTeam] >= $bid) {
 			// Success !
 			// Bidding team : (bid + points) * coinche_multiplier
-			$teamScores[$bidTeam] = $this->roundToTen(
-				($bid + $teamPoints[$bidTeam]) * $multiplier
-			);
+			$baseScore = $bid + ($doAddPointsToScore ? $teamPoints[$bidTeam] : 0);
+			$teamScores[$bidTeam] = $this->roundToTen($baseScore * $multiplier);
 			// Defense team : points (if not countered)
-			if (!$countered) {
+			if (!$countered && $doAddPointsToScore) {
 				$teamScores[$defenseTeam] = $this->roundToTen(
 					$teamPoints[$defenseTeam]
 				);
 			}
-			self::notifyAllPlayers('log', clienttranslate('Bid successful !'), []);
+			self::notifyAllPlayers(
+				'message',
+				clienttranslate(
+					'Bid successful, <b>${bidTeamPoints}</b> to <b>${defenseTeamPoints}</b> !'
+				),
+				[
+					'bidTeamPoints' => $teamPoints[$bidTeam],
+					'defenseTeamPoints' => $teamPoints[$defenseTeam],
+				]
+			);
 		} else {
 			// Failure
 			// Bidding team : 0 (TODO never lose the "belote")
 			$teamScores[$bidTeam] = 0;
 			// Defense team : (162 + bid) * coinche_multiplier
+			$baseScore = $bid + ($doAddPointsToScore ? 162 : 0);
 			$teamScores[$defenseTeam] = $this->roundToTen(
-				(162 + $bid) * $multiplier
+				$baseScore * $multiplier
 			);
-			self::notifyAllPlayers('log', clienttranslate('Bid Failed !'), []);
+			self::notifyAllPlayers(
+				'message',
+				clienttranslate(
+					'Bid fail, <b>${bidTeamPoints}</b> to <b>${defenseTeamPoints}</b> !'
+				),
+				[
+					'bidTeamPoints' => $teamPoints[$bidTeam],
+					'defenseTeamPoints' => $teamPoints[$defenseTeam],
+				]
+			);
 		}
 
 		// Apply team scores to player
@@ -988,7 +1054,7 @@ class BeloteCoinche extends Table {
 			} else {
 				$notifyMessage = clienttranslate('${player_name} scores no point');
 			}
-			self::notifyAllPlayers('log', $notifyMessage, [
+			self::notifyAllPlayers('message', $notifyMessage, [
 				'player_id' => $playerId,
 				'player_name' => $player['player_name'],
 				'points' => $points,
@@ -999,13 +1065,15 @@ class BeloteCoinche extends Table {
 		$this->notifyScores();
 
 		// Check if end of game (score must be strictly higher than maxScore)
-		$maxScore = 2000;
+		$maxScore = $this->getMaxScore();
 		foreach ($playerScores as $playerId => $score) {
 			if ($score > $maxScore) {
 				$this->gamestate->nextState('endGame');
 				return;
 			}
 		}
+
+		$this->setNextFirstPlayer();
 
 		$this->gamestate->nextState('nextHand');
 	}

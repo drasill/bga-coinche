@@ -547,7 +547,7 @@ define([
 			for (var player_id in this.gamedatas.players) {
 				var anim = this.slideToObject(
 					'cardontable_' + player_id,
-					'overall_player_board_' + winner_id
+					'playerTables__card--' + winner_id
 				)
 				dojo.connect(anim, 'onEnd', function(node) {
 					dojo.destroy(node)
