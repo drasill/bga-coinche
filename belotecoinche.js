@@ -50,19 +50,21 @@ define([
 			this.updatePlayerBid()
 
 			this.playerHand = new ebg.stock() // new stock object for hand
-			this.playerHand.create(this, $('myhand'), this.cardwidth, this.cardheight)
+			this.playerHand.create(this, $('myHand'), this.cardwidth, this.cardheight)
+			this.playerHand.setSelectionAppearance('class')
+			this.playerHand.centerItems = true
 
 			this.playerHand.image_items_per_row = 13 // 13 images per row
 			// Create cards types:
 			for (var color = 1; color <= 4; color++) {
 				for (var value = 2; value <= 14; value++) {
 					// Build card type id
-					var card_type_id = this.getCardUniqueId(color, value)
+					var cardTypeId = this.getCardUniqueId(color, value)
 					this.playerHand.addItemType(
-						card_type_id,
-						card_type_id,
+						cardTypeId,
+						cardTypeId,
 						g_gamethemeurl + 'img/cards.jpg',
-						card_type_id
+						cardTypeId
 					)
 				}
 			}
@@ -130,18 +132,25 @@ define([
 			console.log('Entering state: ' + stateName, args)
 
 			let isBidPanelVisible = false
+			let isCoinchePanelVisible = false
 
 			switch (stateName) {
 				case 'playerBid':
 					if (this.isCurrentPlayerActive()) {
 						isBidPanelVisible = true
 					}
+					isCoinchePanelVisible = true
 					break
 			}
 
 			dojo
 				.query('.bidPanel')
 				[isBidPanelVisible ? 'addClass' : 'removeClass']('bidPanel--visible')
+			dojo
+				.query('.playerTables__coinche-btn')
+				[isCoinchePanelVisible ? 'addClass' : 'removeClass'](
+					'playerTables__coinche-btn--visible'
+				)
 		},
 
 		onLeavingState: function(stateName) {
@@ -200,10 +209,10 @@ define([
 			} else {
 				// You played a card. If it exists in your hand, move card from there and remove
 				// corresponding item
-				if ($('myhand_item_' + card_id)) {
+				if ($('myHand_item_' + card_id)) {
 					this.placeOnObject(
 						'cardontable_' + player_id,
-						'myhand_item_' + card_id
+						'myHand_item_' + card_id
 					)
 					this.playerHand.removeFromStockById(card_id)
 				}
@@ -217,16 +226,17 @@ define([
 		},
 
 		updateBidInfo(data) {
-
 			// Hide all counter markers
-			dojo.query('.playerTables__table__counterMarker').removeClass('playerTables__table__counterMarker--visible')
+			dojo
+				.query('.playerTables__table__counterMarker')
+				.removeClass('playerTables__table__counterMarker--visible')
 
 			if (!(data.bid > 0) || !data.bidPlayerDisplay) {
 				// Hide bid panel
 				dojo.query('.currentBidInfo').removeClass('currentBidInfo--visible')
 				return
 			}
-			
+
 			// Show bidPanel
 			dojo.query('.currentBidInfo').addClass('currentBidInfo--visible')
 
@@ -239,7 +249,13 @@ define([
 
 			// Activate countered marker of player
 			if (data.countered && data.counteringPlayer) {
-				dojo.query('.playerTables__table--id--' + data.counteringPlayer + ' .playerTables__table__counterMarker').addClass('playerTables__table__counterMarker--visible')
+				dojo
+					.query(
+						'.playerTables__table--id--' +
+							data.counteringPlayer +
+							' .playerTables__table__counterMarker'
+					)
+					.addClass('playerTables__table__counterMarker--visible')
 			}
 		},
 
@@ -405,23 +421,7 @@ define([
 		},
 
 		onCoincheBtnClick: function(e) {
-			if (this.checkAction('coinche')) {
-				this.ajaxcall(
-					'/' +
-						this.game_name +
-						'/' +
-						this.game_name +
-						'/' +
-						'coinche' +
-						'.html',
-					{
-						lock: true
-					},
-					this,
-					function(result) {},
-					function(is_error) {}
-				)
-			}
+			this.onPlayerCoinche()
 		},
 
 		///////////////////////////////////////////////////

@@ -476,7 +476,7 @@ class BeloteCoinche extends Table {
 		$message = '';
 		if ($showMessage) {
 			$message = clienttranslate(
-				'${bidPlayerDisplay} bids ${bid} ${trumpColorDisplay}'
+				'${player_name} bids ${bid} ${trumpColorDisplay}'
 			);
 		}
 
@@ -505,6 +505,8 @@ class BeloteCoinche extends Table {
 		self::notifyAllPlayers('updateBid', $message, [
 			'i18n' => ['trumpColorDisplay', 'bidPlayerDisplay'],
 			'bid' => $bid,
+			'player_id' => $bidPlayerId,
+			'player_name' => $bidPlayerDisplay,
 			'trumpColor' => $trumpColor,
 			'trumpColorDisplay' => $trumpColorDisplay,
 			'bidPlayer' => $bidPlayerId,
@@ -577,8 +579,40 @@ class BeloteCoinche extends Table {
 
 	function coinche() {
 		$this->gamestate->checkPossibleAction('coinche');
-		$playerId = self::getCurrentPlayerId();
 
+
+		// Check coinche is possible
+		$playerId = self::getCurrentPlayerId();
+		$bid = self::getGameStateValue('bid');
+		$bidPlayerId = self::getGameStateValue('bidPlayer');
+		$partnerId = $this->getPartnerIdOfPlayerId($playerId);
+		self::debug(
+			'<pre>' .
+			var_export(
+				[
+					'playerId' => $playerId,
+					'bid' => $bid,
+					'bidPlayerId' => $bidPlayerId,
+					'partnerId' => $partnerId,
+				],
+				true
+			) .
+			'</pre>'
+		);
+		if (!$bid) {
+			throw new BgaUserException(self::_('Cannot counter on no bid'));
+		}
+		if ($playerId == $bidPlayerId) {
+			throw new BgaUserException(self::_('Cannot counter on you own bid'));
+		}
+		if ($partnerId == $bidPlayerId) {
+			throw new BgaUserException(self::_('Cannot counter on you partner\'s bid'));
+		}
+
+		// Next player
+		self::setGameStateValue('countered', 1);
+		self::setGameStateValue('counteringPlayer', $playerId);
+		//
 		// And notify
 		self::notifyAllPlayers(
 			'updateBidPass',
@@ -589,9 +623,6 @@ class BeloteCoinche extends Table {
 			]
 		);
 
-		// Next player
-		self::setGameStateValue('countered', 1);
-		self::setGameStateValue('counteringPlayer', $playerId);
 		$this->notifyBid();
 		$this->gamestate->nextState('nextPlayerBid');
 	}

@@ -78,9 +78,9 @@
 
 </div>
 
-<div id="myhand_wrap" class="whiteblock">
+<div class="myHand whiteblock">
 	<h3>{MY_HAND}</h3>
-	<div id="myhand">
+	<div id="myHand" class="myHand__cards">
 	</div>
 </div>
 
@@ -88,7 +88,7 @@
 
 	// Javascript HTML templates
 	var jstpl_cardontable = '<div class="cardontable" id="cardontable_${player_id}" style="background-position:-${x}px -${y}px"></div>';
-	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="card-color-icon card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span>  <div class="currentBidInfo__countered currentBidInfo__countered--${countered}">Coinché par ${counteringPlayerDisplay}</div> </div>';
+	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="card-color-icon card-color-icon--16 card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span>  <div class="currentBidInfo__countered currentBidInfo__countered--${countered}">Coinché par ${counteringPlayerDisplay}</div> </div>';
 
 </script>
 

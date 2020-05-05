@@ -38,6 +38,7 @@
 	height: 180px;
 	display: flex;
 	flex-direction: column;
+	box-sizing: border-box;
 }
 
 .playerTables__table__firstMarker {
@@ -95,13 +96,20 @@
 }
 
 .playerTables__coinche-btn {
+	display: none;
+	justify-content: center;
+	align-items: center;
 	position: absolute;
-	width: 100px;
-	height: 100px;
+	width: 120px;
+	height: 120px;
 	left: 50%;
 	top: 50%;
-	margin-left: -50px;
-	margin-right: -50px;
+	margin-top: -60px;
+	margin-left: -60px;
+	box-sizing: border-box;
+}
+.playerTables__coinche-btn--visible {
+	display: flex;
 }
 
 /*** cards on table ***/
@@ -133,6 +141,7 @@
 .bidPanel__colors,
 .bidPanel__values {
 	display: flex;
+	justify-content: center;
 }
 
 .bidPanel__btn {
@@ -176,9 +185,21 @@
 	display: none;
 }
 
+.myHand {
+	text-align: center;
+}
+
 .card-color-icon {
 	width: 32px;
 	height: 32px;
+	display: inline-block;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+}
+.card-color-icon--16 {
+	width: 16px;
+	height: 16px;
 	display: inline-block;
 	background-size: contain;
 	background-repeat: no-repeat;
