@@ -27,8 +27,13 @@
 				{PLAYER_NAME}
 			</div>
 			<div class="playerTables__table__firstMarker">1</div>
+			<div class="playerTables__table__counterMarker">C</div>
 		</div>
 		<!-- END player -->
+
+		<div class="playerTables__coinche-btn whiteblock">
+			<a class="bgabutton bgabutton_red">Coincher !</a>
+		</div>
 
 	</div>
 
@@ -83,7 +88,7 @@
 
 	// Javascript HTML templates
 	var jstpl_cardontable = '<div class="cardontable" id="cardontable_${player_id}" style="background-position:-${x}px -${y}px"></div>';
-	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="card-color-icon card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span></div>';
+	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="card-color-icon card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span>  <div class="currentBidInfo__countered currentBidInfo__countered--${countered}">Coinché par ${counteringPlayerDisplay}</div> </div>';
 
 </script>
 

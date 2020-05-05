@@ -73,7 +73,7 @@ $machinestates = [
 		'description' => clienttranslate('${actplayer} must bid or pass'),
 		'descriptionmyturn' => clienttranslate('${you} must bid or pass'),
 		'type' => 'activeplayer',
-		'possibleactions' => ['bid', 'pass'],
+		'possibleactions' => ['bid', 'pass', 'coinche'],
 		'transitions' => ['nextPlayerBid' => 32],
 	],
 	32 => [

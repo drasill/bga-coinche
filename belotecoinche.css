@@ -54,6 +54,20 @@
 	display: block;
 }
 
+.playerTables__table__counterMarker {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background: red;
+	padding: 5px;
+	font-weight: bold;
+	color: white;
+}
+.playerTables__table__counterMarker--visible {
+	display: block;
+}
+
 .playerTables__card {
 	flex: 1;
 	margin: 0;
@@ -78,6 +92,16 @@
 	right: 0px;
 	top: 50%;
 	margin-top: -90px; /* half of 130 */
+}
+
+.playerTables__coinche-btn {
+	position: absolute;
+	width: 100px;
+	height: 100px;
+	left: 50%;
+	top: 50%;
+	margin-left: -50px;
+	margin-right: -50px;
 }
 
 /*** cards on table ***/
@@ -146,6 +170,10 @@
 .currentBidInfo__player {
 	color: #777;
 	margin-left: 20px;
+}
+
+.currentBidInfo__countered--0 {
+	display: none;
 }
 
 .card-color-icon {

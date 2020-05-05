@@ -31,6 +31,7 @@ class BeloteCoinche extends Table {
 			'passCount' => 15,
 			'bidPlayer' => 16,
 			'firstPlayer' => 17,
+			'counteringPlayer' => 18,
 		]);
 
 		$this->cards = self::getNew('module.common.deck');
@@ -179,27 +180,32 @@ class BeloteCoinche extends Table {
 		$bid = self::getGameStateValue('bid');
 		$bidPlayer = self::getGameStateValue('bidPlayer');
 		$firstPlayer = self::getGameStateValue('firstPlayer');
+		$countered = self::getGameStateValue('countered');
+		$counteringPlayer = self::getGameStateValue('counteringPlayer');
 
 		$result['trumpColor'] = $trumpColor;
 		$result['trumpColorDisplay'] = $this->colors[$trumpColor]['name'] ?? null;
 		$result['bid'] = $bid;
 		$result['bidPlayer'] = $bidPlayer;
 		$result['bidPlayerDisplay'] = $players[$bidPlayer]['player_name'] ?? null;
+		$result['countered'] = $countered;
+		$result['counteringPlayer'] = $counteringPlayer;
+		$result['counteringPlayerDisplay'] = $players[$counteringPlayer]['player_name'] ?? '';
 		$result['firstPlayer'] = $firstPlayer;
 
 		return $result;
 	}
 
 	/*
-        getGameProgression:
-        
-        Compute and return the current game progression.
-        The number returned must be an integer beween 0 (=the game just started) and
-        100 (= the game is finished or almost finished).
-    
-        This method is called each time we are in a game state with the "updateGameProgression" property set to true 
-        (see states.inc.php)
-    */
+	 * getGameProgression:
+	 *
+	 * Compute and return the current game progression.
+	 * The number returned must be an integer beween 0 (=the game just started) and
+	 * 100 (= the game is finished or almost finished).
+	 *
+	 * This method is called each time we are in a game state with the "updateGameProgression" property set to true
+	 * (see states.inc.php)
+	 */
 	function getGameProgression() {
 		// TODO: compute and return the game progression
 
@@ -413,25 +419,25 @@ class BeloteCoinche extends Table {
 
 			self::debug(
 				'<pre>' .
-				var_export(
-					[
-						'currentCard' => $currentCard,
-						'cardStrength' => $cardStrength,
-						'trickColor' => $trickColor,
-						'trumpColor' => $trumpColor,
-						'partnerId' => $partnerId,
-						'isCardInHand' => $isCardInHand,
-						'hasTrickColorInHand' => $hasTrickColorInHand,
-						'hasTrumpColorInHand' => $hasTrumpColorInHand,
-						'trumpStrongestInHand' => $trumpStrongestInHand,
-						'hasTrumpBeenPlayed' => $hasTrumpBeenPlayed,
-						'trumpStrongestPlayed' => $trumpStrongestPlayed,
-						'strongestTrickCard' => $strongestTrickCard,
-						'strongestTrickValue' => $strongestTrickValue,
-					],
-					true
-				) .
-				'</pre>'
+					var_export(
+						[
+							'currentCard' => $currentCard,
+							'cardStrength' => $cardStrength,
+							'trickColor' => $trickColor,
+							'trumpColor' => $trumpColor,
+							'partnerId' => $partnerId,
+							'isCardInHand' => $isCardInHand,
+							'hasTrickColorInHand' => $hasTrickColorInHand,
+							'hasTrumpColorInHand' => $hasTrumpColorInHand,
+							'trumpStrongestInHand' => $trumpStrongestInHand,
+							'hasTrumpBeenPlayed' => $hasTrumpBeenPlayed,
+							'trumpStrongestPlayed' => $trumpStrongestPlayed,
+							'strongestTrickCard' => $strongestTrickCard,
+							'strongestTrickValue' => $strongestTrickValue,
+						],
+						true
+					) .
+					'</pre>'
 			);
 			if ($hasTrumpColorInHand && $currentColor !== $trumpColor) {
 				// Player has trump color in hand;
@@ -480,6 +486,9 @@ class BeloteCoinche extends Table {
 		$bid = self::getGameStateValue('bid');
 		$bidPlayerId = self::getGameStateValue('bidPlayer');
 		$bidPlayerDisplay = '';
+		$countered = self::getGameStateValue('countered');
+		$counteringPlayerId = self::getGameStateValue('counteringPlayer');
+		$counteringPlayerDisplay = '';
 
 		if ($bidPlayerId) {
 			$bidPlayer = $players[$bidPlayerId];
@@ -487,6 +496,10 @@ class BeloteCoinche extends Table {
 		}
 		if ($trumpColor) {
 			$trumpColorDisplay = $this->colors[$trumpColor]['name'];
+		}
+		if ($countered) {
+			$counteringPlayer = $players[$counteringPlayerId];
+			$counteringPlayerDisplay = $counteringPlayer['player_name'];
 		}
 
 		self::notifyAllPlayers('updateBid', $message, [
@@ -496,6 +509,9 @@ class BeloteCoinche extends Table {
 			'trumpColorDisplay' => $trumpColorDisplay,
 			'bidPlayer' => $bidPlayerId,
 			'bidPlayerDisplay' => $bidPlayerDisplay,
+			'countered' => $countered,
+			'counteringPlayer' => $counteringPlayerId,
+			'counteringPlayerDisplay' => $counteringPlayerDisplay,
 		]);
 	}
 
@@ -556,6 +572,27 @@ class BeloteCoinche extends Table {
 		// Next player
 		$passCount = self::getGameStateValue('passCount');
 		self::setGameStateValue('passCount', $passCount + 1);
+		$this->gamestate->nextState('nextPlayerBid');
+	}
+
+	function coinche() {
+		$this->gamestate->checkPossibleAction('coinche');
+		$playerId = self::getCurrentPlayerId();
+
+		// And notify
+		self::notifyAllPlayers(
+			'updateBidPass',
+			clienttranslate('${player_name} coinches'),
+			[
+				'player_id' => $playerId,
+				'player_name' => self::getCurrentPlayerName(),
+			]
+		);
+
+		// Next player
+		self::setGameStateValue('countered', 1);
+		self::setGameStateValue('counteringPlayer', $playerId);
+		$this->notifyBid();
 		$this->gamestate->nextState('nextPlayerBid');
 	}
 
@@ -641,6 +678,16 @@ class BeloteCoinche extends Table {
 	}
 
 	function stNextPlayerBid() {
+		$countered = self::getGameStateValue('countered');
+		if ($countered > 0) {
+			// Bid ok, activate 'first' player and start playing
+			$firstPlayerId = self::getGameStateValue('firstPlayer');
+			$this->gamestate->changeActivePlayer($firstPlayerId);
+			$this->gamestate->nextState('endBidding');
+			// TODO notify bidding & coinche
+			return;
+		}
+
 		$passCount = self::getGameStateValue('passCount');
 		if ($passCount >= 4) {
 			// Last pass

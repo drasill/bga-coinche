@@ -77,6 +77,13 @@ define([
 			// Buttons of bidPanel
 			this.connectClass('bidPanel__btn', 'onclick', 'onBidPanelBtnClick')
 
+			// Coinche Button
+			this.connectClass(
+				'.playerTables__coinche-btn > a',
+				'onclick',
+				'onCoincheBtnClick'
+			)
+
 			// First Player
 			this.updateFirstPlayer(gamedatas.firstPlayer)
 
@@ -106,7 +113,10 @@ define([
 				trumpColorDisplay: gamedatas.trumpColorDisplay,
 				bid: gamedatas.bid,
 				bidPlayer: gamedatas.bidPlayer,
-				bidPlayerDisplay: gamedatas.bidPlayerDisplay
+				bidPlayerDisplay: gamedatas.bidPlayerDisplay,
+				countered: gamedatas.countered,
+				counteringPlayer: gamedatas.counteringPlayer,
+				counteringPlayerDisplay: gamedatas.counteringPlayerDisplay
 			})
 
 			// Setup game notifications to handle (see "setupNotifications" method below)
@@ -129,7 +139,9 @@ define([
 					break
 			}
 
-			dojo.query('.bidPanel')[isBidPanelVisible ? 'addClass' : 'removeClass']('bidPanel--visible')
+			dojo
+				.query('.bidPanel')
+				[isBidPanelVisible ? 'addClass' : 'removeClass']('bidPanel--visible')
 		},
 
 		onLeavingState: function(stateName) {
@@ -137,19 +149,25 @@ define([
 		},
 
 		onUpdateActionButtons: function(stateName, args) {
-			if (this.isCurrentPlayerActive()) {
-				switch (stateName) {
-					case 'playerBid':
-						this.addActionButton(
-							'pass_button',
-							_('Pass'),
-							'onPlayerPass',
-							null,
-							false,
-							'gray'
-						)
-						break
+			if (stateName === 'playerBid') {
+				if (this.isCurrentPlayerActive()) {
+					this.addActionButton(
+						'pass_button',
+						_('Pass'),
+						'onPlayerPass',
+						null,
+						false,
+						'gray'
+					)
 				}
+				this.addActionButton(
+					'coinche_button',
+					_('Counter'),
+					'onPlayerCoinche',
+					null,
+					false,
+					'red'
+				)
 			}
 		},
 
@@ -199,17 +217,30 @@ define([
 		},
 
 		updateBidInfo(data) {
+
+			// Hide all counter markers
+			dojo.query('.playerTables__table__counterMarker').removeClass('playerTables__table__counterMarker--visible')
+
 			if (!(data.bid > 0) || !data.bidPlayerDisplay) {
+				// Hide bid panel
 				dojo.query('.currentBidInfo').removeClass('currentBidInfo--visible')
 				return
 			}
+			
+			// Show bidPanel
 			dojo.query('.currentBidInfo').addClass('currentBidInfo--visible')
 
+			// Update bidPanel content
 			dojo.place(
 				this.format_block('jstpl_currentbidinfo', data),
 				dojo.query('.currentBidInfo__wrapper')[0],
 				'replace'
 			)
+
+			// Activate countered marker of player
+			if (data.countered && data.counteringPlayer) {
+				dojo.query('.playerTables__table--id--' + data.counteringPlayer + ' .playerTables__table__counterMarker').addClass('playerTables__table__counterMarker--visible')
+			}
 		},
 
 		updateFirstPlayer(playerId) {
@@ -320,6 +351,26 @@ define([
 			}
 		},
 
+		onPlayerCoinche: function() {
+			if (this.checkPossibleActions('coinche')) {
+				this.ajaxcall(
+					'/' +
+						this.game_name +
+						'/' +
+						this.game_name +
+						'/' +
+						'coinche' +
+						'.html',
+					{
+						lock: true
+					},
+					this,
+					function(result) {},
+					function(is_error) {}
+				)
+			}
+		},
+
 		onBidPanelBtnClick: function(e) {
 			const target = e.currentTarget
 			if (target.classList.contains('bidPanel__btn--pass')) {
@@ -349,6 +400,26 @@ define([
 					function(is_error) {
 						this.updatePlayerBid(true)
 					}
+				)
+			}
+		},
+
+		onCoincheBtnClick: function(e) {
+			if (this.checkAction('coinche')) {
+				this.ajaxcall(
+					'/' +
+						this.game_name +
+						'/' +
+						this.game_name +
+						'/' +
+						'coinche' +
+						'.html',
+					{
+						lock: true
+					},
+					this,
+					function(result) {},
+					function(is_error) {}
 				)
 			}
 		},

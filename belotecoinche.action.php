@@ -54,6 +54,12 @@ class action_belotecoinche extends APP_GameAction {
 		self::ajaxResponse();
 	}
 
+	public function coinche() {
+		self::setAjaxMode();
+		$this->game->coinche();
+		self::ajaxResponse();
+	}
+
 	/*
     
     Example:
