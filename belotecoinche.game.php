@@ -241,6 +241,13 @@ class BeloteCoinche extends Table {
 		return $result;
 	}
 
+	function getPartnerIdOfPlayerId($playerId) {
+		$players = self::loadPlayersBasicInfos();
+		$nextPlayer = self::createNextPlayerTable(array_keys($players));
+		$partnerId = $nextPlayer[$nextPlayer[$playerId]];
+		return $partnerId;
+	}
+
 	/**
 	 * Returns array[color][arg] => strength according to current trick
 	 */
@@ -291,6 +298,12 @@ class BeloteCoinche extends Table {
 		return $strengths;
 	}
 
+	private function getCardStrength($card) {
+		$cardsStrengths = $this->getCardsStrengths();
+		$cardStrength = $cardsStrengths[$card['type']][$card['type_arg']];
+		return $cardStrength;
+	}
+
 	function setNextFirstPlayer() {
 		$firstPlayerId = self::getGameStateValue('firstPlayer');
 		$players = self::loadPlayersBasicInfos();
@@ -318,22 +331,23 @@ class BeloteCoinche extends Table {
 	 */
 	function assertCardPlay($cardId) {
 		$currentCard = $this->cards->getCard($cardId);
-		$color = $currentCard['type'];
-		$value = $currentCard['type_arg'];
+		$currentColor = $currentCard['type'];
 		$trickColor = self::getGameStateValue('trickColor');
 		$trumpColor = self::getGameStateValue('trumpColor');
 		$playerId = self::getActivePlayerId();
 		$playerCards = $this->cards->getCardsInLocation('hand', $playerId);
 		$cardsOnTable = $this->cards->getCardsInLocation('cardsontable');
-		$cardStrengths = $this->getCardsStrengths();
+		$partnerId = $this->getPartnerIdOfPlayerId($playerId);
 
 		$isCardInHand = false;
 		$hasTrickColorInHand = false;
 		$hasTrumpColorInHand = false;
 		$trumpStrongestInHand = 0;
+		$strongestTrickCard = null;
+		$strongestTrickValue = 0;
 		$hasTrumpBeenPlayed = false;
 		$trumpStrongestPlayed = 0;
-		$cardStrength = $cardStrengths[$color][$value];
+		$cardStrength = $this->getCardStrength($currentCard);
 
 		foreach ($playerCards as $playerCard) {
 			if ($playerCard['id'] === $cardId) {
@@ -347,23 +361,36 @@ class BeloteCoinche extends Table {
 
 			if ($playerCard['type'] === $trumpColor) {
 				$hasTrumpColorInHand = true;
-				$strength =
-					$cardStrengths[$playerCard['type']][$playerCard['type_arg']];
+				$strength = $this->getCardStrength($playerCard);
 				if ($strength > $trumpStrongestInHand) {
 					$trumpStrongestInHand = $strength;
 				}
 			}
 		}
 
+		// Loop cards on table
 		foreach ($cardsOnTable as $cardOnTable) {
+			$strength = $this->getCardStrength($cardOnTable);
+
+			// Keep track if trump is played, register strongest value
 			if ($cardOnTable['type'] === $trumpColor) {
 				$hasTrumpBeenPlayed = true;
-				$strength =
-					$cardStrengths[$cardOnTable['type']][$cardOnTable['type_arg']];
 				if ($strength > $trumpStrongestPlayed) {
 					$trumpStrongestPlayed = $strength;
 				}
 			}
+			// Keep track of strongest card for current trickColor
+			if ($cardOnTable['type'] === $trickColor) {
+				if ($strength > $strongestTrickValue) {
+					$strongestTrickCard = $cardOnTable;
+					$strongestTrickValue = $strength;
+				}
+			}
+		}
+
+		if (!$isCardInHand) {
+			// Woaw !
+			throw new BgaUserException('Card is not in hand');
 		}
 
 		if ($trickColor == 0) {
@@ -371,11 +398,11 @@ class BeloteCoinche extends Table {
 			return;
 		}
 
-		if ($trickColor != $color) {
-			// Color is not trick color
+		if ($trickColor != $currentColor) {
+			// currentColor is not trick color
 
-			// Player has trick color in hand, must play one
 			if ($hasTrickColorInHand) {
+				// Player has trick color in hand, must play one
 				throw new BgaUserException(
 					sprintf(
 						self::_('You must play a %s'),
@@ -384,19 +411,47 @@ class BeloteCoinche extends Table {
 				);
 			}
 
-			// Player has trump color in hand, must play one
-			if ($hasTrumpColorInHand && $color !== $trumpColor) {
-				throw new BgaUserException(
-					sprintf(
-						self::_('You must cut with a %s'),
-						$this->colors[$trumpColor]['nametr']
-					)
-				);
+			self::debug(
+				'<pre>' .
+				var_export(
+					[
+						'currentCard' => $currentCard,
+						'cardStrength' => $cardStrength,
+						'trickColor' => $trickColor,
+						'trumpColor' => $trumpColor,
+						'partnerId' => $partnerId,
+						'isCardInHand' => $isCardInHand,
+						'hasTrickColorInHand' => $hasTrickColorInHand,
+						'hasTrumpColorInHand' => $hasTrumpColorInHand,
+						'trumpStrongestInHand' => $trumpStrongestInHand,
+						'hasTrumpBeenPlayed' => $hasTrumpBeenPlayed,
+						'trumpStrongestPlayed' => $trumpStrongestPlayed,
+						'strongestTrickCard' => $strongestTrickCard,
+						'strongestTrickValue' => $strongestTrickValue,
+					],
+					true
+				) .
+				'</pre>'
+			);
+			if ($hasTrumpColorInHand && $currentColor !== $trumpColor) {
+				// Player has trump color in hand;
+				// It must play one if its partner is not the strongest
+				if (
+					$hasTrumpBeenPlayed ||
+					$strongestTrickCard['location_arg'] !== "$partnerId"
+				) {
+					throw new BgaUserException(
+						sprintf(
+							self::_('You must cut with a %s'),
+							$this->colors[$trumpColor]['nametr']
+						)
+					);
+				}
 			}
 		}
 
-		// Trump is played: check if going up
-		if ($color === $trumpColor) {
+		if ($currentColor === $trumpColor) {
+			// Trump is played: check if going up
 			if (
 				$trumpStrongestInHand > $trumpStrongestPlayed &&
 				$cardStrength <= $trumpStrongestPlayed
@@ -632,12 +687,11 @@ class BeloteCoinche extends Table {
 			// This is the end of the trick
 			$cardsOnTable = $this->cards->getCardsInLocation('cardsontable');
 
-			$cardStrengths = $this->getCardsStrengths();
 			$strongerValue = 0;
 
 			$winningCard = null;
 			foreach ($cardsOnTable as $card) {
-				$strength = $cardStrengths[$card['type']][$card['type_arg']];
+				$strength = $this->getCardStrength($card);
 
 				// First card
 				if ($winningCard === null) {
