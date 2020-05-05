@@ -95,6 +95,16 @@
 	margin-top: -90px; /* half of 130 */
 }
 
+.playerTables__bid-item {
+	opacity: 0.3;
+}
+.playerTables__bid-item:nth-last-child(2) {
+	opacity: 0.7;
+}
+.playerTables__bid-item:last-child {
+	opacity: 1;
+}
+
 .playerTables__coinche-btn {
 	display: none;
 	justify-content: center;

@@ -32,7 +32,7 @@
 		<!-- END player -->
 
 		<div class="playerTables__coinche-btn whiteblock">
-			<a class="bgabutton bgabutton_red">Coincher !</a>
+			<a class="bgabutton bgabutton_red">{COUNTER} !</a>
 		</div>
 
 	</div>
@@ -42,7 +42,7 @@
 <div class="bidPanel whiteblock" id="bidPanel">
 
 	<div class="bidPanel__title">
-		Enchérir ou <a class="bidPanel__btn bidPanel__btn--pass action-button bgabutton bgabutton_blue">Passer</a>
+		{BID_OR} <a class="bidPanel__btn bidPanel__btn--pass action-button bgabutton bgabutton_blue">{PASS}</a>
 	</div>
 
 	<div class="bidPanel__colors">
@@ -88,7 +88,9 @@
 
 	// Javascript HTML templates
 	var jstpl_cardontable = '<div class="cardontable" id="cardontable_${player_id}" style="background-position:-${x}px -${y}px"></div>';
-	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="card-color-icon card-color-icon--16 card-color-icon--${trumpColorDisplay}"></span><span class="currentBidInfo__bid">${bid}</span><span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span>  <div class="currentBidInfo__countered currentBidInfo__countered--${countered}">Coinché par ${counteringPlayerDisplay}</div> </div>';
+	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="currentBidInfo__bid">${bid}</span><span class="card-color-icon card-color-icon--16 card-color-icon--${trumpColorDisplay}"></span> <span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span>  <div class="currentBidInfo__countered currentBidInfo__countered--${countered}">Coinché par ${counteringPlayerDisplay}</div> </div>';
+	var jstpl_playerbid = '<div class="playerTables__bid-item"><span class="playerTables__bid__item-value">${bid}</span><span class="card-color-icon card-color-icon--16 card-color-icon--${trumpColorDisplay}"></span></div>';
+	var jstpl_playerpass = '<div class="playerTables__bid-item"><em>passe</em></div>';
 
 </script>
 

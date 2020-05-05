@@ -34,8 +34,12 @@ class view_belotecoinche_belotecoinche extends game_view {
 				'DIR' => $dir,
 			));
 		}
-		// this will make our My Hand text translatable
+
+		// Some translations
 		$this->tpl['MY_HAND'] = self::_('My hand');
+		$this->tpl['BID_OR'] = self::_('Bid or');
+		$this->tpl['PASS'] = self::_('Pass');
+		$this->tpl['COUNTER'] = self::_('Counter');
 
 		/*********** Do not change anything below this line  ************/
 	}

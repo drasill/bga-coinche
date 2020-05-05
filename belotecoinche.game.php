@@ -586,19 +586,6 @@ class BeloteCoinche extends Table {
 		$bid = self::getGameStateValue('bid');
 		$bidPlayerId = self::getGameStateValue('bidPlayer');
 		$partnerId = $this->getPartnerIdOfPlayerId($playerId);
-		self::debug(
-			'<pre>' .
-			var_export(
-				[
-					'playerId' => $playerId,
-					'bid' => $bid,
-					'bidPlayerId' => $bidPlayerId,
-					'partnerId' => $partnerId,
-				],
-				true
-			) .
-			'</pre>'
-		);
 		if (!$bid) {
 			throw new BgaUserException(self::_('Cannot counter on no bid'));
 		}
@@ -615,7 +602,7 @@ class BeloteCoinche extends Table {
 		//
 		// And notify
 		self::notifyAllPlayers(
-			'updateBidPass',
+			'updateBidCoinche',
 			clienttranslate('${player_name} coinches'),
 			[
 				'player_id' => $playerId,
@@ -727,8 +714,8 @@ class BeloteCoinche extends Table {
 			// No bid -> new hand
 			if ($bid == 0) {
 				self::notifyAllPlayers(
-					'passNoBid',
-					clienttranslate('Everybody passes'),
+					'allPassNoBid',
+					clienttranslate('Everybody passes, no bid'),
 					[]
 				);
 				$this->setNextFirstPlayer();
@@ -742,7 +729,11 @@ class BeloteCoinche extends Table {
 			$firstPlayerId = self::getGameStateValue('firstPlayer');
 			$this->gamestate->changeActivePlayer($firstPlayerId);
 			$this->gamestate->nextState('endBidding');
-			// TODO notify bidding
+			self::notifyAllPlayers(
+				'allPassWithBid',
+				clienttranslate('Everybody passes, bid accepted'),
+				[]
+			);
 			return;
 		}
 

@@ -225,6 +225,32 @@ define([
 			).play()
 		},
 
+		// Update a players's bid info
+		updatePlayerBidInfo(data) {
+			if (!data.player_id) {
+				return
+			}
+			const target = dojo.query(
+				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
+			)[0]
+			console.log('updatePlayerBidInfo', target, data)
+			dojo.place(this.format_block('jstpl_playerbid', data), target, 'append')
+		},
+
+		// Update a players's pass info
+		updatePlayerPassInfo(data) {
+			const target = dojo.query(
+				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
+			)[0]
+			dojo.place(this.format_block('jstpl_playerpass', data), target, 'append')
+		},
+
+		// Clear all players bid/pass info
+		clearPlayerBidItems() {
+			dojo.query('.playerTables__bid-item').remove()
+		},
+
+		// Update global bid info
 		updateBidInfo(data) {
 			// Hide all counter markers
 			dojo
@@ -431,6 +457,10 @@ define([
 			dojo.subscribe('newHand', this, 'notif_newHand')
 			dojo.subscribe('firstPlayerChange', this, 'notif_firstPlayerChange')
 			dojo.subscribe('updateBid', this, 'notif_updateBid')
+			dojo.subscribe('updateBidPass', this, 'notif_updateBidPass')
+			dojo.subscribe('updateBidCoinche', this, 'notif_updateBidCoinche')
+			dojo.subscribe('allPassNoBid', this, 'notif_allPassNoBid')
+			dojo.subscribe('allPassWithBid', this, 'notif_allPassWithBid')
 			dojo.subscribe('playCard', this, 'notif_playCard')
 			dojo.subscribe('trickWin', this, 'notif_trickWin')
 			this.notifqueue.setSynchronous('trickWin', 1000)
@@ -438,6 +468,7 @@ define([
 		},
 
 		notif_newHand: function(notif) {
+			console.log('notif_newHand')
 			// We received a new full hand of 8 cards.
 			this.playerHand.removeAll()
 
@@ -450,17 +481,42 @@ define([
 					card.id
 				)
 			}
+			this.clearPlayerBidItems()
+		},
+
+		notif_allPassWithBid: function(notif) {
+			console.log('notif_allPassWithBid')
+			this.clearPlayerBidItems()
+		},
+
+		notif_allPassNoBid: function(notif) {
+			console.log('notif_allPassNoBid')
+			this.clearPlayerBidItems()
 		},
 
 		notif_firstPlayerChange: function(notif) {
+			console.log('notif_firstPlayerChange')
 			this.updateFirstPlayer(notif.args.player_id)
 		},
 
+		notif_updateBidCoinche: function(notif) {
+			console.log('notif_updateBidCoinche')
+			this.clearPlayerBidItems()
+		},
+
+		notif_updateBidPass: function(notif) {
+			console.log('notif_updateBidPass')
+			this.updatePlayerPassInfo(notif.args)
+		},
+
 		notif_updateBid: function(notif) {
+			console.log('notif_updateBid')
+			this.updatePlayerBidInfo(notif.args)
 			this.updateBidInfo(notif.args)
 		},
 
 		notif_playCard: function(notif) {
+			console.log('notif_playCard')
 			// Play a card on the table
 			this.playCardOnTable(
 				notif.args.player_id,
@@ -471,10 +527,12 @@ define([
 		},
 
 		notif_trickWin: function(notif) {
+			console.log('notif_trickWin')
 			// We do nothing here (just wait in order players can view the 4 cards played before they're gone.
 		},
 
 		notif_giveAllCardsToPlayer: function(notif) {
+			console.log('notif_giveAllCardsToPlayer')
 			// Move all cards on table to given table, then destroy them
 			var winner_id = notif.args.player_id
 			for (var player_id in this.gamedatas.players) {
