@@ -23,15 +23,22 @@ class BeloteCoinche extends Table {
 		parent::__construct();
 
 		self::initGameStateLabels([
-			'currentHandType' => 10,
-			'trickColor' => 11,
-			'trumpColor' => 12,
-			'bid' => 13,
-			'countered' => 14,
-			'passCount' => 15,
-			'bidPlayer' => 16,
-			'firstPlayer' => 17,
-			'counteringPlayer' => 18,
+			// First Player for current hand
+			'firstPlayer' => 11,
+			// Current trick color (zero = no trick color)
+			'trickColor' => 12,
+			// Current trump color (zero = no trump color)
+			'trumpColor' => 13,
+			// Current bid value (from 82 to 170)
+			'bid' => 14,
+			// Player who is currently winning the bidding
+			'bidPlayer' => 15,
+			// Countered ("coinché") : 0 = not countered, 1 = countered, 2 = overcounteed (not implemented)
+			'countered' => 16,
+			// Player who did counter
+			'counteringPlayer' => 17,
+			// Number of successive player passes (to trigger end of bidding)
+			'passCount' => 18,
 		]);
 
 		$this->cards = self::getNew('module.common.deck');
@@ -85,25 +92,14 @@ class BeloteCoinche extends Table {
 		/************ Start the game initialization *****/
 		// Init global values with their initial values
 
-		// Note: hand types: 0 = give 3 cards to player on the left
-		//                   1 = give 3 cards to player on the right
-		//                   2 = give 3 cards to player opposite
-		//                   3 = keep cards
-		self::setGameStateInitialValue('currentHandType', 0);
-
-		// Set current trick color to zero (= no trick color)
 		self::setGameStateInitialValue('trickColor', 0);
 
-		// Set current trump color to zero (= no trump color)
 		self::setGameStateInitialValue('trumpColor', 0);
 
-		// Set current bid
 		self::setGameStateInitialValue('bid', 0);
 
-		// 0: non coinché, 1: coinché, 2: surcoinché
 		self::setGameStateInitialValue('countered', 0);
 
-		// Count player passes
 		self::setGameStateInitialValue('passCount', 0);
 
 		$firstPlayerId = array_rand($players, 1);
@@ -146,10 +142,10 @@ class BeloteCoinche extends Table {
 	}
 
 	/*
-        getAllDatas: 
-        
+        getAllDatas:
+
         Gather all informations about current game situation (visible by the current player).
-        
+
         The method is called each time the game interface is displayed to a player, ie:
         _ when the game starts
         _ when a player refreshes the game page (F5)
@@ -190,7 +186,8 @@ class BeloteCoinche extends Table {
 		$result['bidPlayerDisplay'] = $players[$bidPlayer]['player_name'] ?? null;
 		$result['countered'] = $countered;
 		$result['counteringPlayer'] = $counteringPlayer;
-		$result['counteringPlayerDisplay'] = $players[$counteringPlayer]['player_name'] ?? '';
+		$result['counteringPlayerDisplay'] =
+			$players[$counteringPlayer]['player_name'] ?? '';
 		$result['firstPlayer'] = $firstPlayer;
 
 		return $result;
@@ -247,11 +244,47 @@ class BeloteCoinche extends Table {
 		return $result;
 	}
 
-	function getPartnerIdOfPlayerId($playerId) {
+	private function getPartnerIdOfPlayerId($playerId) {
 		$players = self::loadPlayersBasicInfos();
 		$nextPlayer = self::createNextPlayerTable(array_keys($players));
 		$partnerId = $nextPlayer[$nextPlayer[$playerId]];
 		return $partnerId;
+	}
+
+	/**
+	 * Returns array[color][arg] => strength according to current trump color
+	 */
+	private function getCardsPoints() {
+		$trumpColor = self::getGameStateValue('trumpColor');
+		$points = [];
+		foreach ($this->colors as $colorId => $color) {
+			if ($colorId == $trumpColor) {
+				// Trump
+				$points[$colorId] = [
+					7 => 0,
+					8 => 0,
+					9 => 14,
+					10 => 10,
+					11 => 20,
+					12 => 3,
+					13 => 4,
+					14 => 11,
+				];
+			} else {
+				// Normal
+				$points[$colorId] = [
+					7 => 0,
+					8 => 0,
+					9 => 0,
+					10 => 10,
+					11 => 2,
+					12 => 3,
+					13 => 4,
+					14 => 11,
+				];
+			}
+		}
+		return $points;
 	}
 
 	/**
@@ -304,13 +337,19 @@ class BeloteCoinche extends Table {
 		return $strengths;
 	}
 
+	/**
+	 * Returns the strength of a card array
+	 */
 	private function getCardStrength($card) {
 		$cardsStrengths = $this->getCardsStrengths();
 		$cardStrength = $cardsStrengths[$card['type']][$card['type_arg']];
 		return $cardStrength;
 	}
 
-	function setNextFirstPlayer() {
+	/**
+	 * Set the firstPlayer as next
+	 */
+	private function setNextFirstPlayer() {
 		$firstPlayerId = self::getGameStateValue('firstPlayer');
 		$players = self::loadPlayersBasicInfos();
 		$firstPlayerIndex = array_search($firstPlayerId, array_keys($players));
@@ -335,7 +374,7 @@ class BeloteCoinche extends Table {
 	 *
 	 * Throws an exception if not.
 	 */
-	function assertCardPlay($cardId) {
+	private function assertCardPlay($cardId) {
 		$currentCard = $this->cards->getCard($cardId);
 		$currentColor = $currentCard['type'];
 		$trickColor = self::getGameStateValue('trickColor');
@@ -472,7 +511,10 @@ class BeloteCoinche extends Table {
 		}
 	}
 
-	function notifyBid($showMessage = false) {
+	/**
+	 * Notify the current bid informations
+	 */
+	private function notifyBid($showMessage = false) {
 		$message = '';
 		if ($showMessage) {
 			$message = clienttranslate(
@@ -517,9 +559,26 @@ class BeloteCoinche extends Table {
 		]);
 	}
 
-	/*
-        In this space, you can put any utility methods useful for your game logic
-    */
+	/**
+	 * Notify the current scores
+	 */
+	private function notifyScores() {
+		$newScores = self::getCollectionFromDb(
+			'SELECT player_id, player_score FROM player',
+			true
+		);
+		self::notifyAllPlayers('newScores', '', [
+			'newScores' => $newScores,
+		]);
+	}
+
+	/**
+	 * Round the value to 10 (104 => 100, 105 => 110)
+	 */
+	private function roundToTen($value) {
+		return (int) (round($value / 10) * 10);
+	}
+
 	//////////////////////////////////////////////////////////////////////////////
 	//////////// Player actions
 	////////////
@@ -580,7 +639,6 @@ class BeloteCoinche extends Table {
 	function coinche() {
 		$this->gamestate->checkPossibleAction('coinche');
 
-
 		// Check coinche is possible
 		$playerId = self::getCurrentPlayerId();
 		$bid = self::getGameStateValue('bid');
@@ -593,7 +651,9 @@ class BeloteCoinche extends Table {
 			throw new BgaUserException(self::_('Cannot counter on you own bid'));
 		}
 		if ($partnerId == $bidPlayerId) {
-			throw new BgaUserException(self::_('Cannot counter on you partner\'s bid'));
+			throw new BgaUserException(
+				self::_('Cannot counter on you partner\'s bid')
+			);
 		}
 
 		// Next player
@@ -818,7 +878,137 @@ class BeloteCoinche extends Table {
 	}
 
 	function stEndHand() {
-		// TODO Set next "first player"
+		//// Compute score
+
+		// Cards points
+		$cardsPoints = $this->getCardsPoints();
+
+		$bid = $this->getGameStateValue('bid');
+		$countered = self::getGameStateValue('countered');
+
+		// Players informations
+		$players = self::loadPlayersBasicInfos();
+		$nextPlayer = self::createNextPlayerTable(array_keys($players));
+		$player1Id = self::getGameStateValue('firstPlayer');
+		$player2Id = $nextPlayer[$player1Id];
+		$player3Id = $nextPlayer[$player2Id];
+		$player4Id = $nextPlayer[$player3Id];
+
+		// Teams by player id
+		$playerIdTeam = [
+			$player1Id => 0,
+			$player2Id => 1,
+			$player3Id => 0,
+			$player4Id => 1,
+		];
+
+		// Current player scores by Id
+		$playerScores = self::getCollectionFromDb(
+			'SELECT player_id, player_score FROM player',
+			true
+		);
+
+		// Bidding player and bidding team
+		$bidPlayer = self::getGameStateValue('bidPlayer');
+		$bidTeam = $playerIdTeam[$bidPlayer];
+		$defenseTeam = $bidTeam === 1 ? 0 : 1;
+
+		// Team points
+		$teamPoints = [
+			0 => 0,
+			1 => 0,
+		];
+		// Team scores
+		$teamScores = [
+			0 => 0,
+			1 => 0,
+		];
+
+		// Compute points based on cards won
+		$cards = $this->cards->getCardsInLocation('cardswon');
+		foreach ($cards as $card) {
+			$playerId = $card['location_arg'];
+			$teamId = $playerIdTeam[$playerId];
+			$teamPoints[$teamId] += $cardsPoints[$card['type']][$card['type_arg']];
+		}
+
+		// Adds "10 de der" for last trick
+		$teamPoints[$teamId] += 10;
+
+		// If a team scored zero points, it's a "capot", so 250pts
+		if ($teamPoints[0] === 0) {
+			$teamPoints[1] = 250;
+		} elseif ($teamPoints[1] === 0) {
+			$teamPoints[0] = 250;
+		}
+
+		// Multiplier depends on "countered" or not
+		$multiplier = $countered ? 2 : 1;
+
+		// Check bid success/failure
+		if ($teamPoints[$bidTeam] >= $bid) {
+			// Success !
+			// Bidding team : (bid + points) * coinche_multiplier
+			$teamScores[$bidTeam] = $this->roundToTen(
+				($bid + $teamPoints[$bidTeam]) * $multiplier
+			);
+			// Defense team : points (if not countered)
+			if (!$countered) {
+				$teamScores[$defenseTeam] = $this->roundToTen(
+					$teamPoints[$defenseTeam]
+				);
+			}
+			self::notifyAllPlayers('log', clienttranslate('Bid successful !'), []);
+		} else {
+			// Failure
+			// Bidding team : 0 (TODO never lose the "belote")
+			$teamScores[$bidTeam] = 0;
+			// Defense team : (162 + bid) * coinche_multiplier
+			$teamScores[$defenseTeam] = $this->roundToTen(
+				(162 + $bid) * $multiplier
+			);
+			self::notifyAllPlayers('log', clienttranslate('Bid Failed !'), []);
+		}
+
+		// Apply team scores to player
+		foreach ($players as $playerId => $player) {
+			$points = $teamScores[$playerIdTeam[$playerId]];
+			$playerScores[$playerId] += $points;
+			$newScore = $playerScores[$playerId];
+
+			// Update score in db
+			if ($points != 0) {
+				$sql = "UPDATE player SET player_score = $newScore WHERE player_id = '$playerId'";
+				self::DbQuery($sql);
+			}
+
+			// Notify score by player
+			if ($points > 0) {
+				$notifyMessage = clienttranslate(
+					'${player_name} scores ${points} points'
+				);
+			} else {
+				$notifyMessage = clienttranslate('${player_name} scores no point');
+			}
+			self::notifyAllPlayers('log', $notifyMessage, [
+				'player_id' => $playerId,
+				'player_name' => $player['player_name'],
+				'points' => $points,
+			]);
+		}
+
+		// Notify score info
+		$this->notifyScores();
+
+		// Check if end of game (score must be strictly higher than maxScore)
+		$maxScore = 2000;
+		foreach($playerScores as $playerId => $score) {
+			if ($score > $maxScore) {
+				$this->gamestate->nextState("endGame");
+				return;
+			}
+		}
+
 		$this->gamestate->nextState('nextHand');
 	}
 
@@ -827,18 +1017,17 @@ class BeloteCoinche extends Table {
 	////////////
 
 	/*
-        zombieTurn:
-        
-        This method is called each time it is the turn of a player who has quit the game (= "zombie" player).
-        You can do whatever you want in order to make sure the turn of this player ends appropriately
-        (ex: pass).
-        
-        Important: your zombie code will be called when the player leaves the game. This action is triggered
-        from the main site and propagated to the gameserver from a server, not from a browser.
-        As a consequence, there is no current player associated to this action. In your zombieTurn function,
-        you must _never_ use getCurrentPlayerId() or getCurrentPlayerName(), otherwise it will fail with a "Not logged" error message. 
-    */
-
+	 * zombieTurn:
+	 *
+	 * This method is called each time it is the turn of a player who has quit the game (= "zombie" player).
+	 * You can do whatever you want in order to make sure the turn of this player ends appropriately
+	 * (ex: pass).
+	 *
+	 * Important: your zombie code will be called when the player leaves the game. This action is triggered
+	 * from the main site and propagated to the gameserver from a server, not from a browser.
+	 * As a consequence, there is no current player associated to this action. In your zombieTurn function,
+	 * you must _never_ use getCurrentPlayerId() or getCurrentPlayerName(), otherwise it will fail with a "Not logged" error message.
+	 */
 	function zombieTurn($state, $active_player) {
 		$statename = $state['name'];
 
@@ -869,16 +1058,14 @@ class BeloteCoinche extends Table {
 	//////////
 
 	/*
-        upgradeTableDb:
-        
-        You don't have to care about this until your game has been published on BGA.
-        Once your game is on BGA, this method is called everytime the system detects a game running with your old
-        Database scheme.
-        In this case, if you change your Database scheme, you just have to apply the needed changes in order to
-        update the game database and allow the game to continue to run with your new version.
-    
-    */
-
+	 * upgradeTableDb:
+	 *
+	 * You don't have to care about this until your game has been published on BGA.
+	 * Once your game is on BGA, this method is called everytime the system detects a game running with your old
+	 * Database scheme.
+	 * In this case, if you change your Database scheme, you just have to apply the needed changes in order to
+	 * update the game database and allow the game to continue to run with your new version.
+	 */
 	function upgradeTableDb($from_version) {
 		// $from_version is the current version of this game database, in numerical form.
 		// For example, if the game was running with a release of your game named "140430-1345",

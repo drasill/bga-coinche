@@ -454,6 +454,7 @@ define([
 		//// Reaction to cometD notifications
 
 		setupNotifications: function() {
+			dojo.subscribe('newScores', this, 'notif_newScores')
 			dojo.subscribe('newHand', this, 'notif_newHand')
 			dojo.subscribe('firstPlayerChange', this, 'notif_firstPlayerChange')
 			dojo.subscribe('updateBid', this, 'notif_updateBid')
@@ -465,6 +466,14 @@ define([
 			dojo.subscribe('trickWin', this, 'notif_trickWin')
 			this.notifqueue.setSynchronous('trickWin', 1000)
 			dojo.subscribe('giveAllCardsToPlayer', this, 'notif_giveAllCardsToPlayer')
+		},
+
+		notif_newScores: function(notif) {
+			console.log('notif_newScores')
+			// Update players' scores
+			for (var playerId in notif.args.newScores) {
+				this.scoreCtrl[playerId].toValue(notif.args.newScores[playerId])
+			}
 		},
 
 		notif_newHand: function(notif) {
