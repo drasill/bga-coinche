@@ -27,12 +27,12 @@ $this->colors = [
 		'nametr' => self::_('diamond'),
 	],
 	5 => [
-		'name' => clienttranslate('alltrump'),
-		'nametr' => self::_('alltrump'),
+		'name' => clienttranslate('all trump'),
+		'nametr' => self::_('all trump'),
 	],
 	6 => [
-		'name' => clienttranslate('notrump'),
-		'nametr' => self::_('notrump'),
+		'name' => clienttranslate('no trump'),
+		'nametr' => self::_('no trump'),
 	],
 ];
 

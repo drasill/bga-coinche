@@ -21,12 +21,12 @@
 
 		<!-- BEGIN player -->
 		<div class="playerTables__table playerTables__table--{DIR} playerTables__table--id--{PLAYER_ID}">
-			<div class="playerTables__card whiteblock" id="playerTables__card--{PLAYER_ID}">
+			<div class="playerTables__card" id="playerTables__card--{PLAYER_ID}">
 			</div>
-			<div class="playerTables__name whiteblock" style="color:#{PLAYER_COLOR}">
-				{PLAYER_NAME}
+			<div class="playerTables__name">
+				<span style="color:#{PLAYER_COLOR}">{PLAYER_NAME}</span>
 			</div>
-			<div class="playerTables__table__firstMarker">1</div>
+			<div class="playerTables__table__firstMarker"></div>
 			<div class="playerTables__table__counterMarker">C</div>
 		</div>
 		<!-- END player -->
