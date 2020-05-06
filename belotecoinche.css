@@ -223,13 +223,21 @@
 .card-color-icon--heart {
 	background-image: url('img/heart.svg');
 }
+.card-color-icon--3,
+.card-color-icon--club {
+	background-image: url('img/club.svg');
+}
 .card-color-icon--4,
 .card-color-icon--diamond {
 	background-image: url('img/diamond.svg');
 }
-.card-color-icon--3,
-.card-color-icon--club {
-	background-image: url('img/club.svg');
+.card-color-icon--5,
+.card-color-icon--alltrump {
+	background-image: url('img/alltrump.svg');
+}
+.card-color-icon--6,
+.card-color-icon--notrump {
+	background-image: url('img/notrump.svg');
 }
 
 .bid-value {

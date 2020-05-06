@@ -58,6 +58,12 @@
 		<a class="bidPanel__btn bidPanel__btn--color bgabutton bgabutton_gray" data-color="3">
 			<span class="card-color-icon card-color-icon--club"/>
 		</a>
+		<a class="bidPanel__btn bidPanel__btn--color bgabutton bgabutton_gray" data-color="5">
+			<span class="card-color-icon card-color-icon--alltrump"/>
+		</a>
+		<a class="bidPanel__btn bidPanel__btn--color bgabutton bgabutton_gray" data-color="6">
+			<span class="card-color-icon card-color-icon--notrump"/>
+		</a>
 	</div>
 
 	<div class="bidPanel__values">

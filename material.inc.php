@@ -9,17 +9,34 @@
  * -----
  */
 
-$this->colors = array(
-	1 => array('name' => clienttranslate('spade'), 'nametr' => self::_('spade')),
-	2 => array('name' => clienttranslate('heart'), 'nametr' => self::_('heart')),
-	3 => array('name' => clienttranslate('club'), 'nametr' => self::_('club')),
-	4 => array(
+$this->colors = [
+	1 => [
+		'name' => clienttranslate('spade'),
+		'nametr' => self::_('spade'),
+	],
+	2 => [
+		'name' => clienttranslate('heart'),
+		'nametr' => self::_('heart'),
+	],
+	3 => [
+		'name' => clienttranslate('club'),
+		'nametr' => self::_('club'),
+	],
+	4 => [
 		'name' => clienttranslate('diamond'),
 		'nametr' => self::_('diamond'),
-	),
-);
+	],
+	5 => [
+		'name' => clienttranslate('alltrump'),
+		'nametr' => self::_('alltrump'),
+	],
+	6 => [
+		'name' => clienttranslate('notrump'),
+		'nametr' => self::_('notrump'),
+	],
+];
 
-$this->values_label = array(
+$this->values_label = [
 	7 => '7',
 	8 => '8',
 	9 => '9',
@@ -28,4 +45,4 @@ $this->values_label = array(
 	12 => clienttranslate('Q'),
 	13 => clienttranslate('K'),
 	14 => clienttranslate('A'),
-);
+];

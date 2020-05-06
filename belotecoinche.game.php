@@ -27,7 +27,7 @@ class BeloteCoinche extends Table {
 			'firstPlayer' => 11,
 			// Current trick color (zero = no trick color)
 			'trickColor' => 12,
-			// Current trump color (zero = no trump color)
+			// Current trump color (zero = no trump color, 5 = alltrump, 6 = notrump)
 			'trumpColor' => 13,
 			// Current bid value (from 82 to 170)
 			'bid' => 14,
@@ -279,7 +279,7 @@ class BeloteCoinche extends Table {
 		$trumpColor = self::getGameStateValue('trumpColor');
 		$points = [];
 		foreach ($this->colors as $colorId => $color) {
-			if ($colorId == $trumpColor) {
+			if ($colorId == $trumpColor || $trumpColor == 5) {
 				// Trump
 				$points[$colorId] = [
 					7 => 0,
@@ -408,10 +408,15 @@ class BeloteCoinche extends Table {
 		$isCardInHand = false;
 		$hasTrickColorInHand = false;
 		$hasTrumpColorInHand = false;
+		// Strongest trump card in player's hand
 		$trumpStrongestInHand = 0;
+		// Strongest trickcolor card in player's hand
+		$trickStrongestInHand = 0;
+		// Strongest trickcolor card played on table
 		$strongestTrickCard = null;
 		$strongestTrickValue = 0;
 		$hasTrumpBeenPlayed = false;
+		// Strongest trump card played on table
 		$trumpStrongestPlayed = 0;
 		$cardStrength = $this->getCardStrength($currentCard);
 
@@ -421,13 +426,17 @@ class BeloteCoinche extends Table {
 				$currentCard = $playerCard;
 			}
 
+			$strength = $this->getCardStrength($playerCard);
+
 			if ($playerCard['type'] === $trickColor) {
 				$hasTrickColorInHand = true;
+				if ($strength > $trickStrongestInHand) {
+					$trickStrongestInHand = $strength;
+				}
 			}
 
 			if ($playerCard['type'] === $trumpColor) {
 				$hasTrumpColorInHand = true;
-				$strength = $this->getCardStrength($playerCard);
 				if ($strength > $trumpStrongestInHand) {
 					$trumpStrongestInHand = $strength;
 				}
@@ -513,6 +522,21 @@ class BeloteCoinche extends Table {
 						)
 					);
 				}
+			}
+		}
+
+		if ($trumpColor === 5 && $trickColor === $currentColor) {
+			// All trump: check if going up, if same as trick color
+			if (
+				$trickStrongestInHand > $strongestTrickValue &&
+				$cardStrength <= $strongestTrickValue
+			) {
+				throw new BgaUserException(
+					sprintf(
+						self::_('You must play a %s higher (all trump)'),
+						$this->colors[$trickColor]['nametr']
+					)
+				);
 			}
 		}
 
@@ -974,6 +998,18 @@ class BeloteCoinche extends Table {
 		$beloteTeamId = null;
 		if (count(array_unique($belotePlayerIds)) == 1) {
 			$beloteTeamId = $playerIdTeam[$belotePlayerIds[0]];
+		}
+
+		// Converts points to a total of 162, if "notrump"/"alltrump" bids
+		$arrangeMultiplier = null;
+		if ($trumpColor == 5) {
+			$arrangeMultiplier = 152/248;
+		} elseif ($trumpColor == 6) {
+			$arrangeMultiplier = 152/120;
+		}
+		if ($arrangeMultiplier > 0) {
+			$teamPoints[0] *= $arrangeMultiplier;
+			$teamPoints[1] *= $arrangeMultiplier;
 		}
 
 		// Adds "10 de der" for last trick
