@@ -91,6 +91,11 @@
 	border-radius: 2px;
 }
 
+.playerTables__table--active .playerTables__card {
+	background: rgba(255, 255, 255, 0.1);
+	border: 2px solid rgba(255, 255, 255, 0.3);
+}
+
 .playerTables__table--N {
 	left: 50%;
 	top: 6%;

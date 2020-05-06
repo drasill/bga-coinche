@@ -151,6 +151,16 @@ define([
 				[isCoinchePanelVisible ? 'addClass' : 'removeClass'](
 					'playerTables__coinche-btn--visible'
 				)
+
+			// Highlight active player
+			dojo
+				.query('.playerTables__table')
+				.removeClass('playerTables__table--active')
+			if (args.active_player) {
+				dojo
+					.query('.playerTables__table--id--' + args.active_player)
+					.addClass('playerTables__table--active')
+			}
 		},
 
 		onLeavingState: function(stateName) {

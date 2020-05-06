@@ -114,6 +114,9 @@ class BeloteCoinche extends Table {
 		// Create cards
 		$cards = [];
 		foreach ($this->colors as $color_id => $color) {
+			if ($color_id > 4) {
+				continue;
+			}
 			// spade, heart, diamond, club
 			for ($value = 7; $value <= 14; $value++) {
 				//  7, 8, 9, 10, J, Q, K, A
@@ -139,9 +142,7 @@ class BeloteCoinche extends Table {
 		//self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
 		//self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
 
-		// Activate first player
-		$firstPlayerId = self::getGameStateValue('firstPlayer');
-		$this->gamestate->changeActivePlayer($firstPlayerId);
+		$this->activateFirstPlayer();
 
 		/************ End of the game initialization *****/
 	}
@@ -317,42 +318,72 @@ class BeloteCoinche extends Table {
 
 		$strengths = [];
 		foreach ($this->colors as $colorId => $color) {
-			if ($colorId == $trumpColor) {
-				// Trump, stronger and specific order
-				$strengths[$colorId] = [
-					7 => 11,
-					8 => 12,
-					9 => 17,
-					10 => 15,
-					11 => 18,
-					12 => 13,
-					13 => 14,
-					14 => 16,
-				];
-			} elseif ($colorId == $trickColor) {
-				// Current trick color, stronger
-				$strengths[$colorId] = [
-					7 => 1,
-					8 => 2,
-					9 => 3,
-					10 => 7,
-					11 => 4,
-					12 => 5,
-					13 => 6,
-					14 => 8,
-				];
+			if ($trumpColor == 5) {
+				// All trump
+				if ($colorId == $trickColor) {
+					// Current trick color, stronger and specific order
+					$strengths[$colorId] = [
+						7 => 1,
+						8 => 2,
+						9 => 7,
+						10 => 5,
+						11 => 8,
+						12 => 3,
+						13 => 4,
+						14 => 6,
+					];
+				} else {
+					// No strength otherwise
+					$strengths[$colorId] = [
+						7 => 0,
+						8 => 0,
+						9 => 0,
+						10 => 0,
+						11 => 0,
+						12 => 0,
+						13 => 0,
+						14 => 0,
+					];
+				}
 			} else {
-				// No strength otherwise
-				$strengths[$colorId] = [
-					7 => 0,
-					8 => 0,
-					9 => 0,
-					10 => 0,
-					11 => 0,
-					12 => 0,
-					13 => 0,
-					14 => 0,
-				];
+				// Normal or no trump
+				if ($colorId == $trumpColor) {
+					// Trump, stronger and specific order
+					$strengths[$colorId] = [
+						7 => 11,
+						8 => 12,
+						9 => 17,
+						10 => 15,
+						11 => 18,
+						12 => 13,
+						13 => 14,
+						14 => 16,
+					];
+				} elseif ($colorId == $trickColor) {
+					// Current trick color, stronger
+					$strengths[$colorId] = [
+						7 => 1,
+						8 => 2,
+						9 => 3,
+						10 => 7,
+						11 => 4,
+						12 => 5,
+						13 => 6,
+						14 => 8,
+					];
+				} else {
+					// No strength otherwise
+					$strengths[$colorId] = [
+						7 => 0,
+						8 => 0,
+						9 => 0,
+						10 => 0,
+						11 => 0,
+						12 => 0,
+						13 => 0,
+						14 => 0,
+					];
+				}
 			}
 		}
 		return $strengths;
@@ -388,6 +419,14 @@ class BeloteCoinche extends Table {
 				'player_name' => $firstPlayer['player_name'],
 			]
 		);
+	}
+
+	/**
+	 * Set the first player as "active"
+	 */
+	private function activateFirstPlayer() {
+		$firstPlayerId = self::getGameStateValue('firstPlayer');
+		$this->gamestate->changeActivePlayer($firstPlayerId);
 	}
 
 	/**
@@ -486,28 +525,6 @@ class BeloteCoinche extends Table {
 				);
 			}
 
-			self::debug(
-				'<pre>' .
-					var_export(
-						[
-							'currentCard' => $currentCard,
-							'cardStrength' => $cardStrength,
-							'trickColor' => $trickColor,
-							'trumpColor' => $trumpColor,
-							'partnerId' => $partnerId,
-							'isCardInHand' => $isCardInHand,
-							'hasTrickColorInHand' => $hasTrickColorInHand,
-							'hasTrumpColorInHand' => $hasTrumpColorInHand,
-							'trumpStrongestInHand' => $trumpStrongestInHand,
-							'hasTrumpBeenPlayed' => $hasTrumpBeenPlayed,
-							'trumpStrongestPlayed' => $trumpStrongestPlayed,
-							'strongestTrickCard' => $strongestTrickCard,
-							'strongestTrickValue' => $strongestTrickValue,
-						],
-						true
-					) .
-					'</pre>'
-			);
 			if ($hasTrumpColorInHand && $currentColor !== $trumpColor) {
 				// Player has trump color in hand;
 				// It must play one if its partner is not the strongest
@@ -525,7 +542,7 @@ class BeloteCoinche extends Table {
 			}
 		}
 
-		if ($trumpColor === 5 && $trickColor === $currentColor) {
+		if ($trumpColor == 5 && $trickColor === $currentColor) {
 			// All trump: check if going up, if same as trick color
 			if (
 				$trickStrongestInHand > $strongestTrickValue &&
@@ -563,7 +580,7 @@ class BeloteCoinche extends Table {
 		$message = '';
 		if ($showMessage) {
 			$message = clienttranslate(
-				'${player_name} bids ${bid_value} ${color_name}'
+				'${player_name} bids ${bid_value} ${color_symbol}'
 			);
 		}
 
@@ -594,7 +611,7 @@ class BeloteCoinche extends Table {
 			'bid' => $bid,
 			'player_id' => $bidPlayerId,
 			'player_name' => $bidPlayerDisplay,
-			'color_name' => $trumpColorDisplay,
+			'color_symbol' => $trumpColor,
 			'bid_value' => $bid,
 			'trumpColor' => $trumpColor,
 			'trumpColorDisplay' => $trumpColorDisplay,
@@ -789,6 +806,8 @@ class BeloteCoinche extends Table {
 		self::setGameStateInitialValue('bidPlayer', 0);
 		self::setGameStateInitialValue('countered', 0);
 
+		$this->activateFirstPlayer();
+
 		$this->notifyBid();
 
 		$this->gamestate->nextState('');
@@ -807,8 +826,7 @@ class BeloteCoinche extends Table {
 		$countered = self::getGameStateValue('countered');
 		if ($countered > 0) {
 			// Bid ok, activate 'first' player and start playing
-			$firstPlayerId = self::getGameStateValue('firstPlayer');
-			$this->gamestate->changeActivePlayer($firstPlayerId);
+			$this->activateFirstPlayer();
 			$this->gamestate->nextState('endBidding');
 			// TODO notify bidding & coinche
 			return;
@@ -827,15 +845,13 @@ class BeloteCoinche extends Table {
 					[]
 				);
 				$this->setNextFirstPlayer();
-				$firstPlayerId = self::getGameStateValue('firstPlayer');
-				$this->gamestate->changeActivePlayer($firstPlayerId);
+				$this->activateFirstPlayer();
 				$this->gamestate->nextState('newHand');
 				return;
 			}
 
 			// Bid ok, activate 'first' player and start playing
-			$firstPlayerId = self::getGameStateValue('firstPlayer');
-			$this->gamestate->changeActivePlayer($firstPlayerId);
+			$this->activateFirstPlayer();
 			$this->gamestate->nextState('endBidding');
 			self::notifyAllPlayers(
 				'allPassWithBid',
@@ -1003,13 +1019,13 @@ class BeloteCoinche extends Table {
 		// Converts points to a total of 162, if "notrump"/"alltrump" bids
 		$arrangeMultiplier = null;
 		if ($trumpColor == 5) {
-			$arrangeMultiplier = 152/248;
+			$arrangeMultiplier = 152 / 248;
 		} elseif ($trumpColor == 6) {
-			$arrangeMultiplier = 152/120;
+			$arrangeMultiplier = 152 / 120;
 		}
 		if ($arrangeMultiplier > 0) {
-			$teamPoints[0] *= $arrangeMultiplier;
-			$teamPoints[1] *= $arrangeMultiplier;
+			$teamPoints[0] = round($teamPoints[0] * $arrangeMultiplier);
+			$teamPoints[1] = round($teamPoints[1] * $arrangeMultiplier);
 		}
 
 		// Adds "10 de der" for last trick
@@ -1021,9 +1037,9 @@ class BeloteCoinche extends Table {
 		}
 
 		// If a team scored zero points, it's a "capot", so 250pts
-		if ($teamPoints[0] === 0) {
+		if ($teamPoints[0] == 0) {
 			$teamPoints[1] = 250;
-		} elseif ($teamPoints[1] === 0) {
+		} elseif ($teamPoints[1] == 0) {
 			$teamPoints[0] = 250;
 		}
 
