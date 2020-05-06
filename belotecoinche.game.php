@@ -539,7 +539,7 @@ class BeloteCoinche extends Table {
 		$message = '';
 		if ($showMessage) {
 			$message = clienttranslate(
-				'${player_name} bids ${bid} ${trumpColorDisplay}'
+				'${player_name} bids ${bid_value} ${color_name}'
 			);
 		}
 
@@ -570,6 +570,8 @@ class BeloteCoinche extends Table {
 			'bid' => $bid,
 			'player_id' => $bidPlayerId,
 			'player_name' => $bidPlayerDisplay,
+			'color_name' => $trumpColorDisplay,
+			'bid_value' => $bid,
 			'trumpColor' => $trumpColor,
 			'trumpColorDisplay' => $trumpColorDisplay,
 			'bidPlayer' => $bidPlayerId,
@@ -715,7 +717,7 @@ class BeloteCoinche extends Table {
 		self::notifyAllPlayers(
 			'playCard',
 			clienttranslate(
-				'${player_name} plays ${value_displayed} ${color_displayed}'
+				'${player_name} plays ${value_displayed} ${color_name}'
 			),
 			[
 				'i18n' => ['color_displayed', 'value_displayed'],
@@ -726,6 +728,7 @@ class BeloteCoinche extends Table {
 				'value_displayed' => $this->values_label[$currentCard['type_arg']],
 				'color' => $currentCard['type'],
 				'color_displayed' => $this->colors[$currentCard['type']]['name'],
+				'color_name' => $this->colors[$currentCard['type']]['name'],
 			]
 		);
 		// Next player

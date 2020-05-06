@@ -318,6 +318,43 @@ define([
 			}
 		},
 
+		/* This enable to inject translatable styled things to logs or action bar */
+		/* @Override */
+		format_string_recursive: function(log, args) {
+			try {
+				if (log && args && !args.processed) {
+					args.processed = true
+
+					// Representation of the color of a card
+					if (args.color_symbol !== undefined) {
+						args.color_symbol = dojo.string.substitute(
+							'<span class="card-color-icon--size16 card-color-icon card-color-icon--${color_symbol}"></span>',
+							{ color_symbol: args.color_symbol }
+						)
+					}
+
+					// Representation of the color of a card (by name)
+					if (args.color_name !== undefined) {
+						args.color_name = dojo.string.substitute(
+							'<span class="card-color-icon--size16 card-color-icon card-color-icon--${color_name}"></span>',
+							{ color_name: args.color_name }
+						)
+					}
+
+					// Representation of a bid balue
+					if (args.bid_value !== undefined) {
+						args.bid_value = dojo.string.substitute(
+							'<bold class="bid-value">${bid_value}</bold>',
+							{ bid_value: args.bid_value }
+						)
+					}
+				}
+			} catch (e) {
+				console.error(log, args, 'Exception thrown', e.stack)
+			}
+			return this.inherited(arguments)
+		},
+
 		///////////////////////////////////////////////////
 		//// Player's action
 

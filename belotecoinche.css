@@ -207,7 +207,7 @@
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 }
-.card-color-icon--16 {
+.card-color-icon--size16 {
 	width: 16px;
 	height: 16px;
 	display: inline-block;
@@ -215,15 +215,24 @@
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 }
+.card-color-icon--1,
 .card-color-icon--spade {
 	background-image: url('img/spade.svg');
 }
+.card-color-icon-2,
 .card-color-icon--heart {
 	background-image: url('img/heart.svg');
 }
+.card-color-icon--4,
 .card-color-icon--diamond {
 	background-image: url('img/diamond.svg');
 }
+.card-color-icon--3,
 .card-color-icon--club {
 	background-image: url('img/club.svg');
+}
+
+.bid-value {
+	font-weight: bold;
+	font-size: 1.1rem;
 }
