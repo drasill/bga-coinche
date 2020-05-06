@@ -241,7 +241,7 @@
 .card-color-icon--spade {
 	background-image: url('img/spade.svg');
 }
-.card-color-icon-2,
+.card-color-icon--2,
 .card-color-icon--heart {
 	background-image: url('img/heart.svg');
 }

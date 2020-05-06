@@ -47,6 +47,7 @@ define([
 				color: null,
 				value: null
 			}
+			this.currentTrump = null
 			this.updatePlayerBid()
 
 			this.playerHand = new ebg.stock() // new stock object for hand
@@ -57,7 +58,7 @@ define([
 			this.playerHand.image_items_per_row = 13 // 13 images per row
 			// Create cards types:
 			for (var color = 1; color <= 4; color++) {
-				for (var value = 2; value <= 14; value++) {
+				for (var value = 7; value <= 14; value++) {
 					// Build card type id
 					var cardTypeId = this.getCardUniqueId(color, value)
 					this.playerHand.addItemType(
@@ -120,6 +121,9 @@ define([
 				counteringPlayer: gamedatas.counteringPlayer,
 				counteringPlayerDisplay: gamedatas.counteringPlayerDisplay
 			})
+
+			this.currentTrump = gamedatas.trumpColor
+			this.updateCardsWeights()
 
 			// Setup game notifications to handle (see "setupNotifications" method below)
 			this.setupNotifications()
@@ -365,6 +369,44 @@ define([
 			return this.inherited(arguments)
 		},
 
+		// Update cards weights based on current trumpColor
+		updateCardsWeights() {
+			var weights = [];
+			for (var col = 1; col <= 4; col++)
+				for (var value = 7; value <= 14; value++) {
+					var cardValId = this.getCardUniqueId(col, value)
+					weights[cardValId] = this.getCardWeight(col, value)
+				}
+			this.playerHand.changeItemsWeight(weights)
+		},
+
+		getCardWeight(col, value) {
+			let map = {
+				7: 1,
+				8: 2,
+				9: 3,
+				10: 7,
+				11: 4,
+				12: 5,
+				13: 6,
+				14: 8,
+			}
+			if (col == this.currentTrump || this.currentTrump == 5) {
+				map = {
+				7: 1,
+				8: 2,
+				9: 7,
+				10: 5,
+				11: 8,
+				12: 3,
+				13: 4,
+				14: 6,
+				}
+			}
+			const baseValue = map[value] || 1
+			return col * 10 + baseValue
+		},
+
 		///////////////////////////////////////////////////
 		//// Player's action
 
@@ -525,6 +567,9 @@ define([
 
 		notif_newHand: function(notif) {
 			console.log('notif_newHand')
+
+			this.currentTrump = null
+			this.updateCardsWeights()
 			// We received a new full hand of 8 cards.
 			this.playerHand.removeAll()
 
@@ -541,12 +586,15 @@ define([
 		},
 
 		notif_allPassWithBid: function(notif) {
-			console.log('notif_allPassWithBid')
+			console.log('notif_allPassWithBid', notif.args)
 			this.clearPlayerBidItems()
+			this.currentTrump = notif.args.trumpColor
+			this.updateCardsWeights()
 		},
 
 		notif_allPassNoBid: function(notif) {
 			console.log('notif_allPassNoBid')
+			this.currentTrump = null
 			this.clearPlayerBidItems()
 		},
 

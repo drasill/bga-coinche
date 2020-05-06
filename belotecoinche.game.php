@@ -858,6 +858,21 @@ class BeloteCoinche extends Table {
 				clienttranslate('Everybody passes, bid accepted'),
 				[]
 			);
+			$bid = $this->getGameStateValue('bid');
+			$trumpColor = self::getGameStateValue('trumpColor');
+			$bidPlayerId = self::getGameStateValue('bidPlayer');
+			$players = self::loadPlayersBasicInfos();
+			$bidPlayerDisplay = $players[$bidPlayerId]['player_name'] ?? '';
+
+			self::notifyAllPlayers('allPassWithBid', clienttranslate('Everybody passes, ${bid_value} ${color_symbol} for ${player_name}'), [
+				'i18n' => ['trumpColorDisplay', 'bidPlayerDisplay'],
+				'player_id' => $bidPlayerId,
+				'player_name' => $bidPlayerDisplay,
+				'color_symbol' => $trumpColor,
+				'bid_value' => $bid,
+				'trumpColor' => $trumpColor,
+			]);
+
 			return;
 		}
 
