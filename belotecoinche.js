@@ -48,6 +48,7 @@ define([
 				value: null
 			}
 			this.currentTrump = null
+			this.playerBubbles = {}
 			this.updatePlayerBid()
 
 			this.playerHand = new ebg.stock() // new stock object for hand
@@ -122,7 +123,9 @@ define([
 				counteringPlayerDisplay: gamedatas.counteringPlayerDisplay
 			})
 
-			this.currentTrump = gamedatas.trumpColor
+			if (gamedatas.gamestate.name == 'playerTurn') {
+				this.currentTrump = gamedatas.trumpColor
+			}
 			this.updateCardsWeights()
 
 			// Setup game notifications to handle (see "setupNotifications" method below)
@@ -247,8 +250,8 @@ define([
 			const target = dojo.query(
 				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
 			)[0]
-			console.log('updatePlayerBidInfo', target, data)
 			dojo.place(this.format_block('jstpl_playerbid', data), target, 'append')
+			this.showPlayerBubble(data.player_id, this.format_block('jstpl_playerbid', data))
 		},
 
 		// Update a players's pass info
@@ -257,11 +260,40 @@ define([
 				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
 			)[0]
 			dojo.place(this.format_block('jstpl_playerpass', data), target, 'append')
+			this.showPlayerBubble(data.player_id, this.format_block('jstpl_playerpass', data))
+		},
+
+		showPlayerBubble(playerId, html, duration) {
+			const target = dojo.query(
+				'.playerTables__table--id--' + playerId + ' .playerTables__bubble'
+			)[0]
+			target.innerHTML = ''
+			if (typeof html == 'string') {
+				html = dojo.create('span', { innerHTML: html })
+			}
+			dojo.place(html, target, 'append')
+			if (this.playerBubbles[playerId]) {
+				clearTimeout(this.playerBubbles[playerId].timeoutHandle)
+			}
+			target.classList.add('playerTables__bubble--visible')
+			this.playerBubbles[playerId] = {
+				timeoutHandle: setTimeout(() => { 
+					this.hidePlayerBubble(playerId)
+				}, duration || 3000)
+			}
+		},
+
+		hidePlayerBubble(playerId) {
+			const target = dojo.query(
+				'.playerTables__table--id--' + playerId + ' .playerTables__bubble'
+			)[0]
+			target.classList.remove('playerTables__bubble--visible')
+			target.innerHTML = ''
 		},
 
 		// Clear all players bid/pass info
 		clearPlayerBidItems() {
-			dojo.query('.playerTables__bid-item').remove()
+			dojo.query('.playerTables__card .playerTables__bid-item').remove()
 		},
 
 		// Update global bid info
@@ -588,6 +620,7 @@ define([
 		notif_allPassWithBid: function(notif) {
 			console.log('notif_allPassWithBid', notif.args)
 			this.clearPlayerBidItems()
+			this.updatePlayerBidInfo(notif.args)
 			this.currentTrump = notif.args.trumpColor
 			this.updateCardsWeights()
 		},
@@ -605,17 +638,19 @@ define([
 
 		notif_updateBidCoinche: function(notif) {
 			console.log('notif_updateBidCoinche')
+			this.showPlayerBubble(notif.args.player_id, '<span color="red">'+_('Counter !')+'</span>')
 			this.clearPlayerBidItems()
 		},
 
 		notif_updateBidPass: function(notif) {
-			console.log('notif_updateBidPass')
+			console.log('notif_updateBidPass', notif)
 			this.updatePlayerPassInfo(notif.args)
 		},
 
 		notif_updateBid: function(notif) {
-			console.log('notif_updateBid')
-			this.updatePlayerBidInfo(notif.args)
+			if (notif.log != '') {
+				this.updatePlayerBidInfo(notif.args)
+			}
 			this.updateBidInfo(notif.args)
 		},
 

@@ -25,14 +25,16 @@
 			</div>
 			<div class="playerTables__name">
 				<span style="color:#{PLAYER_COLOR}">{PLAYER_NAME}</span>
+				<div class="playerTables__bubble">
+				</div>
 			</div>
 			<div class="playerTables__table__firstMarker"></div>
 			<div class="playerTables__table__counterMarker">C</div>
 		</div>
 		<!-- END player -->
 
-		<div class="playerTables__coinche-btn whiteblock">
-			<a class="bgabutton bgabutton_red">{COUNTER} !</a>
+		<div class="playerTables__coinche-btn">
+			<a class="bgabutton bgabutton_red bgabutton_big">{COUNTER} !</a>
 		</div>
 
 	</div>

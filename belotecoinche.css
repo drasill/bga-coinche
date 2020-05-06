@@ -33,6 +33,7 @@
 
 .playerTables__name {
 	margin-top: 4px;
+	position: relative;
 }
 
 .playerTables__name > span {
@@ -41,6 +42,39 @@
 	border-radius: 3px;
 	text-shadow: rgba(0, 0, 0, 0.4) 1px 1px 1px;
 	letter-spacing: 0.05rem;
+}
+
+.playerTables__bubble {
+	display: none;
+	background: white;
+	border-radius: 10px;
+	bottom: 130%;
+	color: #000;
+	font-weight: normal;
+	left: 30px;
+	padding: 5px 15px;
+	position: absolute;
+	z-index: 100;
+}
+.playerTables__bubble:hover {
+	opacity: 0.5;
+	pointer-events: none;
+}
+
+.playerTables__bubble:after {
+	border-color: #ffffff transparent;
+	border-style: solid;
+	border-width: 15px 15px 0;
+	bottom: -10px;
+	content: '';
+	display: block;
+	left: 30px;
+	position: absolute;
+	width: 0;
+}
+
+.playerTables__bubble--visible {
+	display: block;
 }
 
 .playerTables__table {
@@ -118,13 +152,16 @@
 }
 
 .playerTables__bid-item {
-	opacity: 0.3;
+	opacity: 0.2;
 }
 .playerTables__bid-item:nth-last-child(2) {
-	opacity: 0.7;
+	opacity: 0.4;
 }
 .playerTables__bid-item:last-child {
 	opacity: 1;
+}
+.playerTables__bid-item:first-child {
+	margin-top: 10px;
 }
 
 .playerTables__coinche-btn {
@@ -132,12 +169,12 @@
 	justify-content: center;
 	align-items: center;
 	position: absolute;
-	width: 120px;
+	width: 160px;
 	height: 120px;
 	left: 50%;
 	top: 50%;
 	margin-top: -60px;
-	margin-left: -60px;
+	margin-left: -80px;
 	box-sizing: border-box;
 }
 .playerTables__coinche-btn--visible {

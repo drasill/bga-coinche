@@ -723,7 +723,7 @@ class BeloteCoinche extends Table {
 		// Next player
 		self::setGameStateValue('countered', 1);
 		self::setGameStateValue('counteringPlayer', $playerId);
-		//
+
 		// And notify
 		self::notifyAllPlayers(
 			'updateBidCoinche',
@@ -853,11 +853,6 @@ class BeloteCoinche extends Table {
 			// Bid ok, activate 'first' player and start playing
 			$this->activateFirstPlayer();
 			$this->gamestate->nextState('endBidding');
-			self::notifyAllPlayers(
-				'allPassWithBid',
-				clienttranslate('Everybody passes, bid accepted'),
-				[]
-			);
 			$bid = $this->getGameStateValue('bid');
 			$trumpColor = self::getGameStateValue('trumpColor');
 			$bidPlayerId = self::getGameStateValue('bidPlayer');
@@ -870,6 +865,7 @@ class BeloteCoinche extends Table {
 				'player_name' => $bidPlayerDisplay,
 				'color_symbol' => $trumpColor,
 				'bid_value' => $bid,
+				'bid' => $bid,
 				'trumpColor' => $trumpColor,
 			]);
 
