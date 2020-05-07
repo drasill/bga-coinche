@@ -1220,17 +1220,30 @@ class BeloteCoinche extends Table {
 	 * As a consequence, there is no current player associated to this action. In your zombieTurn function,
 	 * you must _never_ use getCurrentPlayerId() or getCurrentPlayerName(), otherwise it will fail with a "Not logged" error message.
 	 */
-	function zombieTurn($state, $active_player) {
+	function zombieTurn($state, $activePlayer) {
 		$statename = $state['name'];
 
-		if ($state['type'] === 'activeplayer') {
+		if ($state['type'] == 'activeplayer') {
 			switch ($statename) {
-				default:
-					$this->gamestate->nextState('zombiePass');
-					break;
-			}
+				case 'playerBid':
+					// Always pass
+					$this->pass();
+					return;
 
-			return;
+				case 'playerTurn':
+					// Loop the player hand, stopping at the first card which can be played
+					$playerCards = $this->cards->getCardsInLocation('hand', $activePlayer);
+					foreach ($playerCards as $playerCard) {
+						try {
+							$this->assertCardPlay($playerCard['id']);
+						} catch (\Exception $e) {
+							continue;
+						};
+						break;
+					}
+					$this->playCard($playerCard['id']);
+					return;
+			}
 		}
 
 		if ($state['type'] === 'multipleactiveplayer') {
