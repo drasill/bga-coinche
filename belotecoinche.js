@@ -53,6 +53,7 @@ define([
 
 			this.playerHand = new ebg.stock() // new stock object for hand
 			this.playerHand.create(this, $('myHand'), this.cardwidth, this.cardheight)
+			this.playerHand.setSelectionMode(1)
 			this.playerHand.setSelectionAppearance('class')
 			this.playerHand.centerItems = true
 
@@ -107,8 +108,8 @@ define([
 				var card = this.gamedatas.cardsontable[i]
 				var color = card.type
 				var value = card.type_arg
-				var player_id = card.location_arg
-				this.playCardOnTable(player_id, color, value, card.id)
+				var playerId = card.location_arg
+				this.playCardOnTable(playerId, color, value, card.id)
 			}
 
 			// Bid informations
@@ -166,10 +167,14 @@ define([
 					.query('.playerTables__table--id--' + args.active_player)
 					.addClass('playerTables__table--active')
 			}
+
+			// Auto play card if one is selected
+			if (stateName === 'playerTurn' && this.isCurrentPlayerActive()) {
+				this.playSelectedCard()
+			}
 		},
 
-		onLeavingState: function(stateName) {
-		},
+		onLeavingState: function(stateName) {},
 
 		onUpdateActionButtons: function(stateName, args) {
 			if (stateName === 'playerBid') {
@@ -202,40 +207,40 @@ define([
 			return (color - 1) * 13 + (value - 2)
 		},
 
-		playCardOnTable: function(player_id, color, value, card_id) {
-			// player_id => direction
+		playCardOnTable: function(playerId, color, value, cardId) {
+			// playerId => direction
 			dojo.place(
 				this.format_block('jstpl_cardontable', {
 					x: this.cardwidth * (value - 2),
 					y: this.cardheight * (color - 1),
-					player_id: player_id
+					player_id: playerId
 				}),
-				'playerTables__card--' + player_id
+				'playerTables__card--' + playerId
 			)
 
-			if (player_id != this.player_id) {
+			if (playerId != this.player_id) {
 				// Some opponent played a card
 				// Move card from player panel
 				this.placeOnObject(
-					'cardontable_' + player_id,
-					'overall_player_board_' + player_id
+					'cardontable_' + playerId,
+					'overall_player_board_' + playerId
 				)
 			} else {
 				// You played a card. If it exists in your hand, move card from there and remove
 				// corresponding item
-				if ($('myHand_item_' + card_id)) {
+				if ($('myHand_item_' + cardId)) {
 					this.placeOnObject(
-						'cardontable_' + player_id,
-						'myHand_item_' + card_id
+						'cardontable_' + playerId,
+						'myHand_item_' + cardId
 					)
-					this.playerHand.removeFromStockById(card_id)
+					this.playerHand.removeFromStockById(cardId)
 				}
 			}
 
 			// In any case: move it to its final destination
 			this.slideToObject(
-				'cardontable_' + player_id,
-				'playerTables__card--' + player_id
+				'cardontable_' + playerId,
+				'playerTables__card--' + playerId
 			).play()
 		},
 
@@ -400,7 +405,7 @@ define([
 
 					// Trick count : invisible marker to remove logs later
 					if (args.trick_count !== undefined) {
-						args.trick_count_value =args.trick_count
+						args.trick_count_value = args.trick_count
 						args.trick_count = dojo.string.substitute(
 							'<span class="trickCountLog" data-value="${trick_count}"></span>',
 							{ trick_count: args.trick_count }
@@ -465,6 +470,25 @@ define([
 			})
 		},
 
+		playSelectedCard() {
+			var cardId = this.selectedCardId
+			if (!cardId) {
+				return
+			}
+			this.ajaxcall(
+				'/' + this.game_name + '/' + this.game_name + '/' + 'playCard.html',
+				{
+					id: cardId,
+					lock: true
+				},
+				this,
+				function(result) {},
+				function(is_error) {}
+			)
+			this.selectedCardId = null
+			this.playerHand.unselectAll()
+		},
+
 		///////////////////////////////////////////////////
 		//// Player's action
 
@@ -481,32 +505,14 @@ define([
 		onPlayerHandSelectionChanged: function() {
 			var items = this.playerHand.getSelectedItems()
 
-			if (items.length > 0) {
-				var action = 'playCard'
-				if (this.checkAction(action, true)) {
-					// Can play a card
-					var card_id = items[0].id
-					this.ajaxcall(
-						'/' +
-							this.game_name +
-							'/' +
-							this.game_name +
-							'/' +
-							action +
-							'.html',
-						{
-							id: card_id,
-							lock: true
-						},
-						this,
-						function(result) {},
-						function(is_error) {}
-					)
+			if (items.length <= 0) {
+				return
+			}
 
-					this.playerHand.unselectAll()
-				} else {
-					this.playerHand.unselectAll()
-				}
+			this.selectedCardId = items[0].id
+
+			if (this.checkAction('playCard', true)) {
+				this.playSelectedCard()
 			}
 		},
 

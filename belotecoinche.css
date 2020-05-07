@@ -303,3 +303,10 @@
 	font-weight: bold;
 	font-size: 1.1rem;
 }
+
+.stockitem_selected {
+	border: 2px red solid !important;
+	border: 0 !important;
+	top: -12px !important;
+	box-shadow: rgba(0, 0, 255, 0.9) 0px 0px 7px;
+}
