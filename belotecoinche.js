@@ -49,7 +49,7 @@ define([
 			}
 			this.currentTrump = null
 			this.playerBubbles = {}
-			this.updatePlayerBid()
+			this.updatePlayerBid(false)
 
 			this.playerHand = new ebg.stock() // new stock object for hand
 			this.playerHand.create(this, $('myHand'), this.cardwidth, this.cardheight)
@@ -229,10 +229,7 @@ define([
 				// You played a card. If it exists in your hand, move card from there and remove
 				// corresponding item
 				if ($('myHand_item_' + cardId)) {
-					this.placeOnObject(
-						'cardontable_' + playerId,
-						'myHand_item_' + cardId
-					)
+					this.placeOnObject('cardontable_' + playerId, 'myHand_item_' + cardId)
 					this.playerHand.removeFromStockById(cardId)
 				}
 			}
@@ -245,7 +242,7 @@ define([
 		},
 
 		// Update a players's bid info
-		updatePlayerBidInfo(data) {
+		updatePlayerBidInfo: function(data) {
 			if (!data.player_id) {
 				return
 			}
@@ -260,7 +257,7 @@ define([
 		},
 
 		// Update a players's pass info
-		updatePlayerPassInfo(data) {
+		updatePlayerPassInfo: function(data) {
 			var target = dojo.query(
 				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
 			)[0]
@@ -271,7 +268,7 @@ define([
 			)
 		},
 
-		showPlayerBubble(playerId, html, duration) {
+		showPlayerBubble: function(playerId, html, duration) {
 			var target = dojo.query(
 				'.playerTables__table--id--' + playerId + ' .playerTables__bubble'
 			)[0]
@@ -284,14 +281,15 @@ define([
 				clearTimeout(this.playerBubbles[playerId].timeoutHandle)
 			}
 			target.classList.add('playerTables__bubble--visible')
+			var me = this
 			this.playerBubbles[playerId] = {
-				timeoutHandle: setTimeout(() => {
-					this.hidePlayerBubble(playerId)
+				timeoutHandle: setTimeout(function() {
+					me.hidePlayerBubble(playerId)
 				}, duration || 3000)
 			}
 		},
 
-		hidePlayerBubble(playerId) {
+		hidePlayerBubble: function(playerId) {
 			var target = dojo.query(
 				'.playerTables__table--id--' + playerId + ' .playerTables__bubble'
 			)[0]
@@ -300,12 +298,12 @@ define([
 		},
 
 		// Clear all players bid/pass info
-		clearPlayerBidItems() {
+		clearPlayerBidItems: function() {
 			dojo.query('.playerTables__card .playerTables__bid-item').remove()
 		},
 
 		// Update global bid info
-		updateBidInfo(data) {
+		updateBidInfo: function(data) {
 			// Hide all counter markers
 			dojo
 				.query('.playerTables__table__counterMarker')
@@ -339,7 +337,7 @@ define([
 			}
 		},
 
-		updateFirstPlayer(playerId) {
+		updateFirstPlayer: function(playerId) {
 			dojo
 				.query('.playerTables__table')
 				.removeClass('playerTables__table--first')
@@ -348,7 +346,7 @@ define([
 				.addClass('playerTables__table--first')
 		},
 
-		updatePlayerBid(clearValue = false) {
+		updatePlayerBid: function(clearValue) {
 			if (clearValue) {
 				this.playerBid = {
 					color: null,
@@ -419,7 +417,7 @@ define([
 		},
 
 		// Update cards weights based on current trumpColor
-		updateCardsWeights() {
+		updateCardsWeights: function() {
 			var weights = []
 			for (var col = 1; col <= 4; col++)
 				for (var value = 7; value <= 14; value++) {
@@ -429,7 +427,7 @@ define([
 			this.playerHand.changeItemsWeight(weights)
 		},
 
-		getCardWeight(col, value) {
+		getCardWeight: function(col, value) {
 			var map = {
 				7: 1,
 				8: 2,
@@ -456,8 +454,8 @@ define([
 			return col * 10 + baseValue
 		},
 
-		clearOldTricksLogs(maxTrick) {
-			dojo.query('.trickCountLog').forEach(el => {
+		clearOldTricksLogs: function(maxTrick) {
+			dojo.query('.trickCountLog').forEach(function(el) {
 				var trickNumber = el.getAttribute('data-value')
 				if (trickNumber > maxTrick) {
 					return
@@ -470,7 +468,7 @@ define([
 			})
 		},
 
-		playSelectedCard() {
+		playSelectedCard: function() {
 			var cardId = this.selectedCardId
 			if (!cardId) {
 				return
@@ -579,7 +577,7 @@ define([
 			if (target.classList.contains('bidPanel__btn--value')) {
 				this.playerBid.value = target.getAttribute('data-value')
 			}
-			this.updatePlayerBid()
+			this.updatePlayerBid(false)
 			if (this.playerBid.value && this.playerBid.color) {
 				this.ajaxcall(
 					'/' + this.game_name + '/' + this.game_name + '/' + 'bid' + '.html',
