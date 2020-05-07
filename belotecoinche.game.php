@@ -45,6 +45,8 @@ class BeloteCoinche extends Table {
 			'counteringPlayer' => 17,
 			// Number of successive player passes (to trigger end of bidding)
 			'passCount' => 18,
+			// Current trick count (of current hand)
+			'trickCount' => 19,
 
 			// Options
 			// Game length -> max score
@@ -132,14 +134,11 @@ class BeloteCoinche extends Table {
 		// Init global values with their initial values
 
 		self::setGameStateInitialValue('trickColor', 0);
-
 		self::setGameStateInitialValue('trumpColor', 0);
-
 		self::setGameStateInitialValue('bid', 0);
-
 		self::setGameStateInitialValue('countered', 0);
-
 		self::setGameStateInitialValue('passCount', 0);
+		self::setGameStateInitialValue('trickCount', 0);
 
 		$firstPlayerId = array_rand($players, 1);
 		self::setGameStateInitialValue('firstPlayer', $firstPlayerId);
@@ -812,7 +811,7 @@ class BeloteCoinche extends Table {
 		self::notifyAllPlayers(
 			'playCard',
 			clienttranslate(
-				'${player_name} plays ${value_displayed} ${color_name}'
+				'${trick_count}${player_name} plays ${value_displayed} ${color_name}'
 			),
 			[
 				'i18n' => ['color_displayed', 'value_displayed'],
@@ -824,6 +823,7 @@ class BeloteCoinche extends Table {
 				'color' => $currentCard['type'],
 				'color_displayed' => $this->colors[$currentCard['type']]['name'],
 				'color_name' => $this->colors[$currentCard['type']]['name'],
+				'trick_count' => self::getGameStateValue('trickCount'),
 			]
 		);
 		// Next player
@@ -859,6 +859,7 @@ class BeloteCoinche extends Table {
 		self::setGameStateInitialValue('bid', 0);
 		self::setGameStateInitialValue('bidPlayer', 0);
 		self::setGameStateInitialValue('countered', 0);
+		self::setGameStateInitialValue('trickCount', 0);
 
 		$this->activateFirstPlayer();
 
@@ -979,21 +980,28 @@ class BeloteCoinche extends Table {
 				$bestValuePlayerId
 			);
 
+			// Trick count
+			$trickCount = self::getGameStateValue('trickCount');
+
 			// Notify
 			// Note: we use 2 notifications here in order we can pause the display during the first notification
 			//  before we move all cards to the winner (during the second)
 			$players = self::loadPlayersBasicInfos();
 			self::notifyAllPlayers(
 				'trickWin',
-				clienttranslate('${player_name} wins the trick'),
+				clienttranslate('${trick_count}${player_name} wins the trick'),
 				[
 					'player_id' => $bestValuePlayerId,
 					'player_name' => $players[$bestValuePlayerId]['player_name'],
+					'trick_count' => $trickCount,
 				]
 			);
 			self::notifyAllPlayers('giveAllCardsToPlayer', '', [
 				'player_id' => $bestValuePlayerId,
 			]);
+
+			// Increment trick count
+			self::setGameStateInitialValue('trickCount', $trickCount + 1);
 
 			if ($this->cards->countCardInLocation('hand') == 0) {
 				// End of the hand

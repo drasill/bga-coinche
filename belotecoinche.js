@@ -136,8 +136,6 @@ define([
 		//// Game & client states
 
 		onEnteringState: function(stateName, args) {
-			console.log('Entering state: ' + stateName, args)
-
 			let isBidPanelVisible = false
 			let isCoinchePanelVisible = false
 
@@ -171,7 +169,6 @@ define([
 		},
 
 		onLeavingState: function(stateName) {
-			console.log('Leaving state: ' + stateName)
 		},
 
 		onUpdateActionButtons: function(stateName, args) {
@@ -251,7 +248,10 @@ define([
 				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
 			)[0]
 			dojo.place(this.format_block('jstpl_playerbid', data), target, 'append')
-			this.showPlayerBubble(data.player_id, this.format_block('jstpl_playerbid', data))
+			this.showPlayerBubble(
+				data.player_id,
+				this.format_block('jstpl_playerbid', data)
+			)
 		},
 
 		// Update a players's pass info
@@ -260,7 +260,10 @@ define([
 				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
 			)[0]
 			dojo.place(this.format_block('jstpl_playerpass', data), target, 'append')
-			this.showPlayerBubble(data.player_id, this.format_block('jstpl_playerpass', data))
+			this.showPlayerBubble(
+				data.player_id,
+				this.format_block('jstpl_playerpass', data)
+			)
 		},
 
 		showPlayerBubble(playerId, html, duration) {
@@ -277,7 +280,7 @@ define([
 			}
 			target.classList.add('playerTables__bubble--visible')
 			this.playerBubbles[playerId] = {
-				timeoutHandle: setTimeout(() => { 
+				timeoutHandle: setTimeout(() => {
 					this.hidePlayerBubble(playerId)
 				}, duration || 3000)
 			}
@@ -394,6 +397,15 @@ define([
 							{ bid_value: args.bid_value }
 						)
 					}
+
+					// Trick count : invisible marker to remove logs later
+					if (args.trick_count !== undefined) {
+						args.trick_count_value =args.trick_count
+						args.trick_count = dojo.string.substitute(
+							'<span class="trickCountLog" data-value="${trick_count}"></span>',
+							{ trick_count: args.trick_count }
+						)
+					}
 				}
 			} catch (e) {
 				console.error(log, args, 'Exception thrown', e.stack)
@@ -403,7 +415,7 @@ define([
 
 		// Update cards weights based on current trumpColor
 		updateCardsWeights() {
-			var weights = [];
+			var weights = []
 			for (var col = 1; col <= 4; col++)
 				for (var value = 7; value <= 14; value++) {
 					var cardValId = this.getCardUniqueId(col, value)
@@ -421,22 +433,36 @@ define([
 				11: 4,
 				12: 5,
 				13: 6,
-				14: 8,
+				14: 8
 			}
 			if (col == this.currentTrump || this.currentTrump == 5) {
 				map = {
-				7: 1,
-				8: 2,
-				9: 7,
-				10: 5,
-				11: 8,
-				12: 3,
-				13: 4,
-				14: 6,
+					7: 1,
+					8: 2,
+					9: 7,
+					10: 5,
+					11: 8,
+					12: 3,
+					13: 4,
+					14: 6
 				}
 			}
 			const baseValue = map[value] || 1
 			return col * 10 + baseValue
+		},
+
+		clearOldTricksLogs(maxTrick) {
+			dojo.query('.trickCountLog').forEach(el => {
+				const trickNumber = el.getAttribute('data-value')
+				if (trickNumber > maxTrick) {
+					return
+				}
+				const logEl = el.parentNode.parentNode
+				if (!logEl.classList.contains('log')) {
+					return
+				}
+				logEl.remove()
+			})
 		},
 
 		///////////////////////////////////////////////////
@@ -590,7 +616,6 @@ define([
 		},
 
 		notif_newScores: function(notif) {
-			console.log('notif_newScores')
 			// Update players' scores
 			for (var playerId in notif.args.newScores) {
 				this.scoreCtrl[playerId].toValue(notif.args.newScores[playerId])
@@ -598,8 +623,6 @@ define([
 		},
 
 		notif_newHand: function(notif) {
-			console.log('notif_newHand')
-
 			this.currentTrump = null
 			this.updateCardsWeights()
 			// We received a new full hand of 8 cards.
@@ -618,32 +641,32 @@ define([
 		},
 
 		notif_allPassWithBid: function(notif) {
-			console.log('notif_allPassWithBid', notif.args)
 			this.clearPlayerBidItems()
 			this.updatePlayerBidInfo(notif.args)
 			this.currentTrump = notif.args.trumpColor
 			this.updateCardsWeights()
+			this.clearOldTricksLogs(99)
 		},
 
 		notif_allPassNoBid: function(notif) {
-			console.log('notif_allPassNoBid')
 			this.currentTrump = null
 			this.clearPlayerBidItems()
+			this.clearOldTricksLogs(99)
 		},
 
 		notif_firstPlayerChange: function(notif) {
-			console.log('notif_firstPlayerChange')
 			this.updateFirstPlayer(notif.args.player_id)
 		},
 
 		notif_updateBidCoinche: function(notif) {
-			console.log('notif_updateBidCoinche')
-			this.showPlayerBubble(notif.args.player_id, '<span color="red">'+_('Counter !')+'</span>')
+			this.showPlayerBubble(
+				notif.args.player_id,
+				'<span color="red">' + _('Counter !') + '</span>'
+			)
 			this.clearPlayerBidItems()
 		},
 
 		notif_updateBidPass: function(notif) {
-			console.log('notif_updateBidPass', notif)
 			this.updatePlayerPassInfo(notif.args)
 		},
 
@@ -655,7 +678,6 @@ define([
 		},
 
 		notif_playCard: function(notif) {
-			console.log('notif_playCard')
 			// Play a card on the table
 			this.playCardOnTable(
 				notif.args.player_id,
@@ -666,12 +688,10 @@ define([
 		},
 
 		notif_trickWin: function(notif) {
-			console.log('notif_trickWin')
-			// We do nothing here (just wait in order players can view the 4 cards played before they're gone.
+			this.clearOldTricksLogs(notif.args.trick_count_value - 1)
 		},
 
 		notif_giveAllCardsToPlayer: function(notif) {
-			console.log('notif_giveAllCardsToPlayer')
 			// Move all cards on table to given table, then destroy them
 			var winner_id = notif.args.player_id
 			for (var player_id in this.gamedatas.players) {
