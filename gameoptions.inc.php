@@ -39,6 +39,22 @@ $game_options = [
 			2 => ['name' => totranslate('Bid only')],
 		],
 	],
+	102 => [
+		'name' => totranslate('Teams'),
+		'values' => [
+			1 => [
+				'name' => totranslate('By table order (1rst/3rd versus 2nd/4th)'),
+			],
+			2 => [
+				'name' => totranslate('By table order (1rst/2nd versus 3rd/4th)'),
+			],
+			3 => [
+				'name' => totranslate('By table order (1rst/4th versus 2nd/3rd)'),
+			],
+			4 => ['name' => totranslate('At random')],
+		],
+		'default' => 1,
+	],
 
 	/*
 

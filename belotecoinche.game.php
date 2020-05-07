@@ -19,6 +19,12 @@
 require_once APP_GAMEMODULE_PATH . 'module/table/table.game.php';
 
 class BeloteCoinche extends Table {
+	// Team pairing constants
+	const TEAM_1_3 = 1;
+	const TEAM_1_2 = 2;
+	const TEAM_1_4 = 3;
+	const TEAM_RANDOM = 4;
+
 	function __construct() {
 		parent::__construct();
 
@@ -45,6 +51,8 @@ class BeloteCoinche extends Table {
 			'gameLength' => 100,
 			// Score type
 			'scoreType' => 101,
+			// Player teams (taken from the game "belote")
+			'playerTeams' => 102,
 		]);
 
 		$this->cards = self::getNew('module.common.deck');
@@ -69,11 +77,33 @@ class BeloteCoinche extends Table {
 		$gameinfos = self::getGameinfos();
 		$default_colors = $gameinfos['player_colors'];
 
+		$playerInitialOrder = array_column($players, 'player_table_order');
+
+		// Player order based on 'playerTeams' option
+		$playerOrder = [0, 1, 2, 3];
+		switch (self::getGameStateValue('playerTeams')) {
+			case self::TEAM_1_2:
+				$playerOrder = [0, 2, 1, 3];
+				break;
+			case self::TEAM_1_4:
+				$playerOrder = [0, 1, 3, 2];
+				break;
+			case self::TEAM_RANDOM:
+				shuffle($playerOrder);
+				break;
+			default:
+			case self::TEAM_1_3:
+				// Default order
+				break;
+		}
+
 		// Create players
 		// Note: if you added some extra field on "player" table in the database (dbmodel.sql), you can initialize it there.
 		$sql =
-			'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar) VALUES ';
+			'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar, player_no) VALUES ';
 		$values = [];
+
+		$playerIndex = 0;
 		foreach ($players as $playerId => $player) {
 			$color = array_shift($default_colors);
 			$values[] =
@@ -85,7 +115,10 @@ class BeloteCoinche extends Table {
 				addslashes($player['player_name']) .
 				"','" .
 				addslashes($player['player_avatar']) .
+				"','" .
+				$playerOrder[$playerInitialOrder[$playerIndex] - 1] .
 				"')";
+			$playerIndex++;
 		}
 		$sql .= implode($values, ',');
 		self::DbQuery($sql);
@@ -163,7 +196,7 @@ class BeloteCoinche extends Table {
 
 		// Get information about players
 		// Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
-		$sql = 'SELECT player_id id, player_score score FROM player ';
+		$sql = 'SELECT player_id id, player_score score, player_no FROM player ';
 		$result['players'] = self::getCollectionFromDb($sql);
 
 		// Cards in player hand
@@ -859,15 +892,21 @@ class BeloteCoinche extends Table {
 			$players = self::loadPlayersBasicInfos();
 			$bidPlayerDisplay = $players[$bidPlayerId]['player_name'] ?? '';
 
-			self::notifyAllPlayers('allPassWithBid', clienttranslate('Everybody passes, ${bid_value} ${color_symbol} for ${player_name}'), [
-				'i18n' => ['trumpColorDisplay', 'bidPlayerDisplay'],
-				'player_id' => $bidPlayerId,
-				'player_name' => $bidPlayerDisplay,
-				'color_symbol' => $trumpColor,
-				'bid_value' => $bid,
-				'bid' => $bid,
-				'trumpColor' => $trumpColor,
-			]);
+			self::notifyAllPlayers(
+				'allPassWithBid',
+				clienttranslate(
+					'Everybody passes, ${bid_value} ${color_symbol} for ${player_name}'
+				),
+				[
+					'i18n' => ['trumpColorDisplay', 'bidPlayerDisplay'],
+					'player_id' => $bidPlayerId,
+					'player_name' => $bidPlayerDisplay,
+					'color_symbol' => $trumpColor,
+					'bid_value' => $bid,
+					'bid' => $bid,
+					'trumpColor' => $trumpColor,
+				]
+			);
 
 			return;
 		}
@@ -1220,5 +1259,22 @@ class BeloteCoinche extends Table {
 		//        // Please add your future database scheme changes here
 		//
 		//
+	}
+
+	///////////////////////////////////////////////////////////////////////////////////:
+	////////// Debug from chat function
+	//////////
+	public function changePlayerOrder($orderStr) {
+		if (strlen($orderStr) != '4') {
+			return;
+		}
+		$newOrder = [];
+		for ($i = 0; $i < 3; $i++) {
+			$token = $orderStr[$i];
+			if (!in_array($token, ['1', '2', '3', '4'])) {
+				return;
+			}
+			$newOrder[$i] = (int) $token;
+		}
 	}
 }
