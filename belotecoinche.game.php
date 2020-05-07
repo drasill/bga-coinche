@@ -242,10 +242,31 @@ class BeloteCoinche extends Table {
 	 * This method is called each time we are in a game state with the "updateGameProgression" property set to true
 	 * (see states.inc.php)
 	 */
-	function getGameProgression() {
-		// TODO: compute and return the game progression
+	public function getGameProgression() {
+		// Shamelessly taken from the game "belote"
+		$maxScore = $this->getMaxScore();
+		$playerMaxScore = self::getUniqueValueFromDb(
+			'SELECT MAX( player_score ) FROM player'
+		);
+		$playerMinScore = self::getUniqueValueFromDb(
+			'SELECT MIN( player_score ) FROM player'
+		);
 
-		return 0;
+		if ($playerMaxScore > $maxScore) {
+			// End
+			return 100;
+		}
+		if ($playerMaxScore <= 0) {
+			// Start
+			return 0;
+		}
+
+		// Average
+		$n = 2 * ($maxScore - $playerMaxScore);
+		$res =
+			(100 * ($playerMaxScore + $playerMinScore)) /
+			($n + $playerMaxScore + $playerMinScore);
+		return max(0, min(100, $res)); // Note: 0 => 100
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -1261,20 +1282,4 @@ class BeloteCoinche extends Table {
 		//
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////:
-	////////// Debug from chat function
-	//////////
-	public function changePlayerOrder($orderStr) {
-		if (strlen($orderStr) != '4') {
-			return;
-		}
-		$newOrder = [];
-		for ($i = 0; $i < 3; $i++) {
-			$token = $orderStr[$i];
-			if (!in_array($token, ['1', '2', '3', '4'])) {
-				return;
-			}
-			$newOrder[$i] = (int) $token;
-		}
-	}
 }
