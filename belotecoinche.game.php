@@ -284,7 +284,7 @@ class BeloteCoinche extends Table {
 			return 1000;
 		}
 		throw new BgaVisibleSystemException(
-			'Error, gameLength value is not in [1,2]'
+			'Error, gameLength value is not in [1,2]' // NOI18N
 		);
 	}
 
@@ -557,7 +557,7 @@ class BeloteCoinche extends Table {
 
 		if (!$isCardInHand) {
 			// Woaw !
-			throw new BgaUserException('Card is not in hand');
+			throw new BgaUserException('Card is not in hand'); // NOI18N
 		}
 
 		if ($trickColor == 0) {
@@ -712,7 +712,10 @@ class BeloteCoinche extends Table {
 		// Bid must go up
 		if ($previousValue && $value <= $previousValue) {
 			throw new BgaUserException(
-				self::_("You must bid higher than current bid ($previousValue)")
+				sprintf(
+					self::_('You must bid higher than current bid (%s)'),
+					$previousValue
+				)
 			);
 		}
 		// Bid must change color if same player
@@ -1240,13 +1243,16 @@ class BeloteCoinche extends Table {
 
 				case 'playerTurn':
 					// Loop the player hand, stopping at the first card which can be played
-					$playerCards = $this->cards->getCardsInLocation('hand', $activePlayer);
+					$playerCards = $this->cards->getCardsInLocation(
+						'hand',
+						$activePlayer
+					);
 					foreach ($playerCards as $playerCard) {
 						try {
 							$this->assertCardPlay($playerCard['id']);
 						} catch (\Exception $e) {
 							continue;
-						};
+						}
 						break;
 					}
 					$this->playCard($playerCard['id']);
@@ -1262,7 +1268,7 @@ class BeloteCoinche extends Table {
 		}
 
 		throw new feException(
-			'Zombie mode not supported at this game state: ' . $statename
+			'Zombie mode not supported at this game state: ' . $statename // NOI18N
 		);
 	}
 
@@ -1302,5 +1308,4 @@ class BeloteCoinche extends Table {
 		//
 		//
 	}
-
 }

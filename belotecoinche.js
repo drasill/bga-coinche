@@ -1,7 +1,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * BeloteCoinche implementation : © <Your name here> <Your email address here>
+ * BeloteCoinche implementation : © Christophe Badoit <gameboardarena@tof2k.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -137,8 +137,8 @@ define([
 		//// Game & client states
 
 		onEnteringState: function(stateName, args) {
-			let isBidPanelVisible = false
-			let isCoinchePanelVisible = false
+			var isBidPanelVisible = false
+			var isCoinchePanelVisible = false
 
 			switch (stateName) {
 				case 'playerBid':
@@ -249,7 +249,7 @@ define([
 			if (!data.player_id) {
 				return
 			}
-			const target = dojo.query(
+			var target = dojo.query(
 				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
 			)[0]
 			dojo.place(this.format_block('jstpl_playerbid', data), target, 'append')
@@ -261,7 +261,7 @@ define([
 
 		// Update a players's pass info
 		updatePlayerPassInfo(data) {
-			const target = dojo.query(
+			var target = dojo.query(
 				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
 			)[0]
 			dojo.place(this.format_block('jstpl_playerpass', data), target, 'append')
@@ -272,7 +272,7 @@ define([
 		},
 
 		showPlayerBubble(playerId, html, duration) {
-			const target = dojo.query(
+			var target = dojo.query(
 				'.playerTables__table--id--' + playerId + ' .playerTables__bubble'
 			)[0]
 			target.innerHTML = ''
@@ -292,7 +292,7 @@ define([
 		},
 
 		hidePlayerBubble(playerId) {
-			const target = dojo.query(
+			var target = dojo.query(
 				'.playerTables__table--id--' + playerId + ' .playerTables__bubble'
 			)[0]
 			target.classList.remove('playerTables__bubble--visible')
@@ -430,7 +430,7 @@ define([
 		},
 
 		getCardWeight(col, value) {
-			let map = {
+			var map = {
 				7: 1,
 				8: 2,
 				9: 3,
@@ -452,17 +452,17 @@ define([
 					14: 6
 				}
 			}
-			const baseValue = map[value] || 1
+			var baseValue = map[value] || 1
 			return col * 10 + baseValue
 		},
 
 		clearOldTricksLogs(maxTrick) {
 			dojo.query('.trickCountLog').forEach(el => {
-				const trickNumber = el.getAttribute('data-value')
+				var trickNumber = el.getAttribute('data-value')
 				if (trickNumber > maxTrick) {
 					return
 				}
-				const logEl = el.parentNode.parentNode
+				var logEl = el.parentNode.parentNode
 				if (!logEl.classList.contains('log')) {
 					return
 				}
@@ -567,7 +567,7 @@ define([
 		},
 
 		onBidPanelBtnClick: function(e) {
-			const target = e.currentTarget
+			var target = e.currentTarget
 			if (target.classList.contains('bidPanel__btn--pass')) {
 				this.updatePlayerBid(true)
 				this.onPlayerPass()
