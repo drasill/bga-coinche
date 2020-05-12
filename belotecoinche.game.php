@@ -48,6 +48,12 @@ class BeloteCoinche extends Table {
 			// Current trick count (of current hand)
 			'trickCount' => 19,
 
+			// Belote (Queen & King) informations
+			'beloteCardId1' => 20,
+			'beloteCardId2' => 21,
+			'belotePlayerId' => 22,
+			'beloteDeclared' => 23,
+
 			// Options
 			// Game length -> max score
 			'gameLength' => 100,
@@ -139,6 +145,10 @@ class BeloteCoinche extends Table {
 		self::setGameStateInitialValue('countered', 0);
 		self::setGameStateInitialValue('passCount', 0);
 		self::setGameStateInitialValue('trickCount', 0);
+		self::setGameStateInitialValue('beloteCardId1', 0);
+		self::setGameStateInitialValue('beloteCardId2', 0);
+		self::setGameStateInitialValue('belotePlayerId', 0);
+		self::setGameStateInitialValue('beloteDeclared', 0);
 
 		$firstPlayerId = array_rand($players, 1);
 		self::setGameStateInitialValue('firstPlayer', $firstPlayerId);
@@ -191,7 +201,7 @@ class BeloteCoinche extends Table {
 	protected function getAllDatas() {
 		$result = [];
 
-		$current_player_id = self::getCurrentPlayerId(); // !! We must only return informations visible by this player !!
+		$currentPlayerId = self::getCurrentPlayerId(); // !! We must only return informations visible by this player !!
 
 		// Get information about players
 		// Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
@@ -201,7 +211,7 @@ class BeloteCoinche extends Table {
 		// Cards in player hand
 		$result['hand'] = $this->cards->getCardsInLocation(
 			'hand',
-			$current_player_id
+			$currentPlayerId
 		);
 
 		// Cards played on the table
@@ -227,6 +237,18 @@ class BeloteCoinche extends Table {
 		$result['counteringPlayerDisplay'] =
 			$players[$counteringPlayer]['player_name'] ?? '';
 		$result['firstPlayer'] = $firstPlayer;
+
+		// Inform current player of the belote cards & status (if they have it)
+		$belotePlayerId = self::getGameStateValue('belotePlayerId');
+		if ($belotePlayerId == $currentPlayerId) {
+			$result['belote_card_id_1'] = self::getGameStateValue('beloteCardId1');
+			$result['belote_card_id_2'] = self::getGameStateValue('beloteCardId2');
+			$result['belote_declared'] = self::getGameStateValue('beloteDeclared');
+		} else {
+			$result['belote_card_id_1'] = null;
+			$result['belote_card_id_2'] = null;
+			$result['belote_declared'] = null;
+		}
 
 		return $result;
 	}
@@ -271,6 +293,74 @@ class BeloteCoinche extends Table {
 	//////////////////////////////////////////////////////////////////////////////
 	//////////// Utility functions
 	////////////
+
+	/**
+	 * Compute which cards are the belote, and which player has them.
+	 * Then notify the player.
+	 */
+	private function findAndNotifyBelote() {
+		self::setGameStateInitialValue('beloteCardId1', 0);
+		self::setGameStateInitialValue('beloteCardId2', 0);
+		self::setGameStateInitialValue('belotePlayerId', 0);
+		self::setGameStateInitialValue('beloteDeclared', 0);
+
+		$trumpColor = self::getGameStateValue('trumpColor');
+
+		if ($trumpColor > 4) {
+			// Alltrump/notrump, no belote
+			return;
+		}
+		$players = self::loadPlayersBasicInfos();
+		$cardIds = [];
+		foreach ($players as $player) {
+			$playerCards = $this->cards->getCardsInLocation(
+				'hand',
+				$player['player_id']
+			);
+			$cardIds = [];
+			foreach ($playerCards as $card) {
+				if (
+					$card['type'] == $trumpColor &&
+					in_array($card['type_arg'], [12, 13])
+				) {
+					$cardIds[] = $card['id'];
+				}
+			}
+			if (count($cardIds) === 2) {
+				// Found you !
+				break;
+			}
+		}
+
+		// No belote in any hand
+		if (count($cardIds) !== 2) {
+			return;
+		}
+
+		self::setGameStateInitialValue('beloteCardId1', $cardIds[0]);
+		self::setGameStateInitialValue('beloteCardId2', $cardIds[1]);
+		self::setGameStateInitialValue('belotePlayerId', $player['player_id']);
+
+		$this->notifyBelote();
+	}
+
+	/**
+	 * Notify the player who has belote
+	 */
+	private function notifyBelote() {
+		$playerId = self::getGameStateValue('belotePlayerId');
+		if (!$playerId) {
+			return;
+		}
+		$cardId1 = self::getGameStateValue('beloteCardId1');
+		$cardId2 = self::getGameStateValue('beloteCardId2');
+		$declared = !!self::getGameStateValue('beloteDeclared');
+		self::notifyPlayer($playerId, 'belote', '', [
+			'belote_card_id_1' => $cardId1,
+			'belote_card_id_2' => $cardId2,
+			'belote_declared' => $declared,
+		]);
+	}
 
 	/**
 	 * Returns the maximum score to end the game
@@ -794,12 +884,38 @@ class BeloteCoinche extends Table {
 		$this->gamestate->nextState('nextPlayerBid');
 	}
 
-	function playCard($cardId) {
+	function playCard($cardId, $wantBelote = false) {
 		self::checkAction('playCard');
 		$playerId = self::getActivePlayerId();
 
 		// Check Rules
 		$this->assertCardPlay($cardId);
+
+		// Check for belote
+		$beloteDeclared = self::getGameStateValue('beloteDeclared');
+		if ($beloteDeclared || $wantBelote) {
+			$cardId1 = self::getGameStateValue('beloteCardId1');
+			$cardId2 = self::getGameStateValue('beloteCardId2');
+			if ($cardId == $cardId1 || $cardId == $cardId2) {
+				// Card is belote, and player want it declared
+				$beloteText = 'Belote';
+				if (!$beloteDeclared) {
+					self::setGameStateInitialValue('beloteDeclared', 1);
+					$this->notifyBelote();
+				} else {
+					$beloteText = 'Rebelote';
+				}
+				self::notifyAllPlayers(
+					'sayBelote',
+					clienttranslate('${player_name} says ${belote_text} !'),
+					[
+						'player_id' => $playerId,
+						'player_name' => self::getActivePlayerName(),
+						'belote_text' => $beloteText,
+					]
+				);
+			}
+		}
 
 		$this->cards->moveCard($cardId, 'cardsontable', $playerId);
 		$currentCard = $this->cards->getCard($cardId);
@@ -863,6 +979,10 @@ class BeloteCoinche extends Table {
 		self::setGameStateInitialValue('bidPlayer', 0);
 		self::setGameStateInitialValue('countered', 0);
 		self::setGameStateInitialValue('trickCount', 0);
+		self::setGameStateInitialValue('beloteCardId1', 0);
+		self::setGameStateInitialValue('beloteCardId2', 0);
+		self::setGameStateInitialValue('belotePlayerId', 0);
+		self::setGameStateInitialValue('beloteDeclared', 0);
 
 		$this->activateFirstPlayer();
 
@@ -916,6 +1036,7 @@ class BeloteCoinche extends Table {
 			$bidPlayerId = self::getGameStateValue('bidPlayer');
 			$players = self::loadPlayersBasicInfos();
 			$bidPlayerDisplay = $players[$bidPlayerId]['player_name'] ?? '';
+			$this->findAndNotifyBelote();
 
 			self::notifyAllPlayers(
 				'allPassWithBid',
@@ -1049,8 +1170,12 @@ class BeloteCoinche extends Table {
 			$player4Id => 1,
 		];
 
-		// Remember who has belote
-		$belotePlayerIds = [];
+		// Belote
+		$beloteTeamId = null;
+		if (self::getGameStateValue('beloteDeclared')) {
+			$belotePlayerId = self::getGameStateValue('belotePlayerId');
+			$beloteTeamId = $playerIdTeam[$belotePlayerId];
+		}
 
 		// Current player scores by Id
 		$playerScores = self::getCollectionFromDb(
@@ -1083,19 +1208,6 @@ class BeloteCoinche extends Table {
 			$playerId = $card['location_arg'];
 			$teamId = $playerIdTeam[$playerId];
 			$teamPoints[$teamId] += $cardsPoints[$card['type']][$card['type_arg']];
-
-			// Check for belote
-			$isBelote =
-				$card['type'] == $trumpColor &&
-				in_array($card['type_arg'], [12, 13]);
-			if ($isBelote) {
-				$belotePlayerIds[] = $playerId;
-			}
-		}
-
-		$beloteTeamId = null;
-		if (count(array_unique($belotePlayerIds)) == 1) {
-			$beloteTeamId = $playerIdTeam[$belotePlayerIds[0]];
 		}
 
 		// Converts points to a total of 162, if "notrump"/"alltrump" bids
@@ -1151,13 +1263,16 @@ class BeloteCoinche extends Table {
 				]
 			);
 		} else {
-			// Failure
-			// Bidding team : 0 (TODO never lose the "belote")
-			$teamScores[$bidTeam] = 0;
-			// Defense team : (162 + bid) * coinche_multiplier
-			$baseScore = $bid + ($doAddPointsToScore ? 162 : 0);
+			// Failure (belote is never lost)
+			// Bidding team : 0 + belote
+			$teamScores[$bidTeam] = 0 + ($beloteTeamId == $bidTeam ? 20 : 0);
+			// Defense team : (162 + bid + belote) * coinche_multiplier
+			$baseDefenseScore =
+				$bid +
+				($doAddPointsToScore ? 162 : 0) +
+				($beloteTeamId == $defenseTeam ? 20 : 0);
 			$teamScores[$defenseTeam] = $this->roundToTen(
-				$baseScore * $multiplier
+				$baseDefenseScore * $multiplier
 			);
 			self::notifyAllPlayers(
 				'message',

@@ -35,8 +35,9 @@ class action_belotecoinche extends APP_GameAction {
 
 	public function playCard() {
 		self::setAjaxMode();
-		$card_id = self::getArg('id', AT_posint, true);
-		$this->game->playCard($card_id);
+		$cardId = self::getArg('id', AT_posint, true);
+		$wantBelote = self::getArg('belote', AT_bool, false);
+		$this->game->playCard($cardId, $wantBelote);
 		self::ajaxResponse();
 	}
 

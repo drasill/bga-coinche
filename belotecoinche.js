@@ -47,10 +47,28 @@ define([
 				color: null,
 				value: null
 			}
+			// Private information: player has belote ?
+			this.beloteInfo = {
+				// Belote card 1 (queen or king trump)
+				cardId1: gamedatas.belote_card_id_1,
+				// Belote card 2 (queen or king trump)
+				cardId2: gamedatas.belote_card_id_2,
+				// Belote has been declared already ?
+				declared: gamedatas.belote_declared
+			}
+			// Does this player want to declare the belote ?
+			this.wantToDeclareBelote = null
+
+			// Current trump
 			this.currentTrump = null
+
+			// List of bubbles timeout
 			this.playerBubbles = {}
+
+			// Update information about player bid
 			this.updatePlayerBid(false)
 
+			// Player hand
 			this.playerHand = new ebg.stock() // new stock object for hand
 			this.playerHand.create(this, $('myHand'), this.cardwidth, this.cardheight)
 			this.playerHand.setSelectionMode(1)
@@ -72,6 +90,7 @@ define([
 				}
 			}
 
+			// Observe click on player's hand cards
 			dojo.connect(
 				this.playerHand,
 				'onChangeSelection',
@@ -188,14 +207,6 @@ define([
 						'gray'
 					)
 				}
-				this.addActionButton(
-					'coinche_button',
-					_('Counter'),
-					'onPlayerCoinche',
-					null,
-					false,
-					'red'
-				)
 			}
 		},
 
@@ -473,11 +484,27 @@ define([
 			if (!cardId) {
 				return
 			}
+			if (
+				!this.beloteInfo.declared &&
+				this.wantToDeclareBelote === null &&
+				(cardId == this.beloteInfo.cardId1 || cardId == this.beloteInfo.cardId2)
+			) {
+				this.multipleChoiceDialog(
+					_('Do you want to declare the belote (+20pts)'),
+					['Oui', 'Non'],
+					dojo.hitch(this, function(choice) {
+						this.wantToDeclareBelote = choice == '0'
+						this.playSelectedCard()
+					})
+				)
+				return
+			}
 			this.ajaxcall(
 				'/' + this.game_name + '/' + this.game_name + '/' + 'playCard.html',
 				{
 					id: cardId,
-					lock: true
+					lock: true,
+					belote: this.wantToDeclareBelote
 				},
 				this,
 				function(result) {},
@@ -617,6 +644,8 @@ define([
 			dojo.subscribe('trickWin', this, 'notif_trickWin')
 			this.notifqueue.setSynchronous('trickWin', 1000)
 			dojo.subscribe('giveAllCardsToPlayer', this, 'notif_giveAllCardsToPlayer')
+			dojo.subscribe('belote', this, 'notif_belote')
+			dojo.subscribe('sayBelote', this, 'notif_sayBelote')
 		},
 
 		notif_newScores: function(notif) {
@@ -642,6 +671,12 @@ define([
 				)
 			}
 			this.clearPlayerBidItems()
+			this.beloteInfo = {
+				cardId1: null,
+				cardId2: null,
+				declared: false
+			}
+			this.wantToDeclareBelote = false
 		},
 
 		notif_allPassWithBid: function(notif) {
@@ -708,6 +743,20 @@ define([
 				})
 				anim.play()
 			}
+		},
+
+		// Private information, this player has the belote
+		notif_belote: function(notif) {
+			this.beloteInfo = {
+				cardId1: notif.args.belote_card_id_1,
+				cardId2: notif.args.belote_card_id_2,
+				declared: notif.args.belote_declared
+			}
+		},
+
+		// Public information, a player is saying "belote" or "rebelote"
+		notif_sayBelote: function(notif) {
+			this.showPlayerBubble(notif.args.player_id, notif.args.belote_text + ' !')
 		}
 	})
 })
