@@ -5,10 +5,39 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   version="1.1"
-   width="506.26562pt"
-   height="613.30505pt"
-   id="svg1326">
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4f, 2020-05-01)"
+   sodipodi:docname="alltrump.svg"
+   id="svg1326"
+   height="272.66089pt"
+   width="493.72842pt"
+   version="1.1">
+  <sodipodi:namedview
+     lock-margins="true"
+     fit-margin-bottom="10"
+     fit-margin-right="10"
+     fit-margin-left="10"
+     fit-margin-top="10"
+     inkscape:current-layer="svg1326"
+     inkscape:window-maximized="1"
+     inkscape:window-y="35"
+     inkscape:window-x="15"
+     inkscape:cy="192.48341"
+     inkscape:cx="237.14292"
+     inkscape:zoom="1.0651306"
+     showgrid="false"
+     id="namedview894"
+     inkscape:window-height="1028"
+     inkscape:window-width="1768"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
   <defs
      id="defs3" />
   <metadata
@@ -61,24 +90,15 @@
       </cc:License>
     </rdf:RDF>
   </metadata>
-  <g
-     transform="translate(-45.000001,-89.994265)"
-     id="layer1">
-    <path
-       style="color:#000000;display:block;overflow:visible;visibility:visible;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:1.81093705;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1;marker:none;marker-start:none;marker-mid:none;marker-end:none"
-       d="m 187.18045,250.3873 c -58.81387,-28.09458 -145.327172,5.41679 -124.858235,81.01208 19.947114,73.66818 106.090485,57.5015 135.878815,12.65836 -12.42728,85.02529 -34.25235,98.26235 -47.33387,116.72006 h 138.884 c -14.07177,-19.73903 -39.62371,-31.69477 -54.60839,-117.8853 30.01637,44.76763 120.25299,60.2871 139.91188,-12.31667 19.33868,-71.42099 -67.83356,-112.09436 -125.801,-79.76257 55.58527,-37.32558 75.54727,-159.913526 -29.73107,-159.913526 -106.31757,0 -88.57883,124.984726 -32.34213,159.487566 z"
-       id="rect3667" />
-    <path
-       id="path2076"
-       d="m 462.29467,664.32769 c -122.0804,124.72233 -2.40813,215.19165 94.11395,155.64651 -18.22494,64.96823 -28.24741,70.08028 -39.31195,87.18963 H 621.31128 C 607.93386,889.88674 593.8851,884.94243 579.65132,820.344 678.19802,876.95357 782.0612,778.23048 672.71168,664.32769 601.19699,601.7731 573.43245,544.66342 567.50319,536.55402 c -5.68921,6.75662 -39.20801,66.37968 -105.20852,127.77367 z"
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.85576209pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
-    <path
-       style="fill:#ff0000;fill-opacity:1"
-       d="m 216.50043,906.61239 c -0.3432,-0.61825 -1.81867,-5.08821 -3.27883,-9.93328 C 203.96781,865.97319 186.78919,834.88002 158.02135,796.767 147.21332,782.44803 137.04027,769.76836 109.53195,736.32989 77.680663,697.61227 68.557087,685.20914 59.344127,668.10174 53.903664,657.99946 48.265682,642.62811 46.41034,632.83915 c -1.854284,-9.78328 -1.884514,-25.76677 -0.06449,-34.08951 7.403277,-33.85415 37.474711,-59.39471 73.43295,-62.36878 41.19287,-3.40701 76.23264,17.40237 94.64341,56.20672 l 4.11116,8.66507 3.09417,-6.84536 c 4.59763,-10.17145 9.02537,-17.05079 16.49892,-25.63414 19.02798,-21.85364 41.67355,-32.55863 68.95442,-32.59608 12.21998,-0.0168 19.2223,0.99749 29.63542,4.29255 15.57394,4.92811 27.29757,12.6053 37.73867,24.71314 27.20989,31.55337 23.98818,74.53993 -9.53244,127.1876 -7.81932,12.2811 -21.92763,30.452 -41.32995,53.23123 -22.34309,26.23184 -33.26023,39.56342 -44.43732,54.26515 -26.79149,35.24004 -44.8099,67.26021 -54.72093,97.24342 -1.51191,4.57392 -3.09592,8.83598 -3.52003,9.47125 -0.98487,1.47524 -3.60189,1.49361 -4.41387,0.031 z"
-       id="path30" />
-    <path
-       style="fill:#ff0000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1.00000003pt;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 566.99914,90.003743 C 528.30104,154.40096 484.73668,216.34755 440.47717,275.8435 486.82222,335.33946 531.08175,397.28603 566.99914,461.68326 604.30691,396.06073 645.09054,333.50148 693.52113,275.8435 646.4809,216.34755 603.61174,153.17564 566.99914,90.003743 Z"
-       id="path2139" />
-  </g>
+  <text
+     id="text898"
+     y="350.21451"
+     x="4.6366725"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:457.719px;line-height:104%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:34.329"
+     xml:space="preserve"><tspan
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:457.719px;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:34.329"
+       y="350.21451"
+       x="4.6366725"
+       id="tspan896"
+       sodipodi:role="line">TA</tspan></text>
 </svg>

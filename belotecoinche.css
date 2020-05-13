@@ -32,8 +32,14 @@
 }
 
 .playerTables__name {
-	margin-top: 4px;
-	position: relative;
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	font-size: 12px;
+	color: white;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .playerTables__name > span {
@@ -45,16 +51,20 @@
 }
 
 .playerTables__bubble {
-	display: none;
+	opacity: 0;
 	background: white;
-	border-radius: 10px;
-	bottom: 130%;
+	border-radius: 18px/15px;
+	bottom: 100%;
 	color: #000;
 	font-weight: normal;
-	left: 30px;
+	left: -30px;
 	padding: 5px 15px;
 	position: absolute;
 	z-index: 100;
+	box-shadow: rgba(0,0,0,0.5) 2px 2px 7px;
+	font-size: 14px;
+	transition: opacity .5s ease-in;
+	min-width: 40px;
 }
 .playerTables__bubble:hover {
 	opacity: 0.5;
@@ -74,7 +84,12 @@
 }
 
 .playerTables__bubble--visible {
+	opacity: 1;
 	display: block;
+}
+
+.playerTables__bubble .playerTables__bid-item {
+	margin: 0 !important;
 }
 
 .playerTables__table {
@@ -82,13 +97,11 @@
 	text-align: center;
 	width: 160px;
 	height: 180px;
-	display: flex;
-	flex-direction: column;
 	box-sizing: border-box;
 }
 
 .playerTables__table__firstMarker {
-	display: none;
+	opacity: 0;
 	position: absolute;
 	top: -4px;
 	right: -3px;
@@ -98,9 +111,10 @@
 	background-repeat: no-repeat;
 	background-position: 100% 0%;
 	background-image: url('img/playerFirst.svg');
+	transition: opacity 1.5s ease-in;
 }
 .playerTables__table--first .playerTables__table__firstMarker {
-	display: block;
+	opacity: 1;
 }
 
 .playerTables__table__counterMarker {
@@ -118,16 +132,35 @@
 }
 
 .playerTables__card {
-	flex: 1;
 	margin: 0;
-	background: rgba(255, 255, 255, 0.05);
-	border: 1px solid rgba(255, 255, 255, 0.1);
-	border-radius: 2px;
+	position: absolute;
+	width: 72px;
+	height: 104px;
 }
 
-.playerTables__table--active .playerTables__card {
-	background: rgba(255, 255, 255, 0.1);
-	border: 2px solid rgba(255, 255, 255, 0.3);
+.playerTables__avatar-wrapper {
+	box-sizing: border-box;
+	position: relative;
+	width: 110px;
+	height: 110px;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	border-radius: 2px;
+	border: 4px solid rgba(255, 255, 255, 0.1);
+}
+
+.playerTables__table--active .playerTables__avatar-wrapper {
+	border: 4px solid rgba(255, 255, 255, 0.5);
+}
+
+.playerTables__avatar {
+	box-sizing: border-box;
+	width: 100%;
+	height: 100%;
+	background-size: cover;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
 }
 
 .playerTables__table--N {
@@ -135,27 +168,75 @@
 	top: 6%;
 	margin-left: -80px;
 }
+.playerTables__table--N .playerTables__avatar-wrapper {
+	position: absolute;
+	top: 0px;
+	left: 50%;
+	margin-left: -60px;
+}
+.playerTables__table--N .playerTables__card {
+	top: 120px;
+	left: 50%;
+	margin-left: -36px;
+}
+
 .playerTables__table--S {
 	left: 50%;
 	bottom: 6%;
 	margin-left: -80px;
 }
+.playerTables__table--S .playerTables__avatar-wrapper {
+	position: absolute;
+	bottom: 0px;
+	left: 50%;
+	margin-left: -60px;
+}
+.playerTables__table--S .playerTables__card {
+	bottom: 120px;
+	left: 50%;
+	margin-left: -36px;
+}
+
 .playerTables__table--W {
 	left: 6%;
 	top: 50%;
 	margin-top: -90px;
 }
+.playerTables__table--W .playerTables__avatar-wrapper {
+	position: absolute;
+	left: 0;
+	top: 50%;
+	margin-top: -60px;
+}
+.playerTables__table--W .playerTables__card {
+	left: 120px;
+	top: 50%;
+	margin-top: -55px;
+}
+
 .playerTables__table--E {
 	right: 6%;
 	top: 50%;
 	margin-top: -90px;
 }
+.playerTables__table--E .playerTables__avatar-wrapper {
+	position: absolute;
+	right: 0;
+	top: 50%;
+	margin-top: -60px;
+}
+.playerTables__table--E .playerTables__card {
+	right: 120px;
+	top: 50%;
+	margin-top: -55px;
+}
 
 .playerTables__bid-item {
-	opacity: 0.2;
+	opacity: 0.1;
+	font-size: 14px;
 }
 .playerTables__bid-item:nth-last-child(2) {
-	opacity: 0.4;
+	opacity: 0.2;
 }
 .playerTables__bid-item:last-child {
 	opacity: 1;
@@ -186,8 +267,9 @@
 .cardontable {
 	position: absolute;
 	width: 72px;
-	height: 96px;
-	background-image: url('img/cards.jpg');
+	height: 104px;
+	background-image: url('img/cards-french.png');
+	box-shadow: rgba(0,0,0,0.25) 2px 4px 5px;
 }
 
 /*** bid panel ***/
@@ -304,9 +386,19 @@
 	font-size: 1.1rem;
 }
 
+.stockitem:hover {
+	transition: top 0.2s ease-in;
+}
+
+.stockitem:hover {
+	box-shadow: rgba(0,0,0,0.25) 2px 4px 5px;
+	top: -4px;
+}
+
 .stockitem_selected {
 	border: 2px red solid !important;
 	border: 0 !important;
 	top: -12px !important;
 	box-shadow: rgba(0, 0, 255, 0.9) 0px 0px 7px;
 }
+

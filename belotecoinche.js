@@ -25,7 +25,7 @@ define([
 	return declare('bgagame.belotecoinche', ebg.core.gamegui, {
 		constructor: function() {
 			this.cardwidth = 72
-			this.cardheight = 96
+			this.cardheight = 104
 		},
 
 		/**
@@ -84,7 +84,7 @@ define([
 					this.playerHand.addItemType(
 						cardTypeId,
 						cardTypeId,
-						g_gamethemeurl + 'img/cards.jpg',
+						g_gamethemeurl + 'img/cards-french.png',
 						cardTypeId
 					)
 				}
@@ -305,7 +305,6 @@ define([
 				'.playerTables__table--id--' + playerId + ' .playerTables__bubble'
 			)[0]
 			target.classList.remove('playerTables__bubble--visible')
-			target.innerHTML = ''
 		},
 
 		// Clear all players bid/pass info
@@ -485,7 +484,7 @@ define([
 				return
 			}
 			if (
-				!this.beloteInfo.declared &&
+				!(this.beloteInfo.declared == 1) &&
 				this.wantToDeclareBelote === null &&
 				(cardId == this.beloteInfo.cardId1 || cardId == this.beloteInfo.cardId2)
 			) {

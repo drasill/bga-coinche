@@ -5,10 +5,39 @@
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
-   version="1.1"
-   width="491.55594pt"
-   height="520.61285pt"
-   id="svg1326">
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0 (4035a4f, 2020-05-01)"
+   sodipodi:docname="notrump.svg"
+   id="svg1326"
+   height="272.66089pt"
+   width="493.72842pt"
+   version="1.1">
+  <sodipodi:namedview
+     lock-margins="true"
+     fit-margin-bottom="10"
+     fit-margin-right="10"
+     fit-margin-left="10"
+     fit-margin-top="10"
+     inkscape:current-layer="svg1326"
+     inkscape:window-maximized="1"
+     inkscape:window-y="35"
+     inkscape:window-x="15"
+     inkscape:cy="192.48341"
+     inkscape:cx="237.14292"
+     inkscape:zoom="1.0651306"
+     showgrid="false"
+     id="namedview894"
+     inkscape:window-height="1028"
+     inkscape:window-width="1768"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
   <defs
      id="defs3" />
   <metadata
@@ -61,48 +90,15 @@
       </cc:License>
     </rdf:RDF>
   </metadata>
-  <g
-     transform="translate(-55.485984,-101.07217)"
-     id="layer1">
-    <text
-       id="text74895"
-       y="407.3241"
-       x="48.670288"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:465.28482056px;line-height:103.99999619%;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:-103.64292145px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:34.89660645"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:465.28482056px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:34.89660645"
-         y="407.3241"
-         x="48.670288"
-         id="tspan74893">A</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:465.28482056px;line-height:103.99999619%;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:-103.64292145px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:34.89660645"
-       x="390.10184"
-       y="407.3241"
-       id="text74899"><tspan
-         id="tspan74897"
-         x="390.10184"
-         y="407.3241"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:465.28482056px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke-width:34.89660645">A</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:465.28482056px;line-height:103.99999619%;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:-103.64292145px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:34.89660645"
-       x="390.10184"
-       y="795.22266"
-       id="text74903"><tspan
-         id="tspan74901"
-         x="390.10184"
-         y="795.22266"
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:465.28482056px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;stroke-width:34.89660645">A</tspan></text>
-    <text
-       id="text74907"
-       y="795.22266"
-       x="48.670288"
-       style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:465.28482056px;line-height:103.99999619%;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;letter-spacing:-103.64292145px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke:none;stroke-width:34.89660645"
-       xml:space="preserve"><tspan
-         style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-size:465.28482056px;font-family:aakar;-inkscape-font-specification:'aakar, Medium';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-feature-settings:normal;text-align:start;writing-mode:lr-tb;text-anchor:start;fill:#ff0000;fill-opacity:1;stroke-width:34.89660645"
-         y="795.22266"
-         x="48.670288"
-         id="tspan74905">A</tspan></text>
-  </g>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:457.719px;line-height:104%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#242424;fill-opacity:1;stroke:none;stroke-width:34.329;"
+     x="5.8059969"
+     y="350.21451"
+     id="text920"><tspan
+       sodipodi:role="line"
+       id="tspan918"
+       x="5.8059969"
+       y="350.21451"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:457.719px;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:34.329;fill:#242424;fill-opacity:1;">SA</tspan></text>
 </svg>
