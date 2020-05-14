@@ -61,9 +61,9 @@
 	padding: 5px 15px;
 	position: absolute;
 	z-index: 100;
-	box-shadow: rgba(0,0,0,0.5) 2px 2px 7px;
+	box-shadow: rgba(0, 0, 0, 0.5) 2px 2px 7px;
 	font-size: 14px;
-	transition: opacity .5s ease-in;
+	transition: opacity 0.5s ease-in;
 	min-width: 40px;
 }
 .playerTables__bubble:hover {
@@ -269,19 +269,33 @@
 	width: 72px;
 	height: 104px;
 	background-image: url('img/cards-french.png');
-	box-shadow: rgba(0,0,0,0.25) 2px 4px 5px;
+	box-shadow: rgba(0, 0, 0, 0.25) 2px 4px 5px;
 }
 
 /*** bid panel ***/
 
 .bidPanel {
+	opacity: 0;
+	transition: opacity 0.5s ease-in;
+	width: 50%;
+	overflow: hidden;
+	position: absolute;
+	top: 33%;
+	left: 25%;
 	text-align: center;
 	margin: 10px;
-	display: none;
+	height: 30%;
+	box-sizing: border-box;
+	padding: 10px;
+	border-radius: 9px;
+	color: white;
+	background: linear-gradient(14deg, #048254, #035d3c);
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	box-shadow: rgba(0,0,0,.5) 2px 2px 6px;
 }
 
 .bidPanel--visible {
-	display: block;
+	opacity: 1;
 }
 
 .bidPanel__title {
@@ -292,7 +306,10 @@
 .bidPanel__colors,
 .bidPanel__values {
 	display: flex;
-	justify-content: center;
+}
+
+.bidPanel__values {
+	overflow: auto;
 }
 
 .bidPanel__btn {
@@ -301,6 +318,33 @@
 	margin: 1px;
 	font-size: 1.3rem;
 	overflow: visible;
+	background: #eee;
+	color: #333;
+	border-radius: 5px;
+	margin: 2px;
+	font-weight: bold;
+	cursor: pointer;
+	white-space: nowrap;
+	line-height: 32px;
+}
+
+.notouch-device .bidPanel__btn:hover,
+.bidPanel__btn:hover {
+	text-decoration: none;
+	background: #fff;
+	color: #000;
+}
+
+.bidPanel__btn--coinche {
+	background: #C41515;
+	font-size: 14px;
+	color: white;
+}
+
+.touch-device .bidPanel__btn--selected,
+.bidPanel__btn--selected {
+	background: #4871B6;
+	color: white;
 }
 
 .bidPanel__btn--pass {
@@ -309,6 +353,10 @@
 	margin: 0;
 	margin-left: 5px;
 	font-size: 1rem;
+}
+
+.bidPanel__btn--hidden {
+	display: none;
 }
 
 .currentBidInfo {
@@ -391,7 +439,7 @@
 }
 
 .stockitem:hover {
-	box-shadow: rgba(0,0,0,0.25) 2px 4px 5px;
+	box-shadow: rgba(0, 0, 0, 0.25) 2px 4px 5px;
 	top: -4px;
 }
 
@@ -401,4 +449,3 @@
 	top: -12px !important;
 	box-shadow: rgba(0, 0, 255, 0.9) 0px 0px 7px;
 }
-

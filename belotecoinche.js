@@ -107,6 +107,11 @@ define([
 				'onclick',
 				'onCoincheBtnClick'
 			)
+			this.connectClass(
+				'.bidPanel__btn--coinche',
+				'onclick',
+				'onCoincheBtnClick'
+			)
 
 			// First Player
 			this.updateFirstPlayer(gamedatas.firstPlayer)
@@ -325,15 +330,23 @@ define([
 				return
 			}
 
-			// Show bidPanel
+			// Show bid info
 			dojo.query('.currentBidInfo').addClass('currentBidInfo--visible')
-
-			// Update bidPanel content
 			dojo.place(
 				this.format_block('jstpl_currentbidinfo', data),
 				dojo.query('.currentBidInfo__wrapper')[0],
 				'replace'
 			)
+
+			// Update bid panel buttons
+			dojo.query('.bidPanel__btn--value').forEach(function(el) {
+				var value = +el.getAttribute('data-value')
+				if (!data.bid || data.bid < +value) {
+					el.classList.remove('bidPanel__btn--hidden')
+				} else {
+					el.classList.add('bidPanel__btn--hidden')
+				}
+			})
 
 			// Activate countered marker of player
 			if (data.countered && data.counteringPlayer) {
@@ -363,20 +376,20 @@ define([
 					value: null
 				}
 			}
-			dojo.query('.bidPanel__btn').removeClass('bgabutton_blue')
+			dojo.query('.bidPanel__btn').removeClass('bidPanel__btn--selected')
 			if (this.playerBid.value) {
 				dojo
 					.query(
 						'.bidPanel__btn--value[data-value="' + this.playerBid.value + '"]'
 					)
-					.addClass('bgabutton_blue')
+					.addClass('bidPanel__btn--selected')
 			}
 			if (this.playerBid.color) {
 				dojo
 					.query(
 						'.bidPanel__btn--color[data-color="' + this.playerBid.color + '"]'
 					)
-					.addClass('bgabutton_blue')
+					.addClass('bidPanel__btn--selected')
 			}
 		},
 
@@ -676,6 +689,9 @@ define([
 				declared: false
 			}
 			this.wantToDeclareBelote = false
+
+			// Reactive all bidPanel buttons
+			dojo.query('.bidPanel__btn--value').removeClass('bidPanel__btn--hidden')
 		},
 
 		notif_allPassWithBid: function(notif) {
