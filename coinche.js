@@ -1,15 +1,15 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * BeloteCoinche implementation : © Christophe Badoit <gameboardarena@tof2k.com>
+ * Coinche implementation : © Christophe Badoit <gameboardarena@tof2k.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
- * belotecoinche.js
+ * coinche.js
  *
- * BeloteCoinche user interface script
+ * Coinche user interface script
  *
  * In this file, you are describing the logic of your user interface, in Javascript language.
  *
@@ -22,7 +22,7 @@ define([
 	'ebg/counter',
 	'ebg/stock'
 ], function(dojo, declare) {
-	return declare('bgagame.belotecoinche', ebg.core.gamegui, {
+	return declare('bgagame.coinche', ebg.core.gamegui, {
 		constructor: function() {
 			this.cardwidth = 72
 			this.cardheight = 104

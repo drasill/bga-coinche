@@ -3,7 +3,7 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * BeloteCoinche implementation : © Christophe Badoit <gameboardarena@tof2k.com>
+ * Coinche implementation : © Christophe Badoit <gameboardarena@tof2k.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -11,14 +11,14 @@
  *
  * gameoptions.inc.php
  *
- * BeloteCoinche game options description
+ * Coinche game options description
  *
  * In this file, you can define your game options (= game variants).
  *
  * Note: If your game has no variant, you don't have to modify this file.
  *
  * Note²: All options defined in this file should have a corresponding "game state labels"
- *        with the same ID (see "initGameStateLabels" in belotecoinche.game.php)
+ *        with the same ID (see "initGameStateLabels" in coinche.game.php)
  *
  * !! It is not a good idea to modify this file when a game is running !!
  *

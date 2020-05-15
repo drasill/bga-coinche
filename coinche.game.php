@@ -2,13 +2,13 @@
 /**
  *------
  * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
- * BeloteCoinche implementation : © Christophe Badoit <gameboardarena@tof2k.com>
+ * Coinche implementation : © Christophe Badoit <gameboardarena@tof2k.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
- * belotecoinche.game.php
+ * coinche.game.php
  *
  * This is the main file for your game logic.
  *
@@ -18,7 +18,7 @@
 
 require_once APP_GAMEMODULE_PATH . 'module/table/table.game.php';
 
-class BeloteCoinche extends Table {
+class Coinche extends Table {
 	// Team pairing constants
 	const TEAM_1_3 = 1;
 	const TEAM_1_2 = 2;
@@ -69,7 +69,7 @@ class BeloteCoinche extends Table {
 
 	protected function getGameName() {
 		// Used for translations and stuff. Please do not modify.
-		return 'belotecoinche';
+		return 'coinche';
 	}
 
 	/**
