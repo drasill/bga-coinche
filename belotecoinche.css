@@ -138,6 +138,13 @@
 	height: 104px;
 }
 
+.playerTables__status {
+	margin: 0;
+	position: absolute;
+	width: 110px;
+	height: 110px;
+}
+
 .playerTables__avatar-wrapper {
 	box-sizing: border-box;
 	position: relative;
@@ -179,6 +186,11 @@
 	left: 50%;
 	margin-left: -36px;
 }
+.playerTables__table--N .playerTables__status {
+	top: 0;
+	left: 85%;
+	text-align: left;
+}
 
 .playerTables__table--S {
 	left: 50%;
@@ -195,6 +207,11 @@
 	bottom: 120px;
 	left: 50%;
 	margin-left: -36px;
+}
+.playerTables__table--S .playerTables__status {
+	bottom: 0;
+	left: 85%;
+	text-align: left;
 }
 
 .playerTables__table--W {
@@ -213,6 +230,10 @@
 	top: 50%;
 	margin-top: -55px;
 }
+.playerTables__table--W .playerTables__status {
+	top: 85%;
+	left: 0;
+}
 
 .playerTables__table--E {
 	right: 6%;
@@ -230,6 +251,10 @@
 	top: 50%;
 	margin-top: -55px;
 }
+.playerTables__table--E .playerTables__status {
+	top: 85%;
+	right: 0;
+}
 
 .playerTables__bid-item {
 	opacity: 0.1;
@@ -240,9 +265,6 @@
 }
 .playerTables__bid-item:last-child {
 	opacity: 1;
-}
-.playerTables__bid-item:first-child {
-	margin-top: 10px;
 }
 
 .playerTables__coinche-btn {

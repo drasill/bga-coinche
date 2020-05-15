@@ -257,15 +257,26 @@ define([
 			).play()
 		},
 
+		// Add item in player's status (on table)
+		updatePlayerStatus: function(playerId, html) {
+			var target = dojo.query(
+				'.playerTables__table--id--' + playerId + ' .playerTables__status'
+			)[0]
+			while (target.childElementCount >= 5) {
+				target.removeChild(target.children[0])
+			}
+			dojo.place(html, target, 'append')
+		},
+
 		// Update a players's bid info
 		updatePlayerBidInfo: function(data) {
 			if (!data.player_id) {
 				return
 			}
-			var target = dojo.query(
-				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
-			)[0]
-			dojo.place(this.format_block('jstpl_playerbid', data), target, 'append')
+			this.updatePlayerStatus(
+				data.player_id,
+				this.format_block('jstpl_playerbid', data)
+			)
 			this.showPlayerBubble(
 				data.player_id,
 				this.format_block('jstpl_playerbid', data)
@@ -274,10 +285,10 @@ define([
 
 		// Update a players's pass info
 		updatePlayerPassInfo: function(data) {
-			var target = dojo.query(
-				'.playerTables__table--id--' + data.player_id + ' .playerTables__card'
-			)[0]
-			dojo.place(this.format_block('jstpl_playerpass', data), target, 'append')
+			this.updatePlayerStatus(
+				data.player_id,
+				this.format_block('jstpl_playerpass', data)
+			)
 			this.showPlayerBubble(
 				data.player_id,
 				this.format_block('jstpl_playerpass', data)
@@ -313,8 +324,8 @@ define([
 		},
 
 		// Clear all players bid/pass info
-		clearPlayerBidItems: function() {
-			dojo.query('.playerTables__card .playerTables__bid-item').remove()
+		clearPlayerStatuses: function() {
+			dojo.query('.playerTables__status').innerHTML('')
 		},
 
 		// Update global bid info
@@ -496,6 +507,9 @@ define([
 			if (!cardId) {
 				return
 			}
+			console.log(!(this.beloteInfo.declared == 1))
+			console.log(this.wantToDeclareBelote === null)
+			console.log((cardId == this.beloteInfo.cardId1 || cardId == this.beloteInfo.cardId2))
 			if (
 				!(this.beloteInfo.declared == 1) &&
 				this.wantToDeclareBelote === null &&
@@ -529,20 +543,12 @@ define([
 		///////////////////////////////////////////////////
 		//// Player's action
 
-		/**
-		 *
-		 * Here, you are defining methods to handle player's action (ex: results of mouse click on
-		 * game objects).
-		 *
-		 * Most of the time, these methods:
-		 * _ check the action is possible at this game state.
-		 * _ make a call to the game server
-		 *
-		 */
 		onPlayerHandSelectionChanged: function() {
 			var items = this.playerHand.getSelectedItems()
 
+			console.log('onPlayerHandSelectionChanged', items)
 			if (items.length <= 0) {
+				this.selectedCardId = null
 				return
 			}
 
@@ -651,7 +657,9 @@ define([
 			dojo.subscribe('updateBidPass', this, 'notif_updateBidPass')
 			dojo.subscribe('updateBidCoinche', this, 'notif_updateBidCoinche')
 			dojo.subscribe('allPassNoBid', this, 'notif_allPassNoBid')
+			this.notifqueue.setSynchronous('allPassNoBid', 2000)
 			dojo.subscribe('allPassWithBid', this, 'notif_allPassWithBid')
+			this.notifqueue.setSynchronous('allPassWithBid', 2000)
 			dojo.subscribe('playCard', this, 'notif_playCard')
 			dojo.subscribe('trickWin', this, 'notif_trickWin')
 			this.notifqueue.setSynchronous('trickWin', 1000)
@@ -682,21 +690,25 @@ define([
 					card.id
 				)
 			}
-			this.clearPlayerBidItems()
+			this.clearPlayerStatuses()
 			this.beloteInfo = {
 				cardId1: null,
 				cardId2: null,
 				declared: false
 			}
-			this.wantToDeclareBelote = false
+			this.wantToDeclareBelote = null
 
 			// Reactive all bidPanel buttons
 			dojo.query('.bidPanel__btn--value').removeClass('bidPanel__btn--hidden')
 		},
 
 		notif_allPassWithBid: function(notif) {
-			this.clearPlayerBidItems()
-			this.updatePlayerBidInfo(notif.args)
+			this.selectedCardId = null
+			this.clearPlayerStatuses()
+			this.updatePlayerStatus(
+				notif.args.player_id,
+				this.format_block('jstpl_playerbid', notif.args)
+			)
 			this.currentTrump = notif.args.trumpColor
 			this.updateCardsWeights()
 			this.clearOldTricksLogs(99)
@@ -704,7 +716,7 @@ define([
 
 		notif_allPassNoBid: function(notif) {
 			this.currentTrump = null
-			this.clearPlayerBidItems()
+			this.clearPlayerStatuses()
 			this.clearOldTricksLogs(99)
 		},
 
@@ -717,7 +729,7 @@ define([
 				notif.args.player_id,
 				'<span color="red">' + _('Counter !') + '</span>'
 			)
-			this.clearPlayerBidItems()
+			this.clearPlayerStatuses()
 		},
 
 		notif_updateBidPass: function(notif) {
