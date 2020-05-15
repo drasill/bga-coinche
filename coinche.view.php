@@ -49,7 +49,6 @@ class view_coinche_coinche extends game_view {
 
 	private function getPlayerAvatar($player, $size) {
 		$avatarPlayerId = (string)$player['player_id'];
-		$avatarPlayerId = '86769394'; // DEBUG
 		$avatarUrl = sprintf('https://x.boardgamearena.net/data/avatar/%s/%s/%s/%s_%s.jpg?h=%s',
 			'0',
 			substr($avatarPlayerId, 0, 2),
