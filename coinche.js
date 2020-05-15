@@ -696,6 +696,9 @@ define([
 
 			// Reactive all bidPanel buttons
 			dojo.query('.bidPanel__btn--value').removeClass('bidPanel__btn--hidden')
+
+			// Remove "coinche" playerTables
+			dojo.query('.playerTables').removeClass('playerTables--coinched')
 		},
 
 		notif_allPassWithBid: function(notif) {
@@ -728,9 +731,10 @@ define([
 		notif_updateBidCoinche: function(notif) {
 			this.showPlayerBubble(
 				notif.args.player_id,
-				'<span color="red">' + _('Counter !') + '</span>'
+				'<span color="red">' + _('Countered !') + '</span>'
 			)
 			this.clearPlayerStatuses()
+			dojo.query('.playerTables').addClass('playerTables--coinched')
 		},
 
 		notif_updateBidPass: function(notif) {

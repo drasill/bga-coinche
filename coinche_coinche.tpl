@@ -30,13 +30,13 @@
 		<!-- END player -->
 
 		<div class="playerTables__coinche-btn">
-			<a class="bgabutton bgabutton_red bgabutton_big">{COUNTER} !</a>
+			<a>{COUNTER} !</a>
 		</div>
 
 		<div class="bidPanel">
 
 			<div class="bidPanel__title">
-				{BID_OR} <a class="bidPanel__btn bidPanel__btn--pass action-button bgabutton bgabutton_blue">{PASS}</a>
+				{BID_OR} <a class="bidPanel__btn bidPanel__btn--pass">{PASS}</a>
 			</div>
 
 			<div class="bidPanel__values">
@@ -67,11 +67,11 @@
 				<a class="bidPanel__btn bidPanel__btn--color" data-color="3">
 					<span class="card-color-icon card-color-icon--club"/>
 				</a>
-				<a class="bidPanel__btn bidPanel__btn--color" data-color="5">
-					<span class="card-color-icon card-color-icon--alltrump"/>
-				</a>
 				<a class="bidPanel__btn bidPanel__btn--color" data-color="6">
 					<span class="card-color-icon card-color-icon--notrump"/>
+				</a>
+				<a class="bidPanel__btn bidPanel__btn--color" data-color="5">
+					<span class="card-color-icon card-color-icon--alltrump"/>
 				</a>
 				<div class="bidPanel__spacer"></div>
 				<a class="bidPanel__btn bidPanel__btn--coinche ">{COUNTER} !</a>

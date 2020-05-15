@@ -24,6 +24,12 @@
 	background-position: 50% 50%;
 	background-image: url('img/baize.svg');
 }
+.playerTables--coinched {
+  animation: coinche-shake 0.82s cubic-bezier(.36,.07,.19,.97) both;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
 
 .playerTables__wrapper {
 	width: 100%;
@@ -266,6 +272,11 @@
 .playerTables__bid-item:last-child {
 	opacity: 1;
 }
+.playerTables__bid__item-value {
+	font-weight: bold;
+	vertical-align: middle;
+	margin-right: 3px;
+}
 
 .playerTables__coinche-btn {
 	display: none;
@@ -284,6 +295,43 @@
 	display: flex;
 }
 
+.playerTables__coinche-btn > a {
+	display: block;
+	padding: 8px 20px;
+	margin: 1px;
+	font-size: 1.1rem;
+	overflow: visible;
+	border-radius: 5px;
+	margin: 2px;
+	font-weight: bold;
+	cursor: pointer;
+	white-space: nowrap;
+	line-height: 32px;
+	transition: background 0.5s ease-in;
+	background: linear-gradient(
+		135deg,
+		#ed4b5e 0%,
+		#d24b5a 50%,
+		#ba2737 51%,
+		#ef2d40 100%
+	);
+	color: white;
+}
+.notouch-device .playerTables__coinche-btn > a:hover,
+.playerTables__coinche-btn > a:hover {
+	text-decoration: none;
+	background: #fff;
+	background: linear-gradient(
+		135deg,
+		#f85032 0%,
+		#f16f5c 50%,
+		#f6290c 51%,
+		#f02f17 71%,
+		#e73827 100%
+	);
+	color: #000;
+}
+
 /*** cards on table ***/
 
 .cardontable {
@@ -297,7 +345,6 @@
 /*** bid panel ***/
 
 .bidPanel {
-	opacity: 0;
 	transition: opacity 0.5s ease-in;
 	width: 50%;
 	overflow: hidden;
@@ -313,11 +360,15 @@
 	color: white;
 	background: linear-gradient(14deg, #048254, #035d3c);
 	border: 1px solid rgba(255, 255, 255, 0.5);
-	box-shadow: rgba(0,0,0,.5) 2px 2px 6px;
+	box-shadow: rgba(0, 0, 0, 0.5) 2px 2px 6px;
+
+	opacity: 0;
+	pointer-events: none;
 }
 
 .bidPanel--visible {
 	opacity: 1;
+	pointer-events: all;
 }
 
 .bidPanel__title {
@@ -340,7 +391,6 @@
 	margin: 1px;
 	font-size: 1.3rem;
 	overflow: visible;
-	background: #eee;
 	color: #333;
 	border-radius: 5px;
 	margin: 2px;
@@ -348,24 +398,66 @@
 	cursor: pointer;
 	white-space: nowrap;
 	line-height: 32px;
+	background: linear-gradient(
+		135deg,
+		#f6f8f9 0%,
+		#e5ebee 50%,
+		#d7dee3 51%,
+		#f5f7f9 100%
+	);
+	transition: background 0.5s ease-in;
 }
 
 .notouch-device .bidPanel__btn:hover,
 .bidPanel__btn:hover {
 	text-decoration: none;
 	background: #fff;
+	background: linear-gradient(
+		135deg,
+		#e2e2e2 0%,
+		#dbdbdb 50%,
+		#d1d1d1 51%,
+		#fefefe 100%
+	);
 	color: #000;
 }
 
 .bidPanel__btn--coinche {
-	background: #C41515;
+	background: linear-gradient(
+		135deg,
+		#ed4b5e 0%,
+		#d24b5a 50%,
+		#ba2737 51%,
+		#ef2d40 100%
+	);
 	font-size: 14px;
 	color: white;
+}
+.notouch-device .bidPanel__btn--coinche:hover,
+.bidPanel__btn--coinche:hover {
+	background: linear-gradient(
+		135deg,
+		#f85032 0%,
+		#f16f5c 50%,
+		#f6290c 51%,
+		#f02f17 71%,
+		#e73827 100%
+	);
 }
 
 .touch-device .bidPanel__btn--selected,
 .bidPanel__btn--selected {
-	background: #4871B6;
+	background: linear-gradient(
+		135deg,
+		#b8e1fc 0%,
+		#a9d2f3 10%,
+		#90bae4 25%,
+		#90bcea 37%,
+		#90bff0 50%,
+		#6ba8e5 51%,
+		#a2daf5 83%,
+		#bdf3fd 100%
+	);
 	color: white;
 }
 
@@ -381,6 +473,10 @@
 	display: none;
 }
 
+.bidPanel__spacer {
+	flex: 1;
+}
+
 .currentBidInfo {
 	display: none;
 	margin: 10px;
@@ -393,8 +489,10 @@
 }
 
 .currentBidInfo__bid {
-	font-size: 20px;
+	font-size: 0.9rem;
 	font-weight: bold;
+	vertical-align: middle;
+	margin-right: 3px;
 }
 
 .currentBidInfo__player {
@@ -414,17 +512,18 @@
 	width: 32px;
 	height: 32px;
 	display: inline-block;
+	vertical-align: middle;
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
 }
+.card-color-icon--size10 {
+	width: 16px;
+	height: 10px;
+}
 .card-color-icon--size16 {
 	width: 16px;
 	height: 16px;
-	display: inline-block;
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: 50% 50%;
 }
 .card-color-icon--1,
 .card-color-icon--spade {
@@ -453,7 +552,9 @@
 
 .bid-value {
 	font-weight: bold;
-	font-size: 1.1rem;
+	font-size: 0.9rem;
+	vertical-align: middle;
+	color: #2c3e50;
 }
 
 .stockitem:hover {
@@ -470,4 +571,27 @@
 	border: 0 !important;
 	top: -12px !important;
 	box-shadow: rgba(0, 0, 255, 0.9) 0px 0px 7px;
+}
+
+@keyframes coinche-shake {
+	10%,
+	90% {
+		transform: translate3d(-1px, 0, 0) rotate3d(1, 1, 1, -0.1deg);
+	}
+
+	20%,
+	80% {
+		transform: translate3d(2px, 0, 0) rotate3d(1, 1, 1, 0.2deg);
+	}
+
+	30%,
+	50%,
+	70% {
+		transform: translate3d(-4px, 0, 0) rotate3d(1, 1, 1, -0.4deg);
+	}
+
+	40%,
+	60% {
+		transform: translate3d(4px, 0, 0) rotate3d(1, 1, 1, 0.4deg);
+	}
 }

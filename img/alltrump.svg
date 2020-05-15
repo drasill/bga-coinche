@@ -10,8 +10,8 @@
    inkscape:version="1.0 (4035a4f, 2020-05-01)"
    sodipodi:docname="alltrump.svg"
    id="svg1326"
-   height="272.66089pt"
-   width="493.72842pt"
+   height="280.13797pt"
+   width="544.39026pt"
    version="1.1">
   <sodipodi:namedview
      lock-margins="true"
@@ -23,9 +23,9 @@
      inkscape:window-maximized="1"
      inkscape:window-y="35"
      inkscape:window-x="15"
-     inkscape:cy="192.48341"
-     inkscape:cx="237.14292"
-     inkscape:zoom="1.0651306"
+     inkscape:cy="332.08935"
+     inkscape:cx="219.34149"
+     inkscape:zoom="0.5325653"
      showgrid="false"
      id="namedview894"
      inkscape:window-height="1028"
@@ -37,7 +37,8 @@
      objecttolerance="10"
      borderopacity="1"
      bordercolor="#666666"
-     pagecolor="#ffffff" />
+     pagecolor="#ffffff"
+     inkscape:document-rotation="0" />
   <defs
      id="defs3" />
   <metadata
@@ -48,7 +49,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
         <dc:creator>
           <cc:Agent>
             <dc:title>Jeff Bonham</dc:title>
@@ -90,15 +91,17 @@
       </cc:License>
     </rdf:RDF>
   </metadata>
-  <text
-     id="text898"
-     y="350.21451"
-     x="4.6366725"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:457.719px;line-height:104%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:34.329"
-     xml:space="preserve"><tspan
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:457.719px;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:34.329"
-       y="350.21451"
-       x="4.6366725"
-       id="tspan896"
-       sodipodi:role="line">TA</tspan></text>
+  <g
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:470.625px;line-height:104%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#2c3e50;fill-opacity:1;stroke:none;stroke-width:35.2965"
+     id="text920"
+     aria-label="TA">
+    <path
+       id="path1489"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:470.625px;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2c3e50;fill-opacity:1;stroke-width:35.2965"
+       d="M 331.94646,20.39271 H 20.392708 l -7.059375,127.53937 h 24.943125 c 6.118125,-34.82625 12.706875,-53.18062 24.001875,-69.652495 15.06,-22.59 32.94375,-33.414375 54.592497,-33.414375 14.11875,0 16.9425,3.294375 16.9425,19.295625 V 292.41396 c 0,29.64937 0,31.53187 -3.29437,35.29687 -4.23563,5.17688 -14.11875,7.05938 -39.061877,7.05938 h -10.35375 v 25.41375 H 271.23583 v -25.41375 h -10.35375 c -24.94312,0 -34.82625,-1.8825 -39.06187,-7.05938 -3.29438,-3.765 -3.29438,-5.6475 -3.29438,-35.29687 V 64.160835 c 0,-16.00125 2.82375,-19.295625 16.9425,-19.295625 20.23688,0 35.7675,8.47125 50.8275,27.766875 13.1775,17.413125 20.7075,37.179375 27.76688,75.299995 h 24.94312 z" />
+    <path
+       id="path1491"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:470.625px;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#2c3e50;fill-opacity:1;stroke-width:35.2965"
+       d="M 511.56343,13.333335 404.73156,262.76458 c -21.64875,50.8275 -39.06188,69.18188 -66.82875,72.00563 v 25.41375 h 136.01062 v -25.41375 c -33.885,-1.8825 -47.0625,-10.82438 -47.0625,-32.47313 0,-8.00062 1.41188,-13.1775 7.53,-26.82562 l 7.53,-17.88375 h 117.18563 l 17.88375,46.12125 c 3.765,8.47125 5.6475,15.53062 5.6475,19.29562 0,8.47125 -6.11813,11.295 -27.29625,11.295 l -8.00063,0.47063 v 25.41375 h 165.18938 v -25.41375 c -26.82563,-0.94125 -34.35563,-5.6475 -44.23875,-29.64938 L 547.33093,13.333335 Z m -9.88312,100.243125 45.65062,112.47937 h -93.18375 z" />
+  </g>
 </svg>

@@ -10,8 +10,8 @@
    inkscape:version="1.0 (4035a4f, 2020-05-01)"
    sodipodi:docname="notrump.svg"
    id="svg1326"
-   height="272.66089pt"
-   width="493.72842pt"
+   height="285.4325pt"
+   width="512.38037pt"
    version="1.1">
   <sodipodi:namedview
      lock-margins="true"
@@ -19,13 +19,13 @@
      fit-margin-right="10"
      fit-margin-left="10"
      fit-margin-top="10"
-     inkscape:current-layer="svg1326"
+     inkscape:current-layer="text920"
      inkscape:window-maximized="1"
      inkscape:window-y="35"
      inkscape:window-x="15"
-     inkscape:cy="192.48341"
-     inkscape:cx="237.14292"
-     inkscape:zoom="1.0651306"
+     inkscape:cy="403.85824"
+     inkscape:cx="552.38106"
+     inkscape:zoom="0.5325653"
      showgrid="false"
      id="namedview894"
      inkscape:window-height="1028"
@@ -37,7 +37,8 @@
      objecttolerance="10"
      borderopacity="1"
      bordercolor="#666666"
-     pagecolor="#ffffff" />
+     pagecolor="#ffffff"
+     inkscape:document-rotation="0" />
   <defs
      id="defs3" />
   <metadata
@@ -48,7 +49,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
         <dc:creator>
           <cc:Agent>
             <dc:title>Jeff Bonham</dc:title>
@@ -90,15 +91,17 @@
       </cc:License>
     </rdf:RDF>
   </metadata>
-  <text
-     xml:space="preserve"
-     style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:457.719px;line-height:104%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#242424;fill-opacity:1;stroke:none;stroke-width:34.329;"
-     x="5.8059969"
-     y="350.21451"
-     id="text920"><tspan
-       sodipodi:role="line"
-       id="tspan918"
-       x="5.8059969"
-       y="350.21451"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:457.719px;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;stroke-width:34.329;fill:#242424;fill-opacity:1;">SA</tspan></text>
+  <g
+     style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:470.625px;line-height:104%;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#242424;fill-opacity:1;stroke:none;stroke-width:35.2965"
+     id="text920"
+     aria-label="SA">
+    <path
+       id="path878"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:470.625px;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#242424;fill-opacity:1;stroke-width:35.2965"
+       d="m 266.05896,17.098335 h -21.17813 l -24.4725,21.64875 c -26.355,-17.88375 -51.76875,-25.41375 -84.7125,-25.41375 -72.476247,0 -121.891872,42.35625 -121.891872,104.949375 0,57.41625 42.35625,98.36062 116.244372,112.00875 l 29.17875,5.6475 c 30.12,5.6475 39.5325,8.00062 50.8275,14.11875 13.1775,7.05937 20.7075,21.17812 20.7075,37.65 0,32.94375 -26.82562,55.06312 -67.77,55.06312 -53.18062,0 -99.772497,-41.88562 -125.656872,-112.47937 H 13.333333 l 2.82375,133.18687 h 21.178125 l 29.17875,-27.76687 c 28.708125,21.64875 58.828122,31.53187 96.478122,31.53187 73.4175,0 124.245,-46.12125 124.245,-112.00875 0,-59.76937 -35.29687,-93.18375 -116.715,-111.0675 l -22.59,-5.17687 c -36.23812,-7.05938 -36.23812,-7.05938 -48.003747,-11.295 -21.178125,-7.53 -32.0025,-21.17813 -32.0025,-40.47375 0,-28.708125 26.355,-49.415625 63.534377,-49.415625 48.945,0 88.00687,34.355625 115.77375,101.184375 h 24.94312 z" />
+    <path
+       id="path880"
+       style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:470.625px;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#242424;fill-opacity:1;stroke-width:35.2965"
+       d="M 468.88363,13.333335 362.05175,262.76458 c -21.64875,50.8275 -39.06187,69.18188 -66.82875,72.00563 v 25.41375 h 136.01063 v -25.41375 c -33.885,-1.8825 -47.0625,-10.82438 -47.0625,-32.47313 0,-8.00062 1.41187,-13.1775 7.53,-26.82562 l 7.53,-17.88375 h 117.18562 l 17.88375,46.12125 c 3.765,8.47125 5.6475,15.53062 5.6475,19.29562 0,8.47125 -6.11812,11.295 -27.29625,11.295 l -8.00062,0.47063 v 25.41375 H 669.8405 v -25.41375 c -26.82562,-0.94125 -34.35562,-5.6475 -44.23875,-29.64938 L 504.65113,13.333335 Z m -9.88313,100.243125 45.65063,112.47937 h -93.18375 z" />
+  </g>
 </svg>
