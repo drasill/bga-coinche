@@ -507,9 +507,6 @@ define([
 			if (!cardId) {
 				return
 			}
-			console.log(!(this.beloteInfo.declared == 1))
-			console.log(this.wantToDeclareBelote === null)
-			console.log((cardId == this.beloteInfo.cardId1 || cardId == this.beloteInfo.cardId2))
 			if (
 				!(this.beloteInfo.declared == 1) &&
 				this.wantToDeclareBelote === null &&
@@ -546,7 +543,6 @@ define([
 		onPlayerHandSelectionChanged: function() {
 			var items = this.playerHand.getSelectedItems()
 
-			console.log('onPlayerHandSelectionChanged', items)
 			if (items.length <= 0) {
 				this.selectedCardId = null
 				return
@@ -712,6 +708,10 @@ define([
 			this.currentTrump = notif.args.trumpColor
 			this.updateCardsWeights()
 			this.clearOldTricksLogs(99)
+			this.showPlayerBubble(
+				notif.args.player_id,
+				_("Let's go with") + this.format_block('jstpl_playerbid', notif.args)
+			)
 		},
 
 		notif_allPassNoBid: function(notif) {
@@ -722,6 +722,7 @@ define([
 
 		notif_firstPlayerChange: function(notif) {
 			this.updateFirstPlayer(notif.args.player_id)
+			this.showPlayerBubble(notif.args.player_id, _("I'm starting"))
 		},
 
 		notif_updateBidCoinche: function(notif) {
