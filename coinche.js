@@ -244,11 +244,13 @@ define([
 
 			if (playerId != this.player_id) {
 				// Some opponent played a card
-				// Move card from player panel
-				this.placeOnObject(
-					'cardontable_' + playerId,
-					'overall_player_board_' + playerId
-				)
+				// Move card from player avatar
+				var from = dojo.query(
+					'.playerTables__table--id--' +
+						playerId +
+						' .playerTables__avatar-wrapper'
+				)[0]
+				this.placeOnObject('cardontable_' + playerId, from)
 			} else {
 				// You played a card. If it exists in your hand, move card from there and remove
 				// corresponding item

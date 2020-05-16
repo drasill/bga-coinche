@@ -1147,6 +1147,9 @@ class Coinche extends Table {
 	function stEndHand() {
 		//// Compute score
 
+		// Score table
+		$table = [];
+
 		// Cards points
 		$cardsPoints = $this->getCardsPoints();
 
@@ -1168,6 +1171,26 @@ class Coinche extends Table {
 			$player2Id => 1,
 			$player3Id => 0,
 			$player4Id => 1,
+		];
+
+		$table[] = [
+			[''],
+			[
+				'str' => 'Team ${first_player_name} and ${third_player_name}',
+				'args' => [
+					'first_player_name' => $players[$player1Id]['player_name'],
+					'third_player_name' => $players[$player3Id]['player_name'],
+				],
+				'type' => 'header',
+			],
+			[
+				'str' => 'Team ${second_player_name} and ${fourth_player_name}',
+				'args' => [
+					'second_player_name' => $players[$player2Id]['player_name'],
+					'fourth_player_name' => $players[$player4Id]['player_name'],
+				],
+				'type' => 'header',
+			],
 		];
 
 		// Belote
@@ -1210,6 +1233,8 @@ class Coinche extends Table {
 			$teamPoints[$teamId] += $cardsPoints[$card['type']][$card['type_arg']];
 		}
 
+		$table[] = [self::_('Points'), $teamPoints[0], $teamPoints[1]];
+
 		// Converts points to a total of 162, if "notrump"/"alltrump" bids
 		$arrangeMultiplier = null;
 		if ($trumpColor == 5) {
@@ -1220,22 +1245,63 @@ class Coinche extends Table {
 		if ($arrangeMultiplier > 0) {
 			$teamPoints[0] = round($teamPoints[0] * $arrangeMultiplier);
 			$teamPoints[1] = round($teamPoints[1] * $arrangeMultiplier);
+
+			$table[] = [
+				self::_('Points (based on 152)'),
+				$teamPoints[0],
+				$teamPoints[1],
+			];
 		}
 
 		// Adds "10 de der" for last trick
 		$teamPoints[$teamId] += 10;
 
-		// Adds "20" for belote
-		if ($beloteTeamId) {
-			$teamPoints[$beloteTeamId] += 20;
-		}
+		$table[] = [
+			self::_('Dix de der'),
+			$teamId == 0 ? '+ 10' : '',
+			$teamId == 1 ? '+ 10' : '',
+		];
+
+		$isCapot = false;
 
 		// If a team scored zero points, it's a "capot", so 250pts
 		if ($teamPoints[0] == 0) {
 			$teamPoints[1] = 250;
+			$isCapot = true;
 		} elseif ($teamPoints[1] == 0) {
 			$teamPoints[0] = 250;
+			$isCapot = true;
 		}
+
+		if ($isCapot) {
+			$table[] = [self::_('Points (capot)'), $teamPoints[0], $teamPoints[1]];
+		}
+
+		// Adds "20" for belote
+		if ($beloteTeamId !== null) {
+			$teamPoints[$beloteTeamId] += 20;
+			$table[] = [
+				'Belote',
+				$beloteTeamId === 0 ? '+ 20' : '',
+				$beloteTeamId === 1 ? '+ 20' : '',
+			];
+		}
+
+		$table[] = [
+			'<b>' . self::_('Points (total)') . '</b>',
+			"<b>$teamPoints[0]</b>",
+			"<b>$teamPoints[1]</b>",
+		];
+
+		$bidDisplay = [
+			'str' => clienttranslate(
+				'${bid_value} ${color_symbol}'
+			),
+			'args' => [
+				'color_symbol' => $trumpColor,
+				'bid_value' => $bid,
+			],
+		];
 
 		// Multiplier depends on "countered" or not
 		$multiplier = $countered ? 2 : 1;
@@ -1252,6 +1318,11 @@ class Coinche extends Table {
 					$teamPoints[$defenseTeam]
 				);
 			}
+			$table[] = [
+				self::_('Bid successful'),
+				$bidTeam == 0 ? $bidDisplay : '',
+				$bidTeam == 1 ? $bidDisplay : '',
+			];
 			self::notifyAllPlayers(
 				'message',
 				clienttranslate(
@@ -1274,10 +1345,15 @@ class Coinche extends Table {
 			$teamScores[$defenseTeam] = $this->roundToTen(
 				$baseDefenseScore * $multiplier
 			);
+			$table[] = [
+				self::_('Bid fails'),
+				$bidTeam == 0 ? $bidDisplay : '',
+				$bidTeam == 1 ? $bidDisplay : '',
+			];
 			self::notifyAllPlayers(
 				'message',
 				clienttranslate(
-					'Bid fail, <b>${bidTeamPoints}</b> to <b>${defenseTeamPoints}</b> !'
+					'Bid fails, <b>${bidTeamPoints}</b> to <b>${defenseTeamPoints}</b> !'
 				),
 				[
 					'bidTeamPoints' => $teamPoints[$bidTeam],
@@ -1313,8 +1389,21 @@ class Coinche extends Table {
 			]);
 		}
 
+		$table[] = [
+			'<b>' . self::_('Score') . '</b>',
+			"<b>+ $teamScores[0]</b>",
+			"<b>+ $teamScores[1]</b>",
+		];
+
 		// Notify score info
 		$this->notifyScores();
+
+		// Notify the table score
+		$this->notifyAllPlayers('tableWindow', '', array(
+			'id' => 'finalScoring',
+			'title' => clienttranslate('Result of this hand'),
+			'table' => $table,
+		));
 
 		// Check if end of game (score must be strictly higher than maxScore)
 		$maxScore = $this->getMaxScore();
