@@ -173,14 +173,22 @@ define([
 					break
 			}
 
-			dojo
-				.query('.bidPanel')
-				[isBidPanelVisible ? 'addClass' : 'removeClass']('bidPanel--visible')
-			dojo
-				.query('.playerTables__coinche-btn')
-				[isCoinchePanelVisible ? 'addClass' : 'removeClass'](
-					'playerTables__coinche-btn--visible'
-				)
+			if (isBidPanelVisible) {
+				dojo.query('.bidPanel').addClass('bidPanel--visible')
+				this.scrollBidPanelValues(0)
+			} else {
+				dojo.query('.bidPanel').removeClass('bidPanel--visible')
+			}
+
+			if (isCoinchePanelVisible) {
+				dojo
+					.query('.playerTables__coinche-btn')
+					.addClass('playerTables__coinche-btn--visible')
+			} else {
+				dojo
+					.query('.playerTables__coinche-btn')
+					.removeClass('playerTables__coinche-btn--visible')
+			}
 
 			// Highlight active player
 			dojo
@@ -537,6 +545,21 @@ define([
 			this.playerHand.unselectAll()
 		},
 
+		scrollBidPanelValues: function(where) {
+			var tickSize = 54
+			var listEl = dojo.query('.bidPanel__values-list')[0]
+			var currentScroll = listEl.scrollLeft
+			if (where == 'right') {
+				currentScroll += tickSize
+			} else if (where == 'left') {
+				currentScroll -= tickSize
+			} else {
+				currentScroll = where
+			}
+			currentScroll = tickSize * Math.ceil(currentScroll / tickSize)
+			listEl.scrollLeft = currentScroll
+		},
+
 		///////////////////////////////////////////////////
 		//// Player's action
 
@@ -606,7 +629,18 @@ define([
 		},
 
 		onBidPanelBtnClick: function(e) {
+			e.preventDefault()
+			e.stopPropagation()
 			var target = e.currentTarget
+			if (target.classList.contains('bidPanel__btn--value-left')) {
+				this.scrollBidPanelValues('left')
+				return
+			}
+			if (target.classList.contains('bidPanel__btn--value-right')) {
+				this.scrollBidPanelValues('right')
+				return
+			}
+
 			if (target.classList.contains('bidPanel__btn--pass')) {
 				this.updatePlayerBid(true)
 				this.onPlayerPass()

@@ -40,18 +40,22 @@
 			</div>
 
 			<div class="bidPanel__values">
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="82">82</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="90">90</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="100">100</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="110">110</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="120">120</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="130">130</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="140">140</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="150">150</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="160">160</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="170">170</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="180">180</a>
-				<a class="bidPanel__btn bidPanel__btn--value" data-value="250">Capot</a>
+				<a class="bidPanel__btn bidPanel__btn--value-left">&lt;</a>
+				<div class="bidPanel__values-list">
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="82">82</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="90">90</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="100">100</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="110">110</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="120">120</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="130">130</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="140">140</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="150">150</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="160">160</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="170">170</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="180">180</a>
+					<a class="bidPanel__btn bidPanel__btn--value bidPanel__btn--value-capot" data-value="250">Capot</a>
+				</div>
+				<a class="bidPanel__btn bidPanel__btn--value-right">&gt;</a>
 			</div>
 
 			<div class="bidPanel__colors">
