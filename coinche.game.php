@@ -143,6 +143,7 @@ class Coinche extends Table {
 		self::setGameStateInitialValue('trumpColor', 0);
 		self::setGameStateInitialValue('bid', 0);
 		self::setGameStateInitialValue('countered', 0);
+		self::setGameStateInitialValue('counteringPlayer', 0);
 		self::setGameStateInitialValue('passCount', 0);
 		self::setGameStateInitialValue('trickCount', 0);
 		self::setGameStateInitialValue('beloteCardId1', 0);
@@ -299,10 +300,10 @@ class Coinche extends Table {
 	 * Then notify the player.
 	 */
 	private function findAndNotifyBelote() {
-		self::setGameStateInitialValue('beloteCardId1', 0);
-		self::setGameStateInitialValue('beloteCardId2', 0);
-		self::setGameStateInitialValue('belotePlayerId', 0);
-		self::setGameStateInitialValue('beloteDeclared', 0);
+		self::setGameStateValue('beloteCardId1', 0);
+		self::setGameStateValue('beloteCardId2', 0);
+		self::setGameStateValue('belotePlayerId', 0);
+		self::setGameStateValue('beloteDeclared', 0);
 
 		$trumpColor = self::getGameStateValue('trumpColor');
 
@@ -337,9 +338,9 @@ class Coinche extends Table {
 			return;
 		}
 
-		self::setGameStateInitialValue('beloteCardId1', $cardIds[0]);
-		self::setGameStateInitialValue('beloteCardId2', $cardIds[1]);
-		self::setGameStateInitialValue('belotePlayerId', $player['player_id']);
+		self::setGameStateValue('beloteCardId1', $cardIds[0]);
+		self::setGameStateValue('beloteCardId2', $cardIds[1]);
+		self::setGameStateValue('belotePlayerId', $player['player_id']);
 
 		$this->notifyBelote();
 	}
@@ -900,7 +901,7 @@ class Coinche extends Table {
 				// Card is belote, and player want it declared
 				$beloteText = 'Belote';
 				if (!$beloteDeclared) {
-					self::setGameStateInitialValue('beloteDeclared', 1);
+					self::setGameStateValue('beloteDeclared', 1);
 					$this->notifyBelote();
 				} else {
 					$beloteText = 'Rebelote';
@@ -974,15 +975,16 @@ class Coinche extends Table {
 				'cards' => $cards,
 			]);
 		}
-		self::setGameStateInitialValue('trumpColor', 0);
-		self::setGameStateInitialValue('bid', 0);
-		self::setGameStateInitialValue('bidPlayer', 0);
-		self::setGameStateInitialValue('countered', 0);
-		self::setGameStateInitialValue('trickCount', 0);
-		self::setGameStateInitialValue('beloteCardId1', 0);
-		self::setGameStateInitialValue('beloteCardId2', 0);
-		self::setGameStateInitialValue('belotePlayerId', 0);
-		self::setGameStateInitialValue('beloteDeclared', 0);
+		self::setGameStateValue('trumpColor', 0);
+		self::setGameStateValue('bid', 0);
+		self::setGameStateValue('bidPlayer', 0);
+		self::setGameStateValue('countered', 0);
+		self::setGameStateValue('counteringPlayer', 0);
+		self::setGameStateValue('trickCount', 0);
+		self::setGameStateValue('beloteCardId1', 0);
+		self::setGameStateValue('beloteCardId2', 0);
+		self::setGameStateValue('belotePlayerId', 0);
+		self::setGameStateValue('beloteDeclared', 0);
 
 		$this->activateFirstPlayer();
 
@@ -992,11 +994,11 @@ class Coinche extends Table {
 	}
 
 	function stStartBidding() {
-		self::setGameStateInitialValue('trumpColor', 0);
-		self::setGameStateInitialValue('bid', 0);
-		self::setGameStateInitialValue('bidPlayer', 0);
-		self::setGameStateInitialValue('countered', 0);
-		self::setGameStateInitialValue('passCount', 0);
+		self::setGameStateValue('trumpColor', 0);
+		self::setGameStateValue('bid', 0);
+		self::setGameStateValue('bidPlayer', 0);
+		self::setGameStateValue('countered', 0);
+		self::setGameStateValue('passCount', 0);
 		$this->gamestate->nextState('');
 	}
 
@@ -1090,7 +1092,7 @@ class Coinche extends Table {
 		// New trick: active the player who wins the last trick
 		// Reset trick color to 0 (= no color)
 
-		self::setGameStateInitialValue('trickColor', 0);
+		self::setGameStateValue('trickColor', 0);
 		$this->gamestate->nextState();
 	}
 
@@ -1149,7 +1151,7 @@ class Coinche extends Table {
 			]);
 
 			// Increment trick count
-			self::setGameStateInitialValue('trickCount', $trickCount + 1);
+			self::setGameStateValue('trickCount', $trickCount + 1);
 
 			if ($this->cards->countCardInLocation('hand') == 0) {
 				// End of the hand
@@ -1173,6 +1175,7 @@ class Coinche extends Table {
 
 		// Score table
 		$table = [];
+		$tableTitle = '';
 
 		// Helper for score table
 		$tableValue = function ($value, $sign = false, $bold = false) {
@@ -1210,7 +1213,7 @@ class Coinche extends Table {
 		];
 
 		$table[] = [
-			[''],
+			'',
 			[
 				'str' => 'Team ${first_player_name} and ${third_player_name}',
 				'args' => [
@@ -1350,10 +1353,14 @@ class Coinche extends Table {
 
 		// Check bid success/failure
 		if ($teamPoints[$bidTeam] >= $bid) {
+			$tableTitle = self::_("Bid successful !");
 			// Success !
+			if ($bid == 82) {
+				$bid = 80;
+			}
 			// Bidding team : (bid + points) * coinche_multiplier
 			$scoreText = [];
-			$scoreText[$bidTeam] = $bid;
+			$scoreText[$bidTeam] = "$bid (" . self::_('bid') . ')';
 			$teamScores[$bidTeam] = $bid;
 			if ($doAddPointsToScore) {
 				$scoreText[$bidTeam] .= ' + ' .$teamPoints[$bidTeam] . ' (' . self::_('points') . ')';
@@ -1396,7 +1403,11 @@ class Coinche extends Table {
 				]
 			);
 		} else {
+			$tableTitle = self::_("Bid fails !");
 			// Failure (belote is never lost)
+			if ($bid == 82) {
+				$bid = 80;
+			}
 			// Bidding team : 0 + belote
 			$scoreText = [];
 			$scoreText[$bidTeam] = "0";
@@ -1479,11 +1490,10 @@ class Coinche extends Table {
 		$this->notifyScores();
 
 		// Notify the table score
-		$this->notifyAllPlayers('tableWindow', '', array(
-			'id' => 'finalScoring',
-			'title' => clienttranslate('Result of this hand'),
-			'table' => $table,
-		));
+		$this->notifyAllPlayers("scoreTable", '', [
+			"title" => $tableTitle,
+			"table" => $table
+		]);
 
 		// Check if end of game (score must be strictly higher than maxScore)
 		$maxScore = $this->getMaxScore();

@@ -26,6 +26,7 @@ define([
 		constructor: function() {
 			this.cardwidth = 72
 			this.cardheight = 104
+			this.scoringDialog = null;
 		},
 
 		/**
@@ -115,9 +116,21 @@ define([
 
 			// First Player
 			this.updateFirstPlayer(gamedatas.firstPlayer)
-			this.addTooltipToClass('.playerTables__table--first .playerTables__table__firstMarker', _('First player for this hand'), '')
-			this.addTooltipToClass('playerTables__table__takerMarker', _('Taker for this hand'), '')
-			this.addTooltipToClass('playerTables__table__counterMarker', _('This player has counterd the taker'), '')
+			this.addTooltipToClass(
+				'.playerTables__table--first .playerTables__table__firstMarker',
+				_('First player for this hand'),
+				''
+			)
+			this.addTooltipToClass(
+				'playerTables__table__takerMarker',
+				_('Taker for this hand'),
+				''
+			)
+			this.addTooltipToClass(
+				'playerTables__table__counterMarker',
+				_('This player has counterd the taker'),
+				''
+			)
 
 			// Cards in player's hand
 			for (var i in this.gamedatas.hand) {
@@ -373,7 +386,7 @@ define([
 			})
 
 			// Activate countered marker of player
-			if (data.countered && data.counteringPlayer) {
+			if (data.countered > 0 && data.counteringPlayer) {
 				dojo
 					.query(
 						'.playerTables__table--id--' +
@@ -681,6 +694,10 @@ define([
 			this.onPlayerCoinche()
 		},
 
+		onScoreWindowCloseClick: function() {
+			this.scoringDialog.hide();
+		},
+
 		///////////////////////////////////////////////////
 		//// Reaction to cometD notifications
 
@@ -702,6 +719,7 @@ define([
 			dojo.subscribe('giveAllCardsToPlayer', this, 'notif_giveAllCardsToPlayer')
 			dojo.subscribe('belote', this, 'notif_belote')
 			dojo.subscribe('sayBelote', this, 'notif_sayBelote')
+			dojo.subscribe('scoreTable', this, "notif_scoreTable");
 		},
 
 		notif_newScores: function(notif) {
@@ -746,8 +764,7 @@ define([
 				.removeClass('playerTables__table__takerMarker--visible')
 		},
 
-		notif_allPassWithBid: function(notif) {
-		},
+		notif_allPassWithBid: function(notif) {},
 
 		notif_allPassNoBid: function(notif) {
 			this.currentTrump = null
@@ -767,8 +784,8 @@ define([
 			dojo
 				.query(
 					'.playerTables__table--id--' +
-					notif.args.player_id +
-					' .playerTables__table__takerMarker'
+						notif.args.player_id +
+						' .playerTables__table__takerMarker'
 				)
 				.addClass('playerTables__table__takerMarker--visible')
 
@@ -846,6 +863,26 @@ define([
 		// Public information, a player is saying "belote" or "rebelote"
 		notif_sayBelote: function(notif) {
 			this.showPlayerBubble(notif.args.player_id, notif.args.belote_text + ' !')
+		},
+
+		notif_scoreTable: function(notif) {
+			this.scoringDialog = this.displayTableWindow(
+				'roundEndSummary',
+				notif.args.title,
+				notif.args.table,
+				'',
+				this.format_string_recursive(
+					'<div id="tableWindow_actions"><a id="score_close_window" class="bgabutton bgabutton_blue">${close}</a></div>',
+					{ close: _('OK') }
+				)
+			)
+			this.scoringDialog.show()
+			dojo.connect(
+				$('score_close_window'),
+				'onclick',
+				this,
+				'onScoreWindowCloseClick'
+			)
 		}
 	})
 })
