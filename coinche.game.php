@@ -1062,6 +1062,30 @@ class Coinche extends Table {
 		$this->gamestate->nextState('nextPlayerBid');
 	}
 
+	function stEndBidding() {
+		// End bidding, prepare card play
+		$this->activateFirstPlayer();
+		$this->gamestate->nextState('startPlaying');
+		$bid = $this->getGameStateValue('bid');
+		$trumpColor = self::getGameStateValue('trumpColor');
+		$bidPlayerId = self::getGameStateValue('bidPlayer');
+		$players = self::loadPlayersBasicInfos();
+		$bidPlayerDisplay = $players[$bidPlayerId]['player_name'] ?? '';
+		$this->findAndNotifyBelote();
+		self::notifyAllPlayers(
+			'endBidding',
+			'',
+			[
+				'player_id' => $bidPlayerId,
+				'player_name' => $bidPlayerDisplay,
+				'color_symbol' => $trumpColor,
+				'bid_value' => $bid,
+				'bid' => $bid,
+				'trumpColor' => $trumpColor,
+			]
+		);
+	}
+
 	function stNewTrick() {
 		// New trick: active the player who wins the last trick
 		// Reset trick color to 0 (= no color)

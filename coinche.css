@@ -108,11 +108,12 @@
 
 .playerTables__table__firstMarker {
 	opacity: 0;
+	display: none;
 	position: absolute;
-	top: -4px;
-	right: -3px;
-	width: 72px;
-	height: 44px;
+	top: -7px;
+	right: -7px;
+	width: 36px;
+	height: 37px;
 	background-size: contain;
 	background-repeat: no-repeat;
 	background-position: 100% 0%;
@@ -121,6 +122,7 @@
 }
 .playerTables__table--first .playerTables__table__firstMarker {
 	opacity: 1;
+	display: block;
 }
 
 .playerTables__table__counterMarker {
@@ -128,12 +130,30 @@
 	position: absolute;
 	top: 0;
 	left: 0;
-	background: red;
-	padding: 5px;
-	font-weight: bold;
-	color: white;
+	width: 25px;
+	height: 24px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: 100% 0%;
+	background-image: url('img/playerCounter.svg');
 }
 .playerTables__table__counterMarker--visible {
+	display: block;
+}
+
+.playerTables__table__takerMarker {
+	display: none;
+	position: absolute;
+	top: 0;
+	left: -5px;
+	width: 32px;
+	height: 32px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: 100% 0%;
+	background-image: url('img/playerTaker.png');
+}
+.playerTables__table__takerMarker--visible {
 	display: block;
 }
 

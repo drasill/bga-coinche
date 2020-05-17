@@ -115,6 +115,9 @@ define([
 
 			// First Player
 			this.updateFirstPlayer(gamedatas.firstPlayer)
+			this.addTooltipToClass('.playerTables__table--first .playerTables__table__firstMarker', _('First player for this hand'), '')
+			this.addTooltipToClass('playerTables__table__takerMarker', _('Taker for this hand'), '')
+			this.addTooltipToClass('playerTables__table__counterMarker', _('This player has counterd the taker'), '')
 
 			// Cards in player's hand
 			for (var i in this.gamedatas.hand) {
@@ -691,7 +694,8 @@ define([
 			dojo.subscribe('allPassNoBid', this, 'notif_allPassNoBid')
 			this.notifqueue.setSynchronous('allPassNoBid', 2000)
 			dojo.subscribe('allPassWithBid', this, 'notif_allPassWithBid')
-			this.notifqueue.setSynchronous('allPassWithBid', 2000)
+			dojo.subscribe('endBidding', this, 'notif_endBidding')
+			this.notifqueue.setSynchronous('endBidding', 2000)
 			dojo.subscribe('playCard', this, 'notif_playCard')
 			dojo.subscribe('trickWin', this, 'notif_trickWin')
 			this.notifqueue.setSynchronous('trickWin', 1000)
@@ -735,15 +739,39 @@ define([
 
 			// Remove "coinche" playerTables
 			dojo.query('.playerTables').removeClass('playerTables--coinched')
+
+			// Remove "taker" icon
+			dojo
+				.query('.playerTables__table__takerMarker')
+				.removeClass('playerTables__table__takerMarker--visible')
 		},
 
 		notif_allPassWithBid: function(notif) {
+		},
+
+		notif_allPassNoBid: function(notif) {
+			this.currentTrump = null
+			this.clearPlayerStatuses()
+			this.clearOldTricksLogs(99)
+		},
+
+		notif_endBidding: function(notif) {
+			// End of bidding rounds, start card game.
+			// Updates trump informations & co
 			this.selectedCardId = null
 			this.clearPlayerStatuses()
 			this.updatePlayerStatus(
 				notif.args.player_id,
 				this.format_block('jstpl_playerbid', notif.args)
 			)
+			dojo
+				.query(
+					'.playerTables__table--id--' +
+					notif.args.player_id +
+					' .playerTables__table__takerMarker'
+				)
+				.addClass('playerTables__table__takerMarker--visible')
+
 			this.currentTrump = notif.args.trumpColor
 			this.updateCardsWeights()
 			this.clearOldTricksLogs(99)
@@ -751,12 +779,6 @@ define([
 				notif.args.player_id,
 				_("Let's go with") + this.format_block('jstpl_playerbid', notif.args)
 			)
-		},
-
-		notif_allPassNoBid: function(notif) {
-			this.currentTrump = null
-			this.clearPlayerStatuses()
-			this.clearOldTricksLogs(99)
 		},
 
 		notif_firstPlayerChange: function(notif) {
@@ -769,7 +791,6 @@ define([
 				notif.args.player_id,
 				'<span color="red">' + _('Countered !') + '</span>'
 			)
-			this.clearPlayerStatuses()
 			dojo.query('.playerTables').addClass('playerTables--coinched')
 		},
 

@@ -84,7 +84,16 @@ $machinestates = [
 		'transitions' => [
 			'nextPlayerBid' => 31,
 			'newHand' => 20,
-			'endBidding' => 40,
+			'endBidding' => 33,
+		],
+	],
+	33 => [
+		'name' => 'endBidding',
+		'description' => '',
+		'type' => 'game',
+		'action' => 'stEndBidding',
+		'transitions' => [
+			'startPlaying' => 40,
 		],
 	],
 

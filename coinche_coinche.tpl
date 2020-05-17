@@ -21,7 +21,8 @@
 			<div class="playerTables__status"></div>
 			<div class="playerTables__avatar-wrapper">
 				<div class="playerTables__table__firstMarker"></div>
-				<div class="playerTables__table__counterMarker">C</div>
+				<div class="playerTables__table__counterMarker"></div>
+				<div class="playerTables__table__takerMarker"></div>
 				<div class="playerTables__avatar" style="background-image: url({PLAYER_AVATAR_URL_184})"></div>
 				<div class="playerTables__bubble"></div>
 				<div class="playerTables__name" style="background-color:#{PLAYER_COLOR}b0"><span>{PLAYER_NAME}</span></div>
