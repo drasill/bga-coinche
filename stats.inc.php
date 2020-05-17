@@ -50,9 +50,51 @@
 $stats_type = [
 	// Statistics global to table
 	'table' => [
+		'numberOfHands' => [
+			'id' => 10,
+			'name' => totranslate('Number of hands'),
+			'type' => 'int',
+		],
+
+		'numberOfHandsPlayed' => [
+			'id' => 11,
+			'name' => totranslate('Number of hands actually played'),
+			'type' => 'int',
+		],
+
+		'numberOfCounters' => [
+			'id' => 12,
+			'name' => totranslate('Number of hands countered'),
+			'type' => 'int',
+		],
 	],
 
 	// Statistics existing for each player
 	'player' => [
+		'numberOfHandsTaken' => [
+			'id' => 10,
+			'name' => totranslate('Number of hands taken'),
+			'type' => 'int',
+		],
+		'numberOfBidSucceeded' => [
+			'id' => 11,
+			'name' => totranslate('Number of bids succeeded'),
+			'type' => 'int',
+		],
+		'numberOfBidsFailed' => [
+			'id' => 12,
+			'name' => totranslate('Number of bids failed'),
+			'type' => 'int',
+		],
+		'numberOfCounters' => [
+			'id' => 13,
+			'name' => totranslate('Number of bids countered'),
+			'type' => 'int',
+		],
+		'numberOfCountersSuccess' => [
+			'id' => 14,
+			'name' => totranslate('Number of bids countered successfully'),
+			'type' => 'int',
+		],
 	],
 ];

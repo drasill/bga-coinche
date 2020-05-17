@@ -154,6 +154,16 @@ class Coinche extends Table {
 		$firstPlayerId = array_rand($players, 1);
 		self::setGameStateInitialValue('firstPlayer', $firstPlayerId);
 
+		// Init game statistics
+		self::initStat('table', 'numberOfHands', 0);
+		self::initStat('table', 'numberOfHandsPlayed', 0);
+		self::initStat('table', 'numberOfCounters', 0);
+		self::initStat('player', 'numberOfHandsTaken', 0);
+		self::initStat('player', 'numberOfBidSucceeded', 0);
+		self::initStat('player', 'numberOfBidsFailed', 0);
+		self::initStat('player', 'numberOfCounters', 0);
+		self::initStat('player', 'numberOfCountersSuccess', 0);
+
 		// Create cards
 		$cards = [];
 		foreach ($this->colors as $color_id => $color) {
@@ -179,11 +189,6 @@ class Coinche extends Table {
 		foreach ($players as $playerId => $player) {
 			$cards = $this->cards->pickCards(8, 'deck', $playerId);
 		}
-
-		// Init game statistics
-		// (note: statistics used in this file must be defined in your stats.inc.php file)
-		//self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
-		//self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
 
 		$this->activateFirstPlayer();
 
@@ -985,6 +990,7 @@ class Coinche extends Table {
 		self::setGameStateValue('beloteCardId2', 0);
 		self::setGameStateValue('belotePlayerId', 0);
 		self::setGameStateValue('beloteDeclared', 0);
+		self::incStat(1, 'numberOfHands', 0);
 
 		$this->activateFirstPlayer();
 
@@ -1074,18 +1080,22 @@ class Coinche extends Table {
 		$players = self::loadPlayersBasicInfos();
 		$bidPlayerDisplay = $players[$bidPlayerId]['player_name'] ?? '';
 		$this->findAndNotifyBelote();
-		self::notifyAllPlayers(
-			'endBidding',
-			'',
-			[
-				'player_id' => $bidPlayerId,
-				'player_name' => $bidPlayerDisplay,
-				'color_symbol' => $trumpColor,
-				'bid_value' => $bid,
-				'bid' => $bid,
-				'trumpColor' => $trumpColor,
-			]
-		);
+		self::notifyAllPlayers('endBidding', '', [
+			'player_id' => $bidPlayerId,
+			'player_name' => $bidPlayerDisplay,
+			'color_symbol' => $trumpColor,
+			'bid_value' => $bid,
+			'bid' => $bid,
+			'trumpColor' => $trumpColor,
+		]);
+		self::incStat(1, 'numberOfHandsPlayed');
+		self::incStat(1, 'numberOfHandsTaken', $bidPlayerId);
+		$countered = self::getGameStateValue('countered');
+		$counteringPlayerId = self::getGameStateValue('counteringPlayer');
+		if ($countered && $counteringPlayerId) {
+			self::incStat(1, 'numberOfCounters');
+			self::incStat(1, 'numberOfCounters', $counteringPlayerId);
+		}
 	}
 
 	function stNewTrick() {
@@ -1203,6 +1213,7 @@ class Coinche extends Table {
 		$player2Id = $nextPlayer[$player1Id];
 		$player3Id = $nextPlayer[$player2Id];
 		$player4Id = $nextPlayer[$player3Id];
+		$counteringPlayerId = self::getGameStateValue('counteringPlayer');
 
 		// Teams by player id
 		$playerIdTeam = [
@@ -1246,8 +1257,8 @@ class Coinche extends Table {
 		);
 
 		// Bidding player and bidding team
-		$bidPlayer = self::getGameStateValue('bidPlayer');
-		$bidTeam = $playerIdTeam[$bidPlayer];
+		$bidPlayerId = self::getGameStateValue('bidPlayer');
+		$bidTeam = $playerIdTeam[$bidPlayerId];
 		$defenseTeam = $bidTeam === 1 ? 0 : 1;
 
 		// Team points
@@ -1353,8 +1364,9 @@ class Coinche extends Table {
 
 		// Check bid success/failure
 		if ($teamPoints[$bidTeam] >= $bid) {
-			$tableTitle = self::_("Bid successful !");
 			// Success !
+
+			$tableTitle = self::_('Bid successful !');
 			if ($bid == 82) {
 				$bid = 80;
 			}
@@ -1363,11 +1375,13 @@ class Coinche extends Table {
 			$scoreText[$bidTeam] = "$bid (" . self::_('bid') . ')';
 			$teamScores[$bidTeam] = $bid;
 			if ($doAddPointsToScore) {
-				$scoreText[$bidTeam] .= ' + ' .$teamPoints[$bidTeam] . ' (' . self::_('points') . ')';
+				$scoreText[$bidTeam] .=
+					' + ' . $teamPoints[$bidTeam] . ' (' . self::_('points') . ')';
 				$teamScores[$bidTeam] += $teamPoints[$bidTeam];
 			}
 			if ($multiplier > 1) {
-				$scoreText[$bidTeam] = '( ' . $scoreText[$bidTeam] . " ) ✖ $multiplier (coinche)";
+				$scoreText[$bidTeam] =
+					'( ' . $scoreText[$bidTeam] . " ) ✖ $multiplier (coinche)";
 				$teamScores[$bidTeam] *= $multiplier;
 			}
 
@@ -1375,8 +1389,9 @@ class Coinche extends Table {
 			if ($countered) {
 				$scoreText[$defenseTeam] = '0 (' . self::_('countered') . ')';
 				$teamScores[$defenseTeam] = 0;
-			} else if ($doAddPointsToScore) {
-				$scoreText[$defenseTeam] = $teamPoints[$defenseTeam] . ' (' . self::_('points') . ')';
+			} elseif ($doAddPointsToScore) {
+				$scoreText[$defenseTeam] =
+					$teamPoints[$defenseTeam] . ' (' . self::_('points') . ')';
 				$teamScores[$defenseTeam] = $teamPoints[$defenseTeam];
 			} else {
 				$scoreText[$defenseTeam] = 0;
@@ -1387,11 +1402,8 @@ class Coinche extends Table {
 				$bidTeam === 0 ? self::_('Bid successful') : '',
 				$bidTeam === 1 ? self::_('Bid successful') : '',
 			];
-			$table[] = [
-				self::_('Score count'),
-				$scoreText[0],
-				$scoreText[1]
-			];
+			$table[] = [self::_('Score count'), $scoreText[0], $scoreText[1]];
+
 			self::notifyAllPlayers(
 				'message',
 				clienttranslate(
@@ -1402,18 +1414,21 @@ class Coinche extends Table {
 					'defenseTeamPoints' => $teamPoints[$defenseTeam],
 				]
 			);
+
+			self::incStat(1, 'numberOfBidSucceeded', $bidPlayerId);
 		} else {
-			$tableTitle = self::_("Bid fails !");
-			// Failure (belote is never lost)
+			// Failure !
+			$tableTitle = self::_('Bid fails !');
+
 			if ($bid == 82) {
 				$bid = 80;
 			}
 			// Bidding team : 0 + belote
 			$scoreText = [];
-			$scoreText[$bidTeam] = "0";
+			$scoreText[$bidTeam] = '0';
 			$teamScores[$bidTeam] = 0;
 			if ($beloteTeamId === $bidTeam) {
-				$scoreText[$bidTeam] .= " + 20 (belote)";
+				$scoreText[$bidTeam] .= ' + 20 (belote)';
 				$teamScores[$bidTeam] += 20;
 			}
 			// Defense team : (162 + bid + belote) * coinche_multiplier
@@ -1421,14 +1436,15 @@ class Coinche extends Table {
 			$scoreText[$defenseTeam] = "$bid (" . self::_('bid') . ')';
 			if ($doAddPointsToScore) {
 				$teamScores[$defenseTeam] += 162;
-				$scoreText[$defenseTeam] .= " + 162 (" . self::_('points') . ')';
+				$scoreText[$defenseTeam] .= ' + 162 (' . self::_('points') . ')';
 			}
 			if ($beloteTeamId === $defenseTeam) {
-				$scoreText[$defenseTeam] .= " + 20 (belote)";
+				$scoreText[$defenseTeam] .= ' + 20 (belote)';
 				$teamScores[$defenseTeam] += 20;
 			}
 			if ($multiplier > 1) {
-				$scoreText[$defenseTeam] = '( ' . $scoreText[$defenseTeam] . " ) ✖ $multiplier (coinche)";
+				$scoreText[$defenseTeam] =
+					'( ' . $scoreText[$defenseTeam] . " ) ✖ $multiplier (coinche)";
 				$teamScores[$defenseTeam] *= $multiplier;
 			}
 			$table[] = [
@@ -1436,11 +1452,8 @@ class Coinche extends Table {
 				$bidTeam === 0 ? self::_('Bid fails') : '',
 				$bidTeam === 1 ? self::_('Bid fails') : '',
 			];
-			$table[] = [
-				self::_('Score count'),
-				$scoreText[0],
-				$scoreText[1]
-			];
+			$table[] = [self::_('Score count'), $scoreText[0], $scoreText[1]];
+
 			self::notifyAllPlayers(
 				'message',
 				clienttranslate(
@@ -1451,6 +1464,11 @@ class Coinche extends Table {
 					'defenseTeamPoints' => $teamPoints[$defenseTeam],
 				]
 			);
+
+			self::incStat(1, 'numberOfBidsFailed', $bidPlayerId);
+			if ($countered) {
+				self::incStat(1, 'numberOfCountersSuccess', $counteringPlayerId);
+			}
 		}
 
 		// Apply team scores to player
@@ -1490,9 +1508,9 @@ class Coinche extends Table {
 		$this->notifyScores();
 
 		// Notify the table score
-		$this->notifyAllPlayers("scoreTable", '', [
-			"title" => $tableTitle,
-			"table" => $table
+		$this->notifyAllPlayers('scoreTable', '', [
+			'title' => $tableTitle,
+			'table' => $table,
 		]);
 
 		// Check if end of game (score must be strictly higher than maxScore)
