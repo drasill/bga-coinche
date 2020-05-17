@@ -1150,6 +1150,18 @@ class Coinche extends Table {
 		// Score table
 		$table = [];
 
+		// Helper for score table
+		$tableValue = function ($value, $sign = false, $bold = false) {
+			if (empty($value)) {
+				return '';
+			}
+			$cls = 'scoreTableValue' . ($bold ? ' scoreTableValue--bold' : '');
+			if ($sign) {
+				$value = ($value >= 0 ? '+ ' : '- ') . $value;
+			}
+			return "<span class=\"$cls\">$value</span>";
+		};
+
 		// Cards points
 		$cardsPoints = $this->getCardsPoints();
 
@@ -1233,7 +1245,11 @@ class Coinche extends Table {
 			$teamPoints[$teamId] += $cardsPoints[$card['type']][$card['type_arg']];
 		}
 
-		$table[] = [self::_('Points'), $teamPoints[0], $teamPoints[1]];
+		$table[] = [
+			self::_('Points'),
+			$tableValue($teamPoints[0]),
+			$tableValue($teamPoints[1]),
+		];
 
 		// Converts points to a total of 162, if "notrump"/"alltrump" bids
 		$arrangeMultiplier = null;
@@ -1248,8 +1264,8 @@ class Coinche extends Table {
 
 			$table[] = [
 				self::_('Points (based on 152)'),
-				$teamPoints[0],
-				$teamPoints[1],
+				$tableValue($teamPoints[0]),
+				$tableValue($teamPoints[1]),
 			];
 		}
 
@@ -1258,8 +1274,8 @@ class Coinche extends Table {
 
 		$table[] = [
 			self::_('Dix de der'),
-			$teamId == 0 ? '+ 10' : '',
-			$teamId == 1 ? '+ 10' : '',
+			$tableValue($teamId === 0 ? '10' : '', true),
+			$tableValue($teamId === 1 ? '10' : '', true),
 		];
 
 		$isCapot = false;
@@ -1274,7 +1290,11 @@ class Coinche extends Table {
 		}
 
 		if ($isCapot) {
-			$table[] = [self::_('Points (capot)'), $teamPoints[0], $teamPoints[1]];
+			$table[] = [
+				self::_('Points (capot)'),
+				$tableValue($teamPoints[0]),
+				$tableValue($teamPoints[1]),
+			];
 		}
 
 		// Adds "20" for belote
@@ -1282,21 +1302,19 @@ class Coinche extends Table {
 			$teamPoints[$beloteTeamId] += 20;
 			$table[] = [
 				'Belote',
-				$beloteTeamId === 0 ? '+ 20' : '',
-				$beloteTeamId === 1 ? '+ 20' : '',
+				$tableValue($beloteTeamId === 0 ? '20' : '', true),
+				$tableValue($beloteTeamId === 1 ? '20' : '', true),
 			];
 		}
 
 		$table[] = [
 			'<b>' . self::_('Points (total)') . '</b>',
-			"<b>$teamPoints[0]</b>",
-			"<b>$teamPoints[1]</b>",
+			$tableValue($teamPoints[0], false, true),
+			$tableValue($teamPoints[1], false, true),
 		];
 
 		$bidDisplay = [
-			'str' => clienttranslate(
-				'${bid_value} ${color_symbol}'
-			),
+			'str' => clienttranslate('${bid_value} ${color_symbol}'),
 			'args' => [
 				'color_symbol' => $trumpColor,
 				'bid_value' => $bid,
@@ -1310,18 +1328,38 @@ class Coinche extends Table {
 		if ($teamPoints[$bidTeam] >= $bid) {
 			// Success !
 			// Bidding team : (bid + points) * coinche_multiplier
-			$baseScore = $bid + ($doAddPointsToScore ? $teamPoints[$bidTeam] : 0);
-			$teamScores[$bidTeam] = $this->roundToTen($baseScore * $multiplier);
+			$scoreText = [];
+			$scoreText[$bidTeam] = $bid;
+			$teamScores[$bidTeam] = $bid;
+			if ($doAddPointsToScore) {
+				$scoreText[$bidTeam] .= ' + ' .$teamPoints[$bidTeam] . ' (' . self::_('points') . ')';
+				$teamScores[$bidTeam] += $teamPoints[$bidTeam];
+			}
+			if ($multiplier > 1) {
+				$scoreText[$bidTeam] = '( ' . $scoreText[$bidTeam] . " ) ✖ $multiplier (coinche)";
+				$teamScores[$bidTeam] *= $multiplier;
+			}
+
 			// Defense team : points (if not countered)
-			if (!$countered && $doAddPointsToScore) {
-				$teamScores[$defenseTeam] = $this->roundToTen(
-					$teamPoints[$defenseTeam]
-				);
+			if ($countered) {
+				$scoreText[$defenseTeam] = '0 (' . self::_('countered') . ')';
+				$teamScores[$defenseTeam] = 0;
+			} else if ($doAddPointsToScore) {
+				$scoreText[$defenseTeam] = $teamPoints[$defenseTeam] . ' (' . self::_('points') . ')';
+				$teamScores[$defenseTeam] = $teamPoints[$defenseTeam];
+			} else {
+				$scoreText[$defenseTeam] = 0;
+				$teamScores[$defenseTeam] = 0;
 			}
 			$table[] = [
-				self::_('Bid successful'),
-				$bidTeam == 0 ? $bidDisplay : '',
-				$bidTeam == 1 ? $bidDisplay : '',
+				$bidDisplay,
+				$bidTeam === 0 ? self::_('Bid successful') : '',
+				$bidTeam === 1 ? self::_('Bid successful') : '',
+			];
+			$table[] = [
+				self::_('Score count'),
+				$scoreText[0],
+				$scoreText[1]
 			];
 			self::notifyAllPlayers(
 				'message',
@@ -1336,19 +1374,37 @@ class Coinche extends Table {
 		} else {
 			// Failure (belote is never lost)
 			// Bidding team : 0 + belote
-			$teamScores[$bidTeam] = 0 + ($beloteTeamId == $bidTeam ? 20 : 0);
+			$scoreText = [];
+			$scoreText[$bidTeam] = "0";
+			$teamScores[$bidTeam] = 0;
+			if ($beloteTeamId === $bidTeam) {
+				$scoreText[$bidTeam] .= " + 20 (belote)";
+				$teamScores[$bidTeam] += 20;
+			}
 			// Defense team : (162 + bid + belote) * coinche_multiplier
-			$baseDefenseScore =
-				$bid +
-				($doAddPointsToScore ? 162 : 0) +
-				($beloteTeamId == $defenseTeam ? 20 : 0);
-			$teamScores[$defenseTeam] = $this->roundToTen(
-				$baseDefenseScore * $multiplier
-			);
+			$teamScores[$defenseTeam] = $bid;
+			$scoreText[$defenseTeam] = "$bid (" . self::_('bid') . ')';
+			if ($doAddPointsToScore) {
+				$teamScores[$defenseTeam] += 162;
+				$scoreText[$defenseTeam] .= " + 162 (" . self::_('points') . ')';
+			}
+			if ($beloteTeamId === $defenseTeam) {
+				$scoreText[$defenseTeam] .= " + 20 (belote)";
+				$teamScores[$defenseTeam] += 20;
+			}
+			if ($multiplier > 1) {
+				$scoreText[$defenseTeam] = '( ' . $scoreText[$defenseTeam] . " ) ✖ $multiplier (coinche)";
+				$teamScores[$defenseTeam] *= $multiplier;
+			}
 			$table[] = [
-				self::_('Bid fails'),
-				$bidTeam == 0 ? $bidDisplay : '',
-				$bidTeam == 1 ? $bidDisplay : '',
+				$bidDisplay,
+				$bidTeam === 0 ? self::_('Bid fails') : '',
+				$bidTeam === 1 ? self::_('Bid fails') : '',
+			];
+			$table[] = [
+				self::_('Score count'),
+				$scoreText[0],
+				$scoreText[1]
 			];
 			self::notifyAllPlayers(
 				'message',
@@ -1391,8 +1447,8 @@ class Coinche extends Table {
 
 		$table[] = [
 			'<b>' . self::_('Score') . '</b>',
-			"<b>+ $teamScores[0]</b>",
-			"<b>+ $teamScores[1]</b>",
+			$tableValue($teamScores[0], true, true),
+			$tableValue($teamScores[1], true, true),
 		];
 
 		// Notify score info

@@ -610,6 +610,16 @@
 	box-shadow: rgba(0, 0, 255, 0.9) 0px 0px 7px;
 }
 
+/* score window */
+.scoreTableValue--bold {
+	font-weight: bold;
+}
+.scoreTableValue {
+	display: inline-block;
+	min-width: 40px;
+	text-align: right;
+}
+
 @keyframes coinche-shake {
 	10%,
 	90% {
