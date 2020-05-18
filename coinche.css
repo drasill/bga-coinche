@@ -630,6 +630,21 @@
 	box-shadow: rgba(0, 0, 255, 0.9) 0px 0px 7px;
 }
 
+.cardontable--is-trump:after,
+.stockitem--is-trump:after {
+	content: ' ';
+	position: absolute;
+	top: -3px;
+	right: -3px;
+	width: 18px;
+	height: 18px;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: 100% 0%;
+	background-image: url('img/cardIsTrump.svg');
+	transition: opacity 1.5s ease-in;
+}
+
 /* score window */
 .scoreTableValue--bold {
 	font-weight: bold;

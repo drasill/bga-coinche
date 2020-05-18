@@ -73,8 +73,18 @@ define([
 			if (this.prefs[100].value == 2) {
 				this.swapPlayerTables()
 			}
-			dojo.connect($('preference_control_100'), 'onchange', this, 'swapPlayerTables');
-			dojo.connect($('preference_fontrol_100'), 'onchange', this, 'swapPlayerTables');
+			dojo.connect(
+				$('preference_control_100'),
+				'onchange',
+				this,
+				'swapPlayerTables'
+			)
+			dojo.connect(
+				$('preference_fontrol_100'),
+				'onchange',
+				this,
+				'swapPlayerTables'
+			)
 
 			// Player hand
 			this.playerHand = new ebg.stock() // new stock object for hand
@@ -82,6 +92,7 @@ define([
 			this.playerHand.setSelectionMode(1)
 			this.playerHand.setSelectionAppearance('class')
 			this.playerHand.centerItems = true
+			this.playerHand.onItemCreate = dojo.hitch(this, 'onCreateNewCard');
 
 			this.playerHand.image_items_per_row = 13 // 13 images per row
 			// Create cards types:
@@ -263,7 +274,8 @@ define([
 				this.format_block('jstpl_cardontable', {
 					x: this.cardwidth * (value - 2),
 					y: this.cardheight * (color - 1),
-					player_id: playerId
+					player_id: playerId,
+					cls: color == this.currentTrump ? 'cardontable--is-trump' : '',
 				}),
 				target
 			)
@@ -492,6 +504,22 @@ define([
 					weights[cardValId] = this.getCardWeight(col, value)
 				}
 			this.playerHand.changeItemsWeight(weights)
+
+			if (this.currentTrump <= 4) {
+				for (var value = 7; value <= 14; value++) {
+					var cardValId = this.getCardUniqueId(this.currentTrump, value)
+					var cardItem = this.playerHand.getAllItems().find(function(item) {
+						return item.type == cardValId
+					})
+					if (cardItem && cardItem.id) {
+						var cardDivId = this.playerHand.getItemDivId(cardItem.id)
+						var cardDiv = document.getElementById(cardDivId)
+						if (cardDiv) {
+							cardDiv.classList.add('stockitem--is-trump')
+						}
+					}
+				}
+			}
 		},
 
 		getCardWeight: function(col, value) {
@@ -593,6 +621,12 @@ define([
 			clsE.remove('playerTables__table--E')
 			clsW.add('playerTables__table--E')
 			clsW.remove('playerTables__table--W')
+		},
+
+		onCreateNewCard: function(cardDiv, cardTypeId, cardHtmlId) {
+			if (this.currentTrump >= 1 && this.currentTrump <= 4) {
+				cardDiv.classList.add('stockitem--is-trump')
+			}
 		},
 
 		///////////////////////////////////////////////////
