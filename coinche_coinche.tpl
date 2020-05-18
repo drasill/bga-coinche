@@ -17,7 +17,7 @@
 
 		<!-- BEGIN player -->
 		<div class="playerTables__table playerTables__table--{DIR} playerTables__table--id--{PLAYER_ID}">
-			<div class="playerTables__card" id="playerTables__card--{PLAYER_ID}"></div>
+			<div class="playerTables__card"></div>
 			<div class="playerTables__status"></div>
 			<div class="playerTables__avatar-wrapper">
 				<div class="playerTables__table__firstMarker"></div>

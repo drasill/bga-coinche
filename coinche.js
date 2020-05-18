@@ -26,7 +26,7 @@ define([
 		constructor: function() {
 			this.cardwidth = 72
 			this.cardheight = 104
-			this.scoringDialog = null;
+			this.scoringDialog = null
 		},
 
 		/**
@@ -68,6 +68,13 @@ define([
 
 			// Update information about player bid
 			this.updatePlayerBid(false)
+
+			// Turn order
+			if (this.prefs[100].value == 2) {
+				this.swapPlayerTables()
+			}
+			dojo.connect($('preference_control_100'), 'onchange', this, 'swapPlayerTables');
+			dojo.connect($('preference_fontrol_100'), 'onchange', this, 'swapPlayerTables');
 
 			// Player hand
 			this.playerHand = new ebg.stock() // new stock object for hand
@@ -249,13 +256,16 @@ define([
 
 		playCardOnTable: function(playerId, color, value, cardId) {
 			// playerId => direction
+			var target = dojo.query(
+				'.playerTables__table--id--' + playerId + ' .playerTables__card'
+			)[0]
 			dojo.place(
 				this.format_block('jstpl_cardontable', {
 					x: this.cardwidth * (value - 2),
 					y: this.cardheight * (color - 1),
 					player_id: playerId
 				}),
-				'playerTables__card--' + playerId
+				target
 			)
 
 			if (playerId != this.player_id) {
@@ -277,10 +287,7 @@ define([
 			}
 
 			// In any case: move it to its final destination
-			this.slideToObject(
-				'cardontable_' + playerId,
-				'playerTables__card--' + playerId
-			).play()
+			this.slideToObject('cardontable_' + playerId, target).play()
 		},
 
 		// Add item in player's status (on table)
@@ -578,6 +585,16 @@ define([
 			listEl.scrollLeft = currentScroll
 		},
 
+		// Swap east/west tables, effectively changing turn order
+		swapPlayerTables: function() {
+			var clsE = dojo.query('.playerTables__table--E')[0].classList
+			var clsW = dojo.query('.playerTables__table--W')[0].classList
+			clsE.add('playerTables__table--W')
+			clsE.remove('playerTables__table--E')
+			clsW.add('playerTables__table--E')
+			clsW.remove('playerTables__table--W')
+		},
+
 		///////////////////////////////////////////////////
 		//// Player's action
 
@@ -695,7 +712,7 @@ define([
 		},
 
 		onScoreWindowCloseClick: function() {
-			this.scoringDialog.hide();
+			this.scoringDialog.hide()
 		},
 
 		///////////////////////////////////////////////////
@@ -719,7 +736,7 @@ define([
 			dojo.subscribe('giveAllCardsToPlayer', this, 'notif_giveAllCardsToPlayer')
 			dojo.subscribe('belote', this, 'notif_belote')
 			dojo.subscribe('sayBelote', this, 'notif_sayBelote')
-			dojo.subscribe('scoreTable', this, "notif_scoreTable");
+			dojo.subscribe('scoreTable', this, 'notif_scoreTable')
 		},
 
 		notif_newScores: function(notif) {
@@ -838,12 +855,12 @@ define([
 
 		notif_giveAllCardsToPlayer: function(notif) {
 			// Move all cards on table to given table, then destroy them
-			var winner_id = notif.args.player_id
+			var winnerId = notif.args.player_id
+			var target = dojo.query(
+				'.playerTables__table--id--' + winnerId + ' .playerTables__card'
+			)[0]
 			for (var player_id in this.gamedatas.players) {
-				var anim = this.slideToObject(
-					'cardontable_' + player_id,
-					'playerTables__card--' + winner_id
-				)
+				var anim = this.slideToObject('cardontable_' + player_id, target)
 				dojo.connect(anim, 'onEnd', function(node) {
 					dojo.destroy(node)
 				})
