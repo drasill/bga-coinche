@@ -53,6 +53,7 @@ class Coinche extends Table {
 			'beloteCardId2' => 21,
 			'belotePlayerId' => 22,
 			'beloteDeclared' => 23,
+			'dixDeDerPlayerId' => 24,
 
 			// Options
 			// Game length -> max score
@@ -150,6 +151,7 @@ class Coinche extends Table {
 		self::setGameStateInitialValue('beloteCardId2', 0);
 		self::setGameStateInitialValue('belotePlayerId', 0);
 		self::setGameStateInitialValue('beloteDeclared', 0);
+		self::setGameStateInitialValue('dixDeDerPlayerId', 0);
 
 		$firstPlayerId = array_rand($players, 1);
 		self::setGameStateInitialValue('firstPlayer', $firstPlayerId);
@@ -990,6 +992,7 @@ class Coinche extends Table {
 		self::setGameStateValue('beloteCardId2', 0);
 		self::setGameStateValue('belotePlayerId', 0);
 		self::setGameStateValue('beloteDeclared', 0);
+		self::setGameStateValue('dixDeDerPlayerId', 0);
 		self::incStat(1, 'numberOfHands', 0);
 
 		$this->activateFirstPlayer();
@@ -1147,9 +1150,14 @@ class Coinche extends Table {
 			// Note: we use 2 notifications here in order we can pause the display during the first notification
 			//  before we move all cards to the winner (during the second)
 			$players = self::loadPlayersBasicInfos();
+			$isLastTrick = $this->cards->countCardInLocation('hand') == 0;
+			$message = clienttranslate('${trick_count}${player_name} wins the trick');
+			if ($isLastTrick) {
+				$message = clienttranslate('${player_name} wins the last trick (+10 pts)');
+			}
 			self::notifyAllPlayers(
 				'trickWin',
-				clienttranslate('${trick_count}${player_name} wins the trick'),
+				$message,
 				[
 					'player_id' => $bestValuePlayerId,
 					'player_name' => $players[$bestValuePlayerId]['player_name'],
@@ -1163,8 +1171,9 @@ class Coinche extends Table {
 			// Increment trick count
 			self::setGameStateValue('trickCount', $trickCount + 1);
 
-			if ($this->cards->countCardInLocation('hand') == 0) {
+			if ($isLastTrick) {
 				// End of the hand
+				self::setGameStateValue('dixDeDerPlayerId', $bestValuePlayerId);
 				$this->gamestate->nextState('endHand');
 			} else {
 				// End of the trick
@@ -1250,6 +1259,10 @@ class Coinche extends Table {
 			$beloteTeamId = $playerIdTeam[$belotePlayerId];
 		}
 
+		// DixDeDer
+		$dixDeDerPlayerId = self::getGameStateValue('dixDeDerPlayerId');
+		$dixDeDerTeamId = $playerIdTeam[$dixDeDerPlayerId];
+
 		// Current player scores by Id
 		$playerScores = self::getCollectionFromDb(
 			'SELECT player_id, player_score FROM player',
@@ -1307,13 +1320,13 @@ class Coinche extends Table {
 			];
 		}
 
-		// Adds "10 de der" for last trick
-		$teamPoints[$teamId] += 10;
+		// Adds "dix de der" for last trick
+		$teamPoints[$dixDeDerTeamId] += 10;
 
 		$table[] = [
 			self::_('Dix de der'),
-			$tableValue($teamId === 0 ? '10' : '', true),
-			$tableValue($teamId === 1 ? '10' : '', true),
+			$tableValue($dixDeDerTeamId === 0 ? '10' : '', true),
+			$tableValue($dixDeDerTeamId === 1 ? '10' : '', true),
 		];
 
 		$isCapot = false;
