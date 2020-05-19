@@ -677,3 +677,19 @@
 		transform: translate3d(4px, 0, 0) rotate3d(1, 1, 1, 0.4deg);
 	}
 }
+
+/* 3D */
+.mode_3d #game_play_area_wrap div.bidPanel {
+	transform: rotate3d(1, 0, 0, -65deg) translate3d(0px, 0px, 140px)
+		scale3d(0.7, 0.7, 1.0);
+}
+
+.mode_3d #game_play_area_wrap .playerTables__bubble {
+	transform: rotate3d(1, 0, 0, -65deg) translate3d(30px, -30px, 70px)
+		scale3d(1.2, 1.2, 1.0);
+}
+
+.mode_3d #game_play_area_wrap .stockitem {
+	transform: rotate3d(1, 0, 0, -65deg) translate3d(30px, -30px, 70px)
+		scale3d(1.0, 1.0, 1.0);
+}

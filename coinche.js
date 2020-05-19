@@ -299,7 +299,23 @@ define([
 			}
 
 			// In any case: move it to its final destination
-			this.slideToObject('cardontable_' + playerId, target).play()
+			this.slideToObject('cardontable_' + playerId, target, 750, 0).play()
+		},
+
+		// Move all cards on table to given player, then destroy them
+		giveAllCardsToPlayer: function(winnerId) {
+			var target = dojo.query(
+				'.playerTables__table--id--' + winnerId + ' .playerTables__avatar'
+			)[0]
+			var me = this
+			Object.values(this.gamedatas.players).forEach(function(player) {
+				var cardEl = dojo.byId('cardontable_' + player.id)
+				var anim = me.slideToObject(cardEl, target, 750, 0)
+				dojo.connect(anim, 'onEnd', function(node) {
+					dojo.destroy(cardEl)
+				})
+				anim.play()
+			})
 		},
 
 		// Add item in player's status (on table)
@@ -767,7 +783,6 @@ define([
 			dojo.subscribe('playCard', this, 'notif_playCard')
 			dojo.subscribe('trickWin', this, 'notif_trickWin')
 			this.notifqueue.setSynchronous('trickWin', 1000)
-			dojo.subscribe('giveAllCardsToPlayer', this, 'notif_giveAllCardsToPlayer')
 			dojo.subscribe('belote', this, 'notif_belote')
 			dojo.subscribe('sayBelote', this, 'notif_sayBelote')
 			dojo.subscribe('scoreTable', this, 'notif_scoreTable')
@@ -885,21 +900,9 @@ define([
 
 		notif_trickWin: function(notif) {
 			this.clearOldTricksLogs(notif.args.trick_count_value - 1)
-		},
-
-		notif_giveAllCardsToPlayer: function(notif) {
-			// Move all cards on table to given table, then destroy them
-			var winnerId = notif.args.player_id
-			var target = dojo.query(
-				'.playerTables__table--id--' + winnerId + ' .playerTables__card'
-			)[0]
-			for (var player_id in this.gamedatas.players) {
-				var anim = this.slideToObject('cardontable_' + player_id, target)
-				dojo.connect(anim, 'onEnd', function(node) {
-					dojo.destroy(node)
-				})
-				anim.play()
-			}
+			setTimeout(dojo.hitch(this, function() {
+				this.giveAllCardsToPlayer(notif.args.player_id)
+			}), 1000)
 		},
 
 		// Private information, this player has the belote

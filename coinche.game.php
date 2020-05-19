@@ -1164,9 +1164,6 @@ class Coinche extends Table {
 					'trick_count' => $trickCount,
 				]
 			);
-			self::notifyAllPlayers('giveAllCardsToPlayer', '', [
-				'player_id' => $bestValuePlayerId,
-			]);
 
 			// Increment trick count
 			self::setGameStateValue('trickCount', $trickCount + 1);
