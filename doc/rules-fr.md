@@ -155,7 +155,7 @@ une enchère de deux autres types :
   ne peut pas couper).
 * Tout Atout (TA): Toutes les couleurs sont considérées comme de l'atout (de
   fait, on ne peut pas couper non plus).
-  * Tous les valets sont des "vingts"
+  * Tous les valets sont des "vingt"
   * Tous les 9 sont des "quatorze"
   * On est obligé de monter sur la carte précédemment jouée, pour toutes les
     couleurs !
@@ -177,7 +177,7 @@ main, il peut les annoncer au moment de les jouer, et cela lui rapporte alors
 Si le joueur qui annonce la belote est dans l'équipe qui a fait l'enchère, ces
 20 points aident à la réussir !
 
-On peut annonce la dame ou le roi en premier, cela n'a pas d'impact.
+On peut annoncer la dame ou le roi en premier, cela n'a pas d'impact.
 
 ---
 
@@ -187,8 +187,8 @@ Le joueur 1 a la Dame et le Roi de ♣.
 
 * Il joue la dame, annonce "Belote";
 * Plus tard, il joue le roi, annonce "Rebelote";
-* Alors 20 points seront ajoutés pour le calcul de la manche, ils n'auront donc
-  plus que 80 points à faire pour réussir leur enchère (100).
+* Alors 20 points seront ajoutés pour le calcul de la manche, l'équipe du joueur 1 n'aura donc
+  plus que 80 points à faire pour réussir l'enchère (100).
 
 *Astuce* : il est parfois intéressant de ne pas annoncer la belote, pour éviter
 d'indiquer aux adversaire que l'on a l'autre carte du couple royal.
