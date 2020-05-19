@@ -67,10 +67,145 @@ sinon c'est la carte la plus forte de la couleur du pli qui remporte.
 Le joueur qui pose la carte la plus forte remporte le pli, puis c'est à lui de
 commencer, et ainsi de suite jusqu'au huitième et dernier pli.
 
-<div style="background: #ccc; border: 2px solid #777; display: inline-block; padding: 10px;">
+* **Exception 1** : un joueur n'est pas obligé de couper si son partenaire est
+  maître à la couleur demandée
+* **Exception 2** : quand de l'atout est joué, le joueur suivant est obligé de
+  *monter* (mettre une carte plus forte), s'il en a une.
+
+---
+
+Par exemple, si l'enchère est 100 ♣ :
 
 ![trick](rules-fr-trick-example.svg)
 
+* Joueur 1, choisi de jouer As de ♥
+* Joueur 2, choisi de jouer Roi de ♥
+* Joueur 3, n'a pas de ♥, ni de ♣ (atout), choisit de jouer un Roi de ♦
+* Joueur 4, n'a pas de ♥, est obligé de couper, et joue alors son 10 de ♣
 
-</div>
+Ici, le joueur 4, comme il a coupé, remporte le pli.
 
+Note: Le joueur 3, s'il avait eu de l'atout, n'aurait pas été obligé de couper,
+car son partenaire (joueur 1) était maître, à ce moment là, avec l'as de ♥.
+
+---
+
+## Étape 3 : Fin de la manche (8 plis)
+
+Quand les joueurs ont posé toutes leurs cartes, c'est la fin de la manche, les
+points sont comptés.
+
+**Important** : le dernier pli rapporte 10 points, que l'on appelle Dix de der.
+
+### Enchère réussie
+
+Si l'équipe qui a remporté les enchères a réussi son pari, elle fait les points annoncés + les points faits.
+
+L'équipe adverse remporte les points qu'elle a fait elle aussi.
+
+---
+
+Par exemple, si l'enchère est 100 ♣ pour l'équipe "Joueur1 & Joueur3", et que
+ces derniers on réalisé 122 points:
+
+* Ils gagnent donc 122 + 100 = **222 points**.
+* L'équipe adverse gagne **40 points** (162 - 122).
+
+---
+
+### Enchère échouée
+
+Si l'équipe qui a remporté les enchères a raté son pari, elle fait zéro.
+
+L'équipe adverse remporte les points annoncés + 160.
+
+---
+
+Par exemple, si l'enchère est 100 ♣ pour l'équipe "Joueur1 & Joueur2", et que
+ces derniers on réalisé 96 points:
+
+* Ils ne gagnent donc **aucun point**
+* L'équipe adverse gagne 160 + 100 = **260 points**
+
+On dit que l'équipe qui a raté son enchère « est dedans ».
+
+## Fin du jeu
+
+Dès qu'une équipe atteint 2000 points (révolus), le jeu s'arrête, l'équipe
+gagnante étant celle avec le plus de points.
+
+## La Coinche !
+
+Lors de la phase d'enchères, à tout moment, un joueur peut Coincher l'équipe
+adverse.
+
+Cela veut dire « Je parie que vous ne ferez pas cette enchère ! »
+
+Dans ce cas, les enchères sont immédiatement stoppées, et le jeu démarre dans la
+foulée.
+
+Les points de réussite ou de défaites sont alors **doublés**.
+
+## Sans Atout (SA), Tout Atout (TA)
+
+En plus d'annoncer une des quatre couleurs (♥, ♦, ♣ ou ♠), un joueur peut faire
+une enchère de deux autres types :
+
+* Sans Atout (SA): Aucune couleur n'est considérée comme de l'atout (de fait, on
+  ne peut pas couper).
+* Tout Atout (TA): Toutes les couleurs sont considérées comme de l'atout (de
+  fait, on ne peut pas couper non plus).
+  * Tous les valets sont des "vingts"
+  * Tous les 9 sont des "quatorze"
+  * On est obligé de monter sur la carte précédemment jouée, pour toutes les
+    couleurs !
+
+Dans les deux cas, le total des points ne fait bien évidemment pas 162; un
+"produit en croix" par rapport à 152 est alors effectué à la fin de la manche,
+et le dernier pli vaut toujours 10 points.
+
+## La Belote
+
+La Dame et le Roi, à la couleur de l'atout, sont appelée la « Belote » .
+
+Les cartes ont les même valeur que d'habitude (3 et 4 points).
+
+Cependant, si un même joueur a les deux cartes (couple royal à l'atout) dans sa
+main, il peut les annoncer au moment de les jouer, et cela lui rapporte alors
+**20 points**.
+
+Si le joueur qui annonce la belote est dans l'équipe qui a fait l'enchère, ces
+20 points aident à la réussir !
+
+On peut annonce la dame ou le roi en premier, cela n'a pas d'impact.
+
+---
+
+Par exemple, si l'enchère est 100 ♣ pour l'équipe "Joueur1 & Joueur3".
+
+Le joueur 1 a la Dame et le Roi de ♣.
+
+* Il joue la dame, annonce "Belote";
+* Plus tard, il joue le roi, annonce "Rebelote";
+* Alors 20 points seront ajoutés pour le calcul de la manche, ils n'auront donc
+  plus que 80 points à faire pour réussir leur enchère (100).
+
+*Astuce* : il est parfois intéressant de ne pas annoncer la belote, pour éviter
+d'indiquer aux adversaire que l'on a l'autre carte du couple royal.
+
+*Note* : il n'y a pas de belote ni à Sans-Atout, ni à Tout-Atout.
+
+---
+
+## Variante : comptage des points ou non
+
+Une variante consiste à ne compter que l'annonce, pas les points effectués.
+
+Ceci entraîne un jeu plus long (de fait, souvent joué en 1000 points au lieu de
+2000).
+
+C'est intéressant car cela force les joueurs à enchérir plus haut pour gagner
+plus de points.
+
+Cependant, cela ignore les points faits par l'équipe en défense, qui fait zéro
+dans tous les cas si l'enchère est réussie.
