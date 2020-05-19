@@ -23,7 +23,7 @@ passent devant :
 
 ![colors](rules-fr-cards-points-trump.svg)
 
-La somme des cartes valent 152 points, auxquels s'ajoutent 10 points pour le
+La somme des cartes vaut 152 points, auxquels s'ajoutent 10 points pour le
 dernier pli (« dix de der »), soient **un total de 162 points**.
 
 ## Étape 1: les enchères
