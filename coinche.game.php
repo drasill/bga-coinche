@@ -213,7 +213,8 @@ class Coinche extends Table {
 
 		// Get information about players
 		// Note: you can retrieve some extra field you added for "player" table in "dbmodel.sql" if you need it.
-		$sql = 'SELECT player_id id, player_score score, player_no FROM player ';
+		$sql =
+			'SELECT player_id id, player_score score, player_no, player_tricks tricks FROM player ';
 		$result['players'] = self::getCollectionFromDb($sql);
 
 		// Cards in player hand
@@ -970,10 +971,9 @@ class Coinche extends Table {
 
 	function stNewHand() {
 		// Take back all cards (from any location => null) to deck
+		// Create deck, shuffle it and give 8 initial cards
 		$this->cards->moveAllCardsInLocation(null, 'deck');
 		$this->cards->shuffle('deck');
-		// Deal 8 cards to each players
-		// Create deck, shuffle it and give 8 initial cards
 		$players = self::loadPlayersBasicInfos();
 		foreach ($players as $playerId => $player) {
 			$cards = $this->cards->pickCards(8, 'deck', $playerId);
@@ -981,7 +981,12 @@ class Coinche extends Table {
 			self::notifyPlayer($playerId, 'newHand', '', [
 				'cards' => $cards,
 			]);
+
+			// Reset trick count
+			$sql = "UPDATE player SET player_tricks=0 WHERE player_id='$playerId'";
+			self::DbQuery($sql);
 		}
+
 		self::setGameStateValue('trumpColor', 0);
 		self::setGameStateValue('bid', 0);
 		self::setGameStateValue('bidPlayer', 0);
@@ -1142,6 +1147,14 @@ class Coinche extends Table {
 			$trickWinnerId
 		);
 
+		// Update player tricks won count
+		$tricksWon = 0;
+		$sql = "UPDATE player SET player_tricks = player_tricks + 1 WHERE player_id = '$trickWinnerId'";
+		self::DbQuery($sql);
+		$tricksWon = self::getUniqueValueFromDb(
+			"SELECT player_tricks FROM player WHERE player_id='$trickWinnerId'"
+		);
+
 		// Trick count
 		$trickCount = self::getGameStateValue('trickCount');
 
@@ -1158,6 +1171,7 @@ class Coinche extends Table {
 			'player_id' => $trickWinnerId,
 			'player_name' => $players[$trickWinnerId]['player_name'],
 			'trick_count' => $trickCount,
+			'trick_won' => $tricksWon,
 		]);
 
 		// Increment trick count

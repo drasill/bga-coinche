@@ -7,6 +7,10 @@
 -- See http://en.boardgamearena.com/#!doc/Studio for more information.
 -- -----
 
+-- Number of tricks win by this player
+ALTER TABLE `player` ADD `player_tricks` INT UNSIGNED NOT NULL DEFAULT '0';
+
+-- Cards
 CREATE TABLE IF NOT EXISTS `card` (
   `card_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `card_type` varchar(16) NOT NULL,

@@ -19,10 +19,14 @@
 		<div class="playerTables__table playerTables__table--{DIR} playerTables__table--id--{PLAYER_ID}">
 			<div class="playerTables__card"></div>
 			<div class="playerTables__status"></div>
+			<div class="playerTables__tricksWon">
+				<span class="playerTables__tricksWonIcon"></span>
+				<span class="playerTables__tricksWonValue"></span>
+			</div>
 			<div class="playerTables__avatar-wrapper">
-				<div class="playerTables__table__firstMarker"></div>
-				<div class="playerTables__table__counterMarker"></div>
-				<div class="playerTables__table__takerMarker"></div>
+				<div class="playerTables__firstMarker"></div>
+				<div class="playerTables__counterMarker"></div>
+				<div class="playerTables__takerMarker"></div>
 				<div class="playerTables__avatar" style="background-image: url({PLAYER_AVATAR_URL_184})"></div>
 				<div class="playerTables__bubble"></div>
 				<div class="playerTables__name" style="background-color:#{PLAYER_COLOR}b0"><span>{PLAYER_NAME}</span></div>

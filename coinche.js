@@ -42,6 +42,7 @@ define([
 			// Setting up player boards
 			for (var player_id in gamedatas.players) {
 				var player = gamedatas.players[player_id]
+				this.updatePlayerTrickCount(player.id, player.tricks)
 			}
 
 			this.playerBid = {
@@ -92,7 +93,7 @@ define([
 			this.playerHand.setSelectionMode(1)
 			this.playerHand.setSelectionAppearance('class')
 			this.playerHand.centerItems = true
-			this.playerHand.onItemCreate = dojo.hitch(this, 'onCreateNewCard');
+			this.playerHand.onItemCreate = dojo.hitch(this, 'onCreateNewCard')
 
 			this.playerHand.image_items_per_row = 13 // 13 images per row
 			// Create cards types:
@@ -135,17 +136,17 @@ define([
 			// First Player
 			this.updateFirstPlayer(gamedatas.firstPlayer)
 			this.addTooltipToClass(
-				'.playerTables__table--first .playerTables__table__firstMarker',
+				'.playerTables__table--first .playerTables__firstMarker',
 				_('First player for this hand'),
 				''
 			)
 			this.addTooltipToClass(
-				'playerTables__table__takerMarker',
+				'playerTables__takerMarker',
 				_('Taker for this hand'),
 				''
 			)
 			this.addTooltipToClass(
-				'playerTables__table__counterMarker',
+				'playerTables__counterMarker',
 				_('This player has counterd the taker'),
 				''
 			)
@@ -229,9 +230,9 @@ define([
 				.query('.playerTables__table')
 				.removeClass('playerTables__table--active')
 			if (args.active_player) {
-				dojo
-					.query('.playerTables__table--id--' + args.active_player)
-					.addClass('playerTables__table--active')
+				this.getPlayerTableEl(args.active_player).classList.add(
+					'playerTables__table--active'
+				)
 			}
 
 			// Auto play card if one is selected
@@ -267,15 +268,13 @@ define([
 
 		playCardOnTable: function(playerId, color, value, cardId) {
 			// playerId => direction
-			var target = dojo.query(
-				'.playerTables__table--id--' + playerId + ' .playerTables__card'
-			)[0]
+			var target = this.getPlayerTableEl(playerId, 'card')
 			dojo.place(
 				this.format_block('jstpl_cardontable', {
 					x: this.cardwidth * (value - 2),
 					y: this.cardheight * (color - 1),
 					player_id: playerId,
-					cls: color == this.currentTrump ? 'cardontable--is-trump' : '',
+					cls: color == this.currentTrump ? 'cardontable--is-trump' : ''
 				}),
 				target
 			)
@@ -283,11 +282,7 @@ define([
 			if (playerId != this.player_id) {
 				// Some opponent played a card
 				// Move card from player avatar
-				var from = dojo.query(
-					'.playerTables__table--id--' +
-						playerId +
-						' .playerTables__avatar-wrapper'
-				)[0]
+				var from = this.getPlayerTableEl(playerId, 'avatar-wrapper')
 				this.placeOnObject('cardontable_' + playerId, from)
 			} else {
 				// You played a card. If it exists in your hand, move card from there and remove
@@ -304,25 +299,28 @@ define([
 
 		// Move all cards on table to given player, then destroy them
 		giveAllCardsToPlayer: function(winnerId) {
-			var target = dojo.query(
-				'.playerTables__table--id--' + winnerId + ' .playerTables__avatar'
-			)[0]
 			var me = this
-			Object.values(this.gamedatas.players).forEach(function(player) {
-				var cardEl = dojo.byId('cardontable_' + player.id)
-				var anim = me.slideToObject(cardEl, target, 750, 0)
-				dojo.connect(anim, 'onEnd', function(node) {
-					dojo.destroy(cardEl)
+			return new Promise(function(resolve, reject) {
+				var target = me.getPlayerTableEl(winnerId, 'avatar')
+				var count = 0
+				Object.values(me.gamedatas.players).forEach(function(player) {
+					var cardEl = dojo.byId('cardontable_' + player.id)
+					var anim = me.slideToObject(cardEl, target, 750, 0)
+					dojo.connect(anim, 'onEnd', function(node) {
+						dojo.destroy(cardEl)
+						count++
+						if (count >= 4) {
+							resolve()
+						}
+					})
+					anim.play()
 				})
-				anim.play()
 			})
 		},
 
 		// Add item in player's status (on table)
 		updatePlayerStatus: function(playerId, html) {
-			var target = dojo.query(
-				'.playerTables__table--id--' + playerId + ' .playerTables__status'
-			)[0]
+			var target = this.getPlayerTableEl(playerId, 'status')
 			while (target.childElementCount >= 5) {
 				target.removeChild(target.children[0])
 			}
@@ -357,9 +355,7 @@ define([
 		},
 
 		showPlayerBubble: function(playerId, html, duration) {
-			var target = dojo.query(
-				'.playerTables__table--id--' + playerId + ' .playerTables__bubble'
-			)[0]
+			var target = this.getPlayerTableEl(playerId, 'bubble')
 			target.innerHTML = ''
 			if (typeof html == 'string') {
 				html = dojo.create('span', { innerHTML: html })
@@ -378,9 +374,7 @@ define([
 		},
 
 		hidePlayerBubble: function(playerId) {
-			var target = dojo.query(
-				'.playerTables__table--id--' + playerId + ' .playerTables__bubble'
-			)[0]
+			var target = this.getPlayerTableEl(playerId, 'bubble')
 			target.classList.remove('playerTables__bubble--visible')
 		},
 
@@ -393,8 +387,8 @@ define([
 		updateBidInfo: function(data) {
 			// Hide all counter markers
 			dojo
-				.query('.playerTables__table__counterMarker')
-				.removeClass('playerTables__table__counterMarker--visible')
+				.query('.playerTables__counterMarker')
+				.removeClass('playerTables__counterMarker--visible')
 
 			if (!(data.bid > 0) || !data.bidPlayerDisplay) {
 				// Hide bid panel
@@ -422,13 +416,10 @@ define([
 
 			// Activate countered marker of player
 			if (data.countered > 0 && data.counteringPlayer) {
-				dojo
-					.query(
-						'.playerTables__table--id--' +
-							data.counteringPlayer +
-							' .playerTables__table__counterMarker'
-					)
-					.addClass('playerTables__table__counterMarker--visible')
+				this.getPlayerTableEl(
+					data.counteringPlayer,
+					'counterMarker'
+				).classList.add('playerTables__counterMarker--visible')
 			}
 		},
 
@@ -436,9 +427,9 @@ define([
 			dojo
 				.query('.playerTables__table')
 				.removeClass('playerTables__table--first')
-			dojo
-				.query('.playerTables__table--id--' + playerId)
-				.addClass('playerTables__table--first')
+			this.getPlayerTableEl(playerId).classList.add(
+				'playerTables__table--first'
+			)
 		},
 
 		updatePlayerBid: function(clearValue) {
@@ -579,6 +570,15 @@ define([
 			})
 		},
 
+		updatePlayerTrickCount: function(playerId, tricksWon) {
+			// Update value
+			this.getPlayerTableEl(playerId, 'tricksWonValue').innerHTML = tricksWon
+			// Update 'notempty' class
+			var cls = 'playerTables__tricksWon--notEmpty'
+			var method = tricksWon > 0 ? 'add' : 'remove'
+			this.getPlayerTableEl(playerId, 'tricksWon').classList[method](cls)
+		},
+
 		playSelectedCard: function() {
 			var cardId = this.selectedCardId
 			if (!cardId) {
@@ -643,6 +643,16 @@ define([
 			if (this.currentTrump >= 1 && this.currentTrump <= 4) {
 				cardDiv.classList.add('stockitem--is-trump')
 			}
+		},
+
+		// Return a player element (with class .playerTables__<suffix>)
+		// or the table wrapper if no suffix is given
+		getPlayerTableEl(playerId, suffix) {
+			var selector = '.playerTables__table--id--' + playerId
+			if (suffix) {
+				selector += ' .playerTables__' + suffix
+			}
+			return dojo.query(selector)[0]
 		},
 
 		///////////////////////////////////////////////////
@@ -821,13 +831,18 @@ define([
 			// Reactive all bidPanel buttons
 			dojo.query('.bidPanel__btn--value').removeClass('bidPanel__btn--hidden')
 
-			// Remove "coinche" playerTables
-			dojo.query('.playerTables').removeClass('playerTables--coinched')
-
-			// Remove "taker" icon
-			dojo
-				.query('.playerTables__table__takerMarker')
-				.removeClass('playerTables__table__takerMarker--visible')
+			setTimeout(function() {
+				// Remove "coinche" playerTables
+				dojo.query('.playerTables').removeClass('playerTables--coinched')
+				// Remove "taker" icon
+				dojo
+					.query('.playerTables__takerMarker')
+					.removeClass('playerTables__takerMarker--visible')
+				// Remove trick count icons
+				dojo
+					.query('.playerTables__tricksWon')
+					.removeClass('playerTables__tricksWon--notEmpty')
+			}, 2500)
 		},
 
 		notif_allPassWithBid: function(notif) {},
@@ -851,9 +866,9 @@ define([
 				.query(
 					'.playerTables__table--id--' +
 						notif.args.player_id +
-						' .playerTables__table__takerMarker'
+						' .playerTables__takerMarker'
 				)
-				.addClass('playerTables__table__takerMarker--visible')
+				.addClass('playerTables__takerMarker--visible')
 
 			this.currentTrump = notif.args.trumpColor
 			this.updateCardsWeights()
@@ -899,10 +914,13 @@ define([
 		},
 
 		notif_trickWin: function(notif) {
-			this.clearOldTricksLogs(notif.args.trick_count_value - 1)
-			setTimeout(dojo.hitch(this, function() {
-				this.giveAllCardsToPlayer(notif.args.player_id)
-			}), 1000)
+			var me = this
+			setTimeout(function() {
+				me.giveAllCardsToPlayer(notif.args.player_id).then(function() {
+					me.clearOldTricksLogs(notif.args.trick_count_value - 1)
+					me.updatePlayerTrickCount(notif.args.player_id, notif.args.trick_won)
+				})
+			}, 1000)
 		},
 
 		// Private information, this player has the belote
@@ -920,23 +938,26 @@ define([
 		},
 
 		notif_scoreTable: function(notif) {
-			this.scoringDialog = this.displayTableWindow(
-				'roundEndSummary',
-				notif.args.title,
-				notif.args.table,
-				'',
-				this.format_string_recursive(
-					'<div id="tableWindow_actions"><a id="score_close_window" class="bgabutton bgabutton_blue">${close}</a></div>',
-					{ close: _('OK') }
+			var me = this
+			setTimeout(function() {
+				me.scoringDialog = me.displayTableWindow(
+					'roundEndSummary',
+					notif.args.title,
+					notif.args.table,
+					'',
+					me.format_string_recursive(
+						'<div id="tableWindow_actions"><a id="score_close_window" class="bgabutton bgabutton_blue">${close}</a></div>',
+						{ close: _('OK') }
+					)
 				)
-			)
-			this.scoringDialog.show()
-			dojo.connect(
-				$('score_close_window'),
-				'onclick',
-				this,
-				'onScoreWindowCloseClick'
-			)
+				me.scoringDialog.show()
+				dojo.connect(
+					$('score_close_window'),
+					'onclick',
+					me,
+					'onScoreWindowCloseClick'
+				)
+			}, 1500)
 		}
 	})
 })
