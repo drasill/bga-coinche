@@ -85,7 +85,7 @@ $gameinfos = [
 	'strategy' => 3,
 
 	// Diplomacy of the game, from 0 (no interaction in this game) to 5 (totally based on interaction and discussion between players)
-	'diplomacy' => 1,
+	'diplomacy' => 3,
 
 	// Colors attributed to players
 	'player_colors' => ['ff0000', '008000', '0000ff', 'ffa500', '773300'],
