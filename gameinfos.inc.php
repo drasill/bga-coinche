@@ -67,7 +67,7 @@ $gameinfos = [
 
 	// If in the game, all losers are equal (no score to rank them or explicit in the rules that losers are not ranked between them), set this to true
 	// The game end result will display "Winner" for the 1st player and "Loser" for all other players
-	'losers_not_ranked' => false,
+	'losers_not_ranked' => true,
 
 	// Game is "beta". A game MUST set is_beta=1 when published on BGA for the first time, and must remains like this until all bugs are fixed.
 	'is_beta' => 1,
