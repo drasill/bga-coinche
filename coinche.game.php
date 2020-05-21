@@ -1110,79 +1110,67 @@ class Coinche extends Table {
 	}
 
 	function stNextPlayer() {
-		// Active next player OR end the trick and go to the next trick OR end the hand
-		if ($this->cards->countCardInLocation('cardsontable') == 4) {
-			// This is the end of the trick
-			$cardsOnTable = $this->cards->getCardsInLocation('cardsontable');
-
-			$strongerValue = 0;
-
-			$winningCard = null;
-			foreach ($cardsOnTable as $card) {
-				$strength = $this->getCardStrength($card);
-
-				// First card
-				if ($winningCard === null) {
-					$winningCard = $card;
-					$strongerValue = $strength;
-					continue;
-				}
-
-				if ($strength > $strongerValue) {
-					$winningCard = $card;
-					$strongerValue = $strength;
-				}
-			}
-
-			$bestValuePlayerId = $winningCard['location_arg']; // Note: location_arg = player who played this card on table
-			// Move all cards to "cardswon" of the given player
-			$this->cards->moveAllCardsInLocation(
-				'cardsontable',
-				'cardswon',
-				null,
-				$bestValuePlayerId
-			);
-
-			// Trick count
-			$trickCount = self::getGameStateValue('trickCount');
-
-			// Notify
-			// Note: we use 2 notifications here in order we can pause the display during the first notification
-			//  before we move all cards to the winner (during the second)
-			$players = self::loadPlayersBasicInfos();
-			$isLastTrick = $this->cards->countCardInLocation('hand') == 0;
-			$message = clienttranslate('${trick_count}${player_name} wins the trick');
-			if ($isLastTrick) {
-				$message = clienttranslate('${player_name} wins the last trick (+10 pts)');
-			}
-			self::notifyAllPlayers(
-				'trickWin',
-				$message,
-				[
-					'player_id' => $bestValuePlayerId,
-					'player_name' => $players[$bestValuePlayerId]['player_name'],
-					'trick_count' => $trickCount,
-				]
-			);
-
-			// Increment trick count
-			self::setGameStateValue('trickCount', $trickCount + 1);
-
-			if ($isLastTrick) {
-				// End of the hand
-				self::setGameStateValue('dixDeDerPlayerId', $bestValuePlayerId);
-				$this->gamestate->nextState('endHand');
-			} else {
-				// End of the trick
-				$this->gamestate->changeActivePlayer($bestValuePlayerId);
-				$this->gamestate->nextState('nextTrick');
-			}
-		} else {
-			// Standard case (not the end of the trick)
-			// => just active the next player
+		if ($this->cards->countCardInLocation('cardsontable') < 4) {
+			// not the end of the trick, just active the next player
 			$playerId = self::activeNextPlayer();
 			self::giveExtraTime($playerId);
 			$this->gamestate->nextState('nextPlayer');
+			return;
+		}
+
+		// 4 cards played, this is the end of the trick.
+		// Look up the winner of this trick.
+
+		$players = self::loadPlayersBasicInfos();
+		$cardsOnTable = $this->cards->getCardsInLocation('cardsontable');
+		$strongestValue = 0;
+		$winningCard = null;
+		foreach ($cardsOnTable as $card) {
+			$strength = $this->getCardStrength($card);
+			if ($strength >= $strongestValue) {
+				$winningCard = $card;
+				$strongestValue = $strength;
+			}
+		}
+		$trickWinnerId = $winningCard['location_arg']; // Note: location_arg = player who played this card on table
+
+		// Move all cards to "cardswon" of the given player
+		$this->cards->moveAllCardsInLocation(
+			'cardsontable',
+			'cardswon',
+			null,
+			$trickWinnerId
+		);
+
+		// Trick count
+		$trickCount = self::getGameStateValue('trickCount');
+
+		$isLastTrick = $this->cards->countCardInLocation('hand') == 0;
+
+		// Notify
+		$message = clienttranslate('${trick_count}${player_name} wins the trick');
+		if ($isLastTrick) {
+			$message = clienttranslate(
+				'${player_name} wins the last trick (+10 pts)'
+			);
+		}
+		self::notifyAllPlayers('trickWin', $message, [
+			'player_id' => $trickWinnerId,
+			'player_name' => $players[$trickWinnerId]['player_name'],
+			'trick_count' => $trickCount,
+		]);
+
+		// Increment trick count
+		self::setGameStateValue('trickCount', $trickCount + 1);
+
+		if ($isLastTrick) {
+			// End of the hand
+			self::setGameStateValue('dixDeDerPlayerId', $trickWinnerId);
+			$this->gamestate->nextState('endHand');
+		} else {
+			// End of the trick
+			$this->gamestate->changeActivePlayer($trickWinnerId);
+			$this->gamestate->nextState('nextTrick');
 		}
 	}
 
