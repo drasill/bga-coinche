@@ -647,7 +647,7 @@ define([
 
 		// Return a player element (with class .playerTables__<suffix>)
 		// or the table wrapper if no suffix is given
-		getPlayerTableEl(playerId, suffix) {
+		getPlayerTableEl: function(playerId, suffix) {
 			var selector = '.playerTables__table--id--' + playerId
 			if (suffix) {
 				selector += ' .playerTables__' + suffix
