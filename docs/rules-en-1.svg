@@ -14,9 +14,9 @@
    version="1.1"
    id="svg944"
    inkscape:version="1.0 (4035a4f, 2020-05-01)"
-   sodipodi:docname="rules-fr-1.svg">
+   sodipodi:docname="rules-en-1.svg">
   <style
-     id="style2328"></style>
+     id="style2247"></style>
   <defs
      id="defs938">
     <filter
@@ -100,11 +100,11 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.4142136"
-     inkscape:cx="209.87837"
-     inkscape:cy="261.46135"
+     inkscape:zoom="2"
+     inkscape:cx="262.52225"
+     inkscape:cy="171.70469"
      inkscape:document-units="mm"
-     inkscape:current-layer="g1781"
+     inkscape:current-layer="layer1"
      inkscape:document-rotation="0"
      showgrid="false"
      inkscape:window-width="1768"
@@ -120,7 +120,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -239,7 +239,7 @@
            x="-29.11924"
            y="311.18045"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.89212px;font-family:'Arial Black';-inkscape-font-specification:'Arial Black, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.666911"
-           id="tspan1777">Équipe 2</tspan></text>
+           id="tspan1777">Team 2</tspan></text>
     </g>
     <g
        id="g1742"
@@ -290,7 +290,7 @@
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.89212px;font-family:'Arial Black';-inkscape-font-specification:'Arial Black, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.666911"
            y="239.1293"
            x="-54.960678"
-           sodipodi:role="line">Équipe 1</tspan></text>
+           sodipodi:role="line">Team 1</tspan></text>
     </g>
     <g
        id="g1711"
@@ -312,7 +312,7 @@
            y="234.8324"
            x="-100.50723"
            id="tspan1638"
-           sodipodi:role="line">Joueur</tspan><tspan
+           sodipodi:role="line">Player</tspan><tspan
            id="tspan1642"
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.89212px;font-family:'Arial Black';-inkscape-font-specification:'Arial Black, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.666911"
            y="244.0802"
@@ -337,9 +337,9 @@
          id="text1640-8"><tspan
            sodipodi:role="line"
            id="tspan1638-0"
-           x="6.7953644"
+           x="6.7953634"
            y="304.20157"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.89212px;font-family:'Arial Black';-inkscape-font-specification:'Arial Black, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.666911">Joueur</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.89212px;font-family:'Arial Black';-inkscape-font-specification:'Arial Black, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.666911">Player</tspan><tspan
            sodipodi:role="line"
            x="6.7953639"
            y="313.44937"
@@ -366,7 +366,7 @@
            id="tspan1638-2"
            x="-100.50723"
            y="371.99393"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.89212px;font-family:'Arial Black';-inkscape-font-specification:'Arial Black, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.666911">Joueur</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.89212px;font-family:'Arial Black';-inkscape-font-specification:'Arial Black, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.666911">Player</tspan><tspan
            sodipodi:role="line"
            x="-100.50723"
            y="381.24173"
@@ -393,7 +393,7 @@
            id="tspan1638-5"
            x="-211.19073"
            y="304.20157"
-           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.89212px;font-family:'Arial Black';-inkscape-font-specification:'Arial Black, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.666911">Joueur</tspan><tspan
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:8.89212px;font-family:'Arial Black';-inkscape-font-specification:'Arial Black, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-align:center;text-anchor:middle;fill:#ffffff;stroke-width:0.666911">Player</tspan><tspan
            sodipodi:role="line"
            x="-211.19073"
            y="313.44937"

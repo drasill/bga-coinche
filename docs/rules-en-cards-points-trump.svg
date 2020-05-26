@@ -9,7 +9,7 @@
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    inkscape:version="1.0 (4035a4f, 2020-05-01)"
-   sodipodi:docname="rules-fr-cards-points-trump.svg"
+   sodipodi:docname="rules-en-cards-points-trump.svg"
    id="svg24919"
    viewBox="-0.2 -236 2001.1369 441.05187"
    width="2000.3929"
@@ -25,7 +25,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -34,9 +34,9 @@
      inkscape:window-maximized="0"
      inkscape:window-y="35"
      inkscape:window-x="15"
-     inkscape:cy="294.13901"
-     inkscape:cx="1297.7584"
-     inkscape:zoom="0.38353008"
+     inkscape:cy="374.9501"
+     inkscape:cx="1579.8416"
+     inkscape:zoom="0.76706015"
      showgrid="false"
      id="namedview24921"
      inkscape:window-height="1028"
@@ -3348,14 +3348,14 @@
   <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:23.7413px;line-height:104%;font-family:sans-serif;text-align:start;letter-spacing:0px;word-spacing:0px;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.7806"
-     x="717.00616"
+     x="756.68707"
      y="150.62839"
      id="text10934"><tspan
        sodipodi:role="line"
        id="tspan10932"
-       x="717.00616"
+       x="756.68707"
        y="150.62839"
-       style="stroke-width:1.7806">Couple d'atouts appelé la &quot;<tspan
+       style="stroke-width:1.7806">Royal couple, name <tspan
    style="font-weight:bold;stroke-width:1.7806"
    id="tspan10936">Belote</tspan>&quot;</tspan></text>
   <path
@@ -3369,25 +3369,16 @@
      x="1814.6697"
      style="font-style:normal;font-weight:normal;font-size:23.7413px;line-height:104%;font-family:sans-serif;text-align:center;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.7806"
      xml:space="preserve"><tspan
+       id="tspan10967"
        style="text-align:center;text-anchor:middle;stroke-width:1.7806"
        y="150.62839"
        x="1814.6697"
-       id="tspan10961"
-       sodipodi:role="line">Les cartes les plus fortes du jeu</tspan><tspan
-       id="tspan10965"
+       sodipodi:role="line">The strongest cards</tspan><tspan
+       id="tspan9819"
        style="text-align:center;text-anchor:middle;stroke-width:1.7806"
        y="175.31934"
        x="1814.6697"
-       sodipodi:role="line">appelées communément :</tspan><tspan
-       id="tspan10967"
-       style="text-align:center;text-anchor:middle;stroke-width:1.7806"
-       y="200.01028"
-       x="1814.6697"
-       sodipodi:role="line">le <tspan
-   id="tspan10971"
-   style="font-weight:bold;text-align:center;text-anchor:middle;stroke-width:1.7806">Quatorze</tspan> et le <tspan
-   id="tspan10969"
-   style="font-weight:bold;text-align:center;text-anchor:middle;stroke-width:1.7806">Vingt</tspan></tspan></text>
+       sodipodi:role="line">of the game</tspan></text>
   <rect
      y="-235.32938"
      x="0.55234998"
