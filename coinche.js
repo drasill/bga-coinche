@@ -946,17 +946,11 @@ define([
 					notif.args.table,
 					'',
 					me.format_string_recursive(
-						'<div id="tableWindow_actions"><a id="score_close_window" class="bgabutton bgabutton_blue">${close}</a></div>',
+						'<div id="tableWindow_actions"><a id="close_btn" class="bgabutton bgabutton_blue">${close}</a></div>',
 						{ close: _('OK') }
 					)
 				)
 				me.scoringDialog.show()
-				dojo.connect(
-					$('score_close_window'),
-					'onclick',
-					me,
-					'onScoreWindowCloseClick'
-				)
 			}, 1500)
 		}
 	})

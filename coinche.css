@@ -586,6 +586,8 @@
 	flex: 1;
 }
 
+/* Current Bid Info */
+
 .currentBidInfo {
 	display: none;
 	margin: 10px;
@@ -613,9 +615,13 @@
 	display: none;
 }
 
+/* My Hand */
+
 .myHand {
 	text-align: center;
 }
+
+/* Card Suits icons */
 
 .card-color-icon {
 	width: 32px;
@@ -659,12 +665,16 @@
 	background-image: url('img/notrump.svg');
 }
 
+/* Bid Value in log messages */
+
 .bid-value {
 	font-weight: bold;
 	font-size: 0.9rem;
 	vertical-align: middle;
 	color: #2c3e50;
 }
+
+/* Cards (stockitems) */
 
 .stockitem:hover {
 	transition: top 0.2s ease-in;
@@ -697,7 +707,8 @@
 	transition: opacity 1.5s ease-in;
 }
 
-/* score window */
+/* Score window */
+
 .scoreTableValue--bold {
 	font-weight: bold;
 }
@@ -706,6 +717,8 @@
 	min-width: 40px;
 	text-align: right;
 }
+
+/* Coinche Animation */
 
 @keyframes coinche-shake {
 	10%,
@@ -731,6 +744,7 @@
 }
 
 /* 3D */
+
 .mode_3d #game_play_area_wrap div.bidPanel {
 	transform: rotate3d(1, 0, 0, -65deg) translate3d(0px, 0px, 140px)
 		scale3d(0.7, 0.7, 1);
