@@ -39,8 +39,6 @@ de Der”), for a grand **total of 162 points**.
   * otherwise, the last bid is validated, and the game starts, with the chosen
   trump suit.
 
-Par exemple, un joueur qui fait une enchère à 100 Trèfle, fait le pari que son
-équipe va réaliser 100 points si l'atout est trèfle.
 For example, un player bidding 100 Club, bets that his team will take 100 points
 if the trump is Club.
 
@@ -163,7 +161,7 @@ The Queen and the King, for the trump suit, are called the “Belote”.
 These cards still have the same value (3 and 4 points).
 
 But, is a player have both cards (the trump royal couple) in his hand, he can
-declare them whe, playing them, and this will earn his team **20 points**.
+declare them when playing them, and this will earn his team **20 points**.
 
 If the player declaring the Belote is in the team who won the bidding, these 20
 points help them to won the contract !

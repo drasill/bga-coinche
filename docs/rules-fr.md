@@ -26,7 +26,7 @@ passent devant :
 La somme des cartes vaut 152 points, auxquels s'ajoutent 10 points pour le
 dernier pli (« dix de der »), soit **un total de 162 points**.
 
-## Étape 1: les enchères
+## Étape 1 : les enchères
 
 * Chaque joueur (en commençant par le 1er joueur) va miser pour son équipe le
   nombre de points qu'il pense faire, en choisissant une couleur d'atout.
@@ -45,13 +45,13 @@ Par exemple, un joueur qui fait une enchère à 100 Trèfle, fait le pari que so
 Comme le total des points vaut 162, on peut enchérir jusqu'à 160 (sauf
 exceptions, voir "belote" et "capot").
 
-## Étape 2: le jeu de carte
+## Étape 2 : le jeu de carte
 
 Comme les 4 joueurs ont 8 cartes en mains, il y a 8 plis de 4 cartes.
 
 ### Les plis
 
-Le 1er joueur va poser une carte; les autres joueurs, dans l'ordre, doivent
+Le 1er joueur va poser une carte ; les autres joueurs, dans l'ordre, doivent
 également poser une carte en suivant les règles suivantes :
 
 * si le joueur possède dans sa main la couleur demandée (♥, ♦, ♣ ou ♠), il doit
