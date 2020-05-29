@@ -588,7 +588,7 @@
 
 .lastScoreSummaryButton {
 	position: absolute;
-	bottom: 55px;
+	top: 12px;
 	left: -70px;
 	width: 300px;
 	height: 60px;

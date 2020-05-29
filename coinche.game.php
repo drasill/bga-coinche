@@ -1374,8 +1374,10 @@ class Coinche extends Table {
 		// Multiplier depends on "countered" or not
 		$multiplier = $countered ? 2 : 1;
 
+		$bidSuccessful = $teamPoints[$bidTeam] >= $bid;
+
 		// Check bid success/failure
-		if ($teamPoints[$bidTeam] >= $bid) {
+		if ($bidSuccessful) {
 			// Success !
 
 			$tableTitle = self::_('Bid successful !');
@@ -1537,6 +1539,7 @@ class Coinche extends Table {
 		$this->notifyAllPlayers('scoreTable', '', [
 			'title' => $tableTitle,
 			'table' => $table,
+			'bidSuccessful' => $bidSuccessful,
 			'summaryTitle' => $summaryTitle,
 		]);
 

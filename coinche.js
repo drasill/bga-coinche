@@ -58,6 +58,12 @@ define([
 				// Belote has been declared already ?
 				declared: gamedatas.belote_declared
 			}
+
+			// Public information: current bid info
+			this.bidInfo = {
+				playerId: null
+			}
+
 			// Does this player want to declare the belote ?
 			this.wantToDeclareBelote = null
 
@@ -142,7 +148,7 @@ define([
 			this.addTooltipToClass(
 				'lastScoreSummaryButton',
 				_('Result from the last hand'),
-				_('Click to see more details'),
+				_('Click to see more details')
 			)
 
 			// First Player
@@ -397,6 +403,8 @@ define([
 
 		// Update global bid info
 		updateBidInfo: function(data) {
+			this.bidInfo.playerId = data.bidPlayer
+
 			// Hide all counter markers
 			dojo
 				.query('.playerTables__counterMarker')
@@ -909,7 +917,10 @@ define([
 
 		notif_firstPlayerChange: function(notif) {
 			this.updateFirstPlayer(notif.args.player_id)
-			this.showPlayerBubble(notif.args.player_id, _("I'm starting"))
+			var me = this
+			setTimeout(function() {
+				me.showPlayerBubble(notif.args.player_id, _("I'm starting"))
+			}, 2500)
 		},
 
 		notif_updateBidCoinche: function(notif) {
@@ -968,6 +979,13 @@ define([
 		notif_scoreTable: function(notif) {
 			this.lastScoreInfo = notif.args
 			this.setLastScoreSummaryButtonText(notif.args.summaryTitle)
+
+			this.showPlayerBubble(
+				this.bidInfo.playerId,
+				notif.args.bidSuccessful
+					? _('We did it') + ' 😄'
+					: _('We failed') + ' 😞'
+			)
 
 			setTimeout(function() {
 				// Remove "coinche" playerTables
