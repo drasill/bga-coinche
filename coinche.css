@@ -586,6 +586,35 @@
 	flex: 1;
 }
 
+.lastScoreSummaryButton {
+	position: absolute;
+	bottom: 55px;
+	left: -70px;
+	width: 300px;
+	height: 60px;
+	box-sizing: border-box;
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+	background-image: url(img/scoreCorner.svg);
+	cursor: pointer;
+	opacity: 0;
+	transition: opacity 1.5s ease-in;
+	font-size: 12px;
+	padding-left: 25px;
+	text-align: center;
+	padding-top: 14px;
+	color: white;
+	font-weight: 500;
+}
+.lastScoreSummaryButton:hover {
+	background-image: url(img/scoreCorner--hover.svg);
+}
+
+.lastScoreSummaryButton--visible {
+	opacity: 1;
+}
+
 /* Current Bid Info */
 
 .currentBidInfo {

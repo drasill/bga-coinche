@@ -1426,6 +1426,13 @@ class Coinche extends Table {
 					'defenseTeamPoints' => $teamPoints[$defenseTeam],
 				]
 			);
+			$summaryTitle = self::_(
+				sprintf(
+					'Bid successful, %d to %d points !',
+					$teamPoints[$bidTeam],
+					$teamPoints[$defenseTeam]
+				)
+			);
 
 			self::incStat(1, 'numberOfBidSucceeded', $bidPlayerId);
 		} else {
@@ -1476,6 +1483,13 @@ class Coinche extends Table {
 					'defenseTeamPoints' => $teamPoints[$defenseTeam],
 				]
 			);
+			$summaryTitle = self::_(
+				sprintf(
+					'Bid fails, %d to %d points !',
+					$teamPoints[$bidTeam],
+					$teamPoints[$defenseTeam]
+				)
+			);
 
 			self::incStat(1, 'numberOfBidsFailed', $bidPlayerId);
 			if ($countered) {
@@ -1523,6 +1537,7 @@ class Coinche extends Table {
 		$this->notifyAllPlayers('scoreTable', '', [
 			'title' => $tableTitle,
 			'table' => $table,
+			'summaryTitle' => $summaryTitle,
 		]);
 
 		// Check if end of game (score must be strictly higher than maxScore)

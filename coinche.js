@@ -133,6 +133,18 @@ define([
 				'onCoincheBtnClick'
 			)
 
+			// LastScoreButton
+			this.connectClass(
+				'lastScoreSummaryButton',
+				'onclick',
+				'showLastScoreWindow'
+			)
+			this.addTooltipToClass(
+				'lastScoreSummaryButton',
+				_('Result from the last hand'),
+				_('Click to see more details'),
+			)
+
 			// First Player
 			this.updateFirstPlayer(gamedatas.firstPlayer)
 			this.addTooltipToClass(
@@ -655,6 +667,33 @@ define([
 			return dojo.query(selector)[0]
 		},
 
+		showLastScoreWindow: function() {
+			if (!this.lastScoreInfo) {
+				return
+			}
+			this.scoringDialog = this.displayTableWindow(
+				'roundEndSummary',
+				this.lastScoreInfo.title,
+				this.lastScoreInfo.table,
+				'',
+				this.format_string_recursive(
+					'<div id="tableWindow_actions"><a id="close_btn" class="bgabutton bgabutton_blue">${close}</a></div>',
+					{ close: _('OK') }
+				)
+			)
+			this.scoringDialog.show()
+		},
+
+		setLastScoreSummaryButtonText(text) {
+			var el = dojo.query('.lastScoreSummaryButton')[0]
+			if (text) {
+				el.innerHTML = text
+				el.classList.add('lastScoreSummaryButton--visible')
+			} else {
+				el.classList.remove('lastScoreSummaryButton--visible')
+			}
+		},
+
 		///////////////////////////////////////////////////
 		//// Player's action
 
@@ -830,19 +869,6 @@ define([
 
 			// Reactive all bidPanel buttons
 			dojo.query('.bidPanel__btn--value').removeClass('bidPanel__btn--hidden')
-
-			setTimeout(function() {
-				// Remove "coinche" playerTables
-				dojo.query('.playerTables').removeClass('playerTables--coinched')
-				// Remove "taker" icon
-				dojo
-					.query('.playerTables__takerMarker')
-					.removeClass('playerTables__takerMarker--visible')
-				// Remove trick count icons
-				dojo
-					.query('.playerTables__tricksWon')
-					.removeClass('playerTables__tricksWon--notEmpty')
-			}, 2500)
 		},
 
 		notif_allPassWithBid: function(notif) {},
@@ -877,6 +903,8 @@ define([
 				notif.args.player_id,
 				_("Let's go with") + this.format_block('jstpl_playerbid', notif.args)
 			)
+
+			this.setLastScoreSummaryButtonText(null)
 		},
 
 		notif_firstPlayerChange: function(notif) {
@@ -938,20 +966,21 @@ define([
 		},
 
 		notif_scoreTable: function(notif) {
-			var me = this
+			this.lastScoreInfo = notif.args
+			this.setLastScoreSummaryButtonText(notif.args.summaryTitle)
+
 			setTimeout(function() {
-				me.scoringDialog = me.displayTableWindow(
-					'roundEndSummary',
-					notif.args.title,
-					notif.args.table,
-					'',
-					me.format_string_recursive(
-						'<div id="tableWindow_actions"><a id="close_btn" class="bgabutton bgabutton_blue">${close}</a></div>',
-						{ close: _('OK') }
-					)
-				)
-				me.scoringDialog.show()
-			}, 1500)
+				// Remove "coinche" playerTables
+				dojo.query('.playerTables').removeClass('playerTables--coinched')
+				// Remove "taker" icon
+				dojo
+					.query('.playerTables__takerMarker')
+					.removeClass('playerTables__takerMarker--visible')
+				// Remove trick count icons
+				dojo
+					.query('.playerTables__tricksWon')
+					.removeClass('playerTables__tricksWon--notEmpty')
+			}, 2500)
 		}
 	})
 })

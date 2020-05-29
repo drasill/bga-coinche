@@ -88,6 +88,9 @@
 
 		</div>
 
+		<div class="lastScoreSummaryButton">
+		</div>
+
 	</div>
 
 </div>
