@@ -8,16 +8,16 @@ Players of the same team play one in front of the other.
 
 ## Cards
 
-There are 4 colors :
+There are 4 suits :
 
 ![colors](rules-en-cards-colors.svg)
 
-For each color, there are 8 cards, from 7 to Ace, for which points and strengh
+For each suit, there are 8 cards, from 7 to Ace, for which points and strengh
 are, in order:
 
 ![colors](rules-fr-cards-points.svg)
 
-For each round, a color will be decided as being the “**Atout**” color.
+For each round, a suit will be decided as being the “**Atout**” suit.
 The order and strengh of the cards then change, the **Jack** and the **9** being
 the strongest:
 
@@ -29,7 +29,7 @@ de Der”), for a grand **total of 162 points**.
 ## Step 1: the bidding
 
 * Each player (starting with the first player) will bid for his team the number
-  of points he hopes doing, while choosing a trump color.
+  of points he hopes doing, while choosing a trump suit.
 
 * Bidding starts at 82 points, meaning half of the game points, and goes up 10
   by 10 (or more)
@@ -37,7 +37,7 @@ de Der”), for a grand **total of 162 points**.
 * As soon as 4 players pass, the bidding stops :
   * if no bid has been done, a new hand is dealt,
   * otherwise, the last bid is validated, and the game starts, with the chosen
-  trump color.
+  trump suit.
 
 Par exemple, un joueur qui fait une enchère à 100 Trèfle, fait le pari que son
 équipe va réaliser 100 points si l'atout est trèfle.
@@ -56,10 +56,10 @@ As the 4 players have 8 cards in hand, there are 8 tricks of 4 cards.
 This first players will play a card; other players, in order, must play a card,
 while following these rules:
 
-* if the player has in his hand the required color (♥, ♦, ♣ ou ♠), they must
+* if the player has in his hand the required suit (♥, ♦, ♣ ou ♠), they must
   play this suit;
 * else, if they have a trump card, they must play one (which is called *cut*);
-* otherwise, they can play any other color (which is called *discard*).
+* otherwise, they can play any other suit (which is called *discard*).
 
 **Cutting** (playing a trump on another suit) wins the trick; otherwise the
 strongest card of the initial trick's suit is winnning.
@@ -158,7 +158,7 @@ to 152, then the last trick still earns 10 points.
 
 ## The Belote
 
-The Queen and the King, for the trump color, are called the “Belote”.
+The Queen and the King, for the trump suit, are called the “Belote”.
 
 These cards still have the same value (3 and 4 points).
 
