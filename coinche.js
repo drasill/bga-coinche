@@ -86,11 +86,13 @@ define([
 				this,
 				'swapPlayerTables'
 			)
+
+			// Bid Confirmation
 			dojo.connect(
-				$('preference_fontrol_100'),
+				$('preference_control_101'),
 				'onchange',
 				this,
-				'swapPlayerTables'
+				'onBidConfirmationPrefChange'
 			)
 
 			// Player hand
@@ -692,7 +694,7 @@ define([
 			this.scoringDialog.show()
 		},
 
-		setLastScoreSummaryButtonText(text) {
+		setLastScoreSummaryButtonText: function(text) {
 			var el = dojo.query('.lastScoreSummaryButton')[0]
 			if (text) {
 				el.innerHTML = text
@@ -700,6 +702,51 @@ define([
 			} else {
 				el.classList.remove('lastScoreSummaryButton--visible')
 			}
+		},
+
+		togglePlayerBidConfirmation: function(show) {
+			// Update player bid
+			var infoEl = dojo.query(
+				'.bidPanel__btn__confirm .bidPanel__btn__confirm__info'
+			)[0]
+			if (this.playerBid.value && this.playerBid.color) {
+				dojo.place(
+					this.format_block('jstpl_playerbidconfirm', {
+						bid: this.playerBid.value,
+						trumpColor: this.playerBid.color
+					}),
+					infoEl,
+					'replace'
+				)
+			} else {
+				infoEl.innerHTML = ''
+			}
+
+			var method = show ? 'remove' : 'add'
+			var el = dojo.query('.bidPanel__btn__confirm')[0]
+			el.classList[method]('bidPanel__btn--hidden')
+		},
+
+		// Send the current player bid
+		sendPlayerBid: function() {
+			if (!this.playerBid.value && this.playerBid.color) {
+				return
+			}
+			this.ajaxcall(
+				'/' + this.game_name + '/' + this.game_name + '/' + 'bid' + '.html',
+				{
+					value: this.playerBid.value,
+					color: this.playerBid.color,
+					lock: true
+				},
+				this,
+				function(result) {
+					this.updatePlayerBid(true)
+				},
+				function(is_error) {
+					this.updatePlayerBid(true)
+				}
+			)
 		},
 
 		///////////////////////////////////////////////////
@@ -774,6 +821,19 @@ define([
 			e.preventDefault()
 			e.stopPropagation()
 			var target = e.currentTarget
+
+			if (target.classList.contains('bidPanel__btn--confirm')) {
+				this.togglePlayerBidConfirmation(false)
+				this.sendPlayerBid()
+				return
+			}
+
+			if (target.classList.contains('bidPanel__btn--cancel')) {
+				this.updatePlayerBid(true)
+				this.togglePlayerBidConfirmation(false)
+				return
+			}
+
 			if (target.classList.contains('bidPanel__btn--value-left')) {
 				this.scrollBidPanelValues('left')
 				return
@@ -794,23 +854,18 @@ define([
 			if (target.classList.contains('bidPanel__btn--value')) {
 				this.playerBid.value = target.getAttribute('data-value')
 			}
+
 			this.updatePlayerBid(false)
+
 			if (this.playerBid.value && this.playerBid.color) {
-				this.ajaxcall(
-					'/' + this.game_name + '/' + this.game_name + '/' + 'bid' + '.html',
-					{
-						value: this.playerBid.value,
-						color: this.playerBid.color,
-						lock: true
-					},
-					this,
-					function(result) {
-						this.updatePlayerBid(true)
-					},
-					function(is_error) {
-						this.updatePlayerBid(true)
-					}
-				)
+				// Depending on pref 101 (confirm bid)...
+				if (this.prefs[101].value == 1) {
+					// Send bid without confirmation
+					this.sendPlayerBid()
+				} else {
+					// Show bid confirmation button
+					this.togglePlayerBidConfirmation(true)
+				}
 			}
 		},
 
@@ -818,8 +873,10 @@ define([
 			this.onPlayerCoinche()
 		},
 
-		onScoreWindowCloseClick: function() {
-			this.scoringDialog.hide()
+		// Update "prefs" based on new select option
+		// Too bad this is not managed by BGA
+		onBidConfirmationPrefChange: function(e) {
+			this.prefs[101].value = e.target.value
 		},
 
 		///////////////////////////////////////////////////

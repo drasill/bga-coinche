@@ -86,6 +86,14 @@
 				<a class="bidPanel__btn bidPanel__btn--coinche ">{COUNTER} !</a>
 			</div>
 
+			<div class="bidPanel__btn__confirm bidPanel__btn--hidden">
+				<a class="bidPanel__btn bidPanel__btn--confirm ">
+				{CONFIRM}
+				<div class="bidPanel__btn__confirm__info"></div>
+				</a>
+				<a class="bidPanel__btn bidPanel__btn--cancel ">{CANCEL}</a>
+			</div>
+
 		</div>
 
 		<div class="lastScoreSummaryButton">
@@ -108,6 +116,7 @@
 
 	// Javascript HTML templates
 	var jstpl_cardontable = '<div class="cardontable ${cls}" id="cardontable_${player_id}" style="background-position:-${x}px -${y}px"></div>';
+	var jstpl_playerbidconfirm = '<div class="bidPanel__btn__confirm__info"><span class="currentBidInfo__bid">${bid}</span><span class="card-color-icon card-color-icon--size48 card-color-icon--${trumpColor}"></span></div>';
 	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="currentBidInfo__bid">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span> <span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span>  <div class="currentBidInfo__countered currentBidInfo__countered--${countered}">Coinché par ${counteringPlayerDisplay}</div> </div>';
 	var jstpl_playerbid = '<div class="playerTables__bid-item"><span class="playerTables__bid__item-value">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span></div>';
 	var jstpl_playerpass = '<div class="playerTables__bid-item"><em>passe</em></div>';

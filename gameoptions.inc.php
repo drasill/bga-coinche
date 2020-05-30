@@ -66,4 +66,12 @@ $game_preferences = [
 			2 => ['name' => totranslate('Counterclockwise')],
 		],
 	],
+	101 => [
+		'name' => totranslate('Confirm Bid'),
+		'needReload' => false,
+		'values' => [
+			1 => ['name' => totranslate('No confirmation')],
+			2 => ['name' => totranslate('Bid confirmation')],
+		],
+	],
 ];
