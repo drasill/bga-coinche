@@ -61,6 +61,18 @@ class action_coinche extends APP_GameAction {
 		self::ajaxResponse();
 	}
 
+	public function nosurcoinche() {
+		self::setAjaxMode();
+		$this->game->nosurcoinche();
+		self::ajaxResponse();
+	}
+
+	public function surcoinche() {
+		self::setAjaxMode();
+		$this->game->surcoinche();
+		self::ajaxResponse();
+	}
+
 	/*
     
     Example:

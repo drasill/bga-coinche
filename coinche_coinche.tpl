@@ -35,7 +35,7 @@
 		<!-- END player -->
 
 		<div class="playerTables__coinche-btn">
-			<a>{COUNTER} !</a>
+			<a>{DOUBLE} !</a>
 		</div>
 
 		<div class="bidPanel">
@@ -83,7 +83,7 @@
 					<span class="card-color-icon card-color-icon--alltrump"/>
 				</a>
 				<div class="bidPanel__spacer"></div>
-				<a class="bidPanel__btn bidPanel__btn--coinche ">{COUNTER} !</a>
+				<a class="bidPanel__btn bidPanel__btn--coinche ">{DOUBLE} !</a>
 			</div>
 
 			<div class="bidPanel__btn__confirm bidPanel__btn--hidden">

@@ -42,7 +42,7 @@ class view_coinche_coinche extends game_view {
 		$this->tpl['MY_HAND'] = self::_('My hand');
 		$this->tpl['BID_OR'] = self::_('Bid or');
 		$this->tpl['PASS'] = self::_('Pass');
-		$this->tpl['COUNTER'] = self::_('Counter');
+		$this->tpl['DOUBLE'] = self::_('Double');
 		$this->tpl['CONFIRM'] = self::_('Confirm');
 		$this->tpl['CANCEL'] = self::_('Cancel');
 

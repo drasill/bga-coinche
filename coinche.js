@@ -276,6 +276,27 @@ define([
 					)
 				}
 			}
+
+			if (stateName === 'waitForRedouble') {
+				if (this.isCurrentPlayerActive()) {
+					this.addActionButton(
+						'surcoinche_button',
+						_('Redouble !') + ' (points x4)' ,
+						'onPlayerSurcoinche',
+						null,
+						false,
+						'red'
+					)
+					this.addActionButton(
+						'nosurcoinche_button',
+						_('Pass'),
+						'onPlayerNoSurcoinche',
+						null,
+						false,
+						'gray'
+					)
+				}
+			}
 		},
 
 		///////////////////////////////////////////////////
@@ -817,6 +838,60 @@ define([
 			}
 		},
 
+		onPlayerPass: function() {
+			if (this.checkAction('pass')) {
+				this.ajaxcall(
+					'/' + this.game_name + '/' + this.game_name + '/' + 'pass' + '.html',
+					{
+						lock: true
+					},
+					this,
+					function(result) {},
+					function(is_error) {}
+				)
+			}
+		},
+
+		onPlayerSurcoinche: function() {
+			if (this.checkPossibleActions('surcoinche')) {
+				this.ajaxcall(
+					'/' +
+						this.game_name +
+						'/' +
+						this.game_name +
+						'/' +
+						'surcoinche' +
+						'.html',
+					{
+						lock: true
+					},
+					this,
+					function(result) {},
+					function(is_error) {}
+				)
+			}
+		},
+
+		onPlayerNoSurcoinche: function() {
+			if (this.checkPossibleActions('nosurcoinche')) {
+				this.ajaxcall(
+					'/' +
+						this.game_name +
+						'/' +
+						this.game_name +
+						'/' +
+						'nosurcoinche' +
+						'.html',
+					{
+						lock: true
+					},
+					this,
+					function(result) {},
+					function(is_error) {}
+				)
+			}
+		},
+
 		onBidPanelBtnClick: function(e) {
 			e.preventDefault()
 			e.stopPropagation()
@@ -889,6 +964,7 @@ define([
 			dojo.subscribe('updateBid', this, 'notif_updateBid')
 			dojo.subscribe('updateBidPass', this, 'notif_updateBidPass')
 			dojo.subscribe('updateBidCoinche', this, 'notif_updateBidCoinche')
+			dojo.subscribe('updateBidSurCoinche', this, 'notif_updateBidSurCoinche')
 			dojo.subscribe('allPassNoBid', this, 'notif_allPassNoBid')
 			this.notifqueue.setSynchronous('allPassNoBid', 2000)
 			dojo.subscribe('allPassWithBid', this, 'notif_allPassWithBid')
@@ -986,6 +1062,13 @@ define([
 				'<span color="red">' + _('Countered !') + '</span>'
 			)
 			dojo.query('.playerTables').addClass('playerTables--coinched')
+		},
+
+		notif_updateBidSurCoinche: function(notif) {
+			this.showPlayerBubble(
+				notif.args.player_id,
+				'<span color="red">' + _('Redoubled !') + '</span>'
+			)
 		},
 
 		notif_updateBidPass: function(notif) {

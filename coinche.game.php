@@ -39,7 +39,7 @@ class Coinche extends Table {
 			'bid' => 14,
 			// Player who is currently winning the bidding
 			'bidPlayer' => 15,
-			// Countered ("coinché") : 0 = not countered, 1 = countered, 2 = overcounteed (not implemented)
+			// Countered ("coinché") : 0 = not doubled, 1 = doubled, 2 = redoubled
 			'countered' => 16,
 			// Player who did counter
 			'counteringPlayer' => 17,
@@ -864,14 +864,14 @@ class Coinche extends Table {
 		$bidPlayerId = self::getGameStateValue('bidPlayer');
 		$partnerId = $this->getPartnerIdOfPlayerId($playerId);
 		if (!$bid) {
-			throw new BgaUserException(self::_('Cannot counter on no bid'));
+			throw new BgaUserException(self::_('Cannot double on no bid'));
 		}
 		if ($playerId == $bidPlayerId) {
-			throw new BgaUserException(self::_('Cannot counter on you own bid'));
+			throw new BgaUserException(self::_('Cannot double on you own bid'));
 		}
 		if ($partnerId == $bidPlayerId) {
 			throw new BgaUserException(
-				self::_('Cannot counter on you partner\'s bid')
+				self::_('Cannot double on you partner\'s bid')
 			);
 		}
 
@@ -891,6 +891,41 @@ class Coinche extends Table {
 
 		$this->notifyBid();
 		$this->gamestate->nextState('nextPlayerBid');
+	}
+
+	function nosurcoinche() {
+		$this->gamestate->checkPossibleAction('nosurcoinche');
+		$playerId = self::getCurrentPlayerId();
+		$this->gamestate->setPlayerNonMultiactive($playerId, 'endBidding');
+	}
+
+	function surcoinche() {
+		$this->gamestate->checkPossibleAction('surcoinche');
+
+		$playerId = self::getCurrentPlayerId();
+		$counteringPlayer = self::getGameStateValue('counteringPlayer');
+
+		// Check that this player can indeed surcoinche
+		if ($playerId == $counteringPlayer) {
+			throw new BgaUserException(self::_('Cannot redouble on yourself'));
+		}
+		if ($this->getPartnerIdOfPlayerId($playerId) == $counteringPlayer) {
+			throw new BgaUserException(self::_('Cannot redouble on your partner'));
+		}
+
+		self::setGameStateValue('countered', 2);
+
+		// And notify
+		self::notifyAllPlayers(
+			'updateBidSurCoinche',
+			clienttranslate('${player_name} redoubles'),
+			[
+				'player_id' => $playerId,
+				'player_name' => self::getCurrentPlayerName(),
+			]
+		);
+
+		$this->gamestate->nextState('endBidding');
 	}
 
 	function playCard($cardId, $wantBelote = false) {
@@ -1018,11 +1053,15 @@ class Coinche extends Table {
 
 	function stNextPlayerBid() {
 		$countered = self::getGameStateValue('countered');
-		if ($countered > 0) {
+		if ($countered > 1) {
 			// Bid ok, activate 'first' player and start playing
 			$this->activateFirstPlayer();
 			$this->gamestate->nextState('endBidding');
-			// TODO notify bidding & coinche
+			return;
+		}
+		if ($countered > 0) {
+			// Countered, propose players to redouble
+			$this->gamestate->nextState('waitForRedouble');
 			return;
 		}
 
@@ -1104,6 +1143,34 @@ class Coinche extends Table {
 			self::incStat(1, 'numberOfCounters');
 			self::incStat(1, 'numberOfCounters', $counteringPlayerId);
 		}
+	}
+
+	function stWaitForRedouble() {
+		$counteringPlayerId = self::getGameStateValue('counteringPlayer');
+		$players = self::loadPlayersBasicInfos();
+		$activePlayers = [];
+		foreach ($players as $player) {
+			if ($player['player_id'] == $counteringPlayerId) {
+				continue;
+			}
+			if (
+				$this->getPartnerIdOfPlayerId($player['player_id']) ==
+				$counteringPlayerId
+			) {
+				continue;
+			}
+			$activePlayers[] = $player['player_id'];
+		}
+		$this->gamestate->setPlayersMultiactive(
+			$activePlayers,
+			'endBidding',
+			true
+		);
+		self::notifyAllPlayers(
+			'message',
+			clienttranslate('Waiting for redouble'),
+			[]
+		);
 	}
 
 	function stNewTrick() {
@@ -1372,7 +1439,16 @@ class Coinche extends Table {
 		];
 
 		// Multiplier depends on "countered" or not
-		$multiplier = $countered ? 2 : 1;
+		$coincheName = '';
+		if ($countered == 2) {
+			$multiplier = 4;
+			$coincheName = self::_('redoubled');
+		} else if ($countered == 1) {
+			$multiplier = 2;
+			$coincheName = self::_('doubled');
+		} else {
+			$multiplier = 1;
+		}
 
 		$bidSuccessful = $teamPoints[$bidTeam] >= $bid;
 
@@ -1395,13 +1471,13 @@ class Coinche extends Table {
 			}
 			if ($multiplier > 1) {
 				$scoreText[$bidTeam] =
-					'( ' . $scoreText[$bidTeam] . " ) ✖ $multiplier (coinche)";
+					'( ' . $scoreText[$bidTeam] . " ) ✖ $multiplier ($coincheName)";
 				$teamScores[$bidTeam] *= $multiplier;
 			}
 
 			// Defense team : points (if not countered)
 			if ($countered) {
-				$scoreText[$defenseTeam] = '0 (' . self::_('countered') . ')';
+				$scoreText[$defenseTeam] = "0 ($coincheName)";
 				$teamScores[$defenseTeam] = 0;
 			} elseif ($doAddPointsToScore) {
 				$scoreText[$defenseTeam] =
@@ -1465,7 +1541,7 @@ class Coinche extends Table {
 			}
 			if ($multiplier > 1) {
 				$scoreText[$defenseTeam] =
-					'( ' . $scoreText[$defenseTeam] . " ) ✖ $multiplier (coinche)";
+					'( ' . $scoreText[$defenseTeam] . " ) ✖ $multiplier ($coincheName)";
 				$teamScores[$defenseTeam] *= $multiplier;
 			}
 			$table[] = [

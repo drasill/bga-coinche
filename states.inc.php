@@ -85,6 +85,7 @@ $machinestates = [
 			'nextPlayerBid' => 31,
 			'newHand' => 20,
 			'endBidding' => 33,
+			'waitForRedouble' => 34,
 		],
 	],
 	33 => [
@@ -94,6 +95,17 @@ $machinestates = [
 		'action' => 'stEndBidding',
 		'transitions' => [
 			'startPlaying' => 40,
+		],
+	],
+	34 => [
+		'name' => 'waitForRedouble',
+		'description' => clienttranslate('Bidding team must choose if they redouble'),
+		'descriptionmyturn' => clienttranslate('${you} must choose if you redouble'),
+		'type' => 'multipleactiveplayer',
+		'action' => 'stWaitForRedouble',
+		'possibleactions' => ['nosurcoinche', 'surcoinche'],
+		'transitions' => [
+			'endBidding' => 33,
 		],
 	],
 

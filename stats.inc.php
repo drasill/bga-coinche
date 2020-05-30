@@ -64,7 +64,7 @@ $stats_type = [
 
 		'numberOfCounters' => [
 			'id' => 12,
-			'name' => totranslate('Number of hands countered'),
+			'name' => totranslate('Number of hands doubled'),
 			'type' => 'int',
 		],
 	],
@@ -88,12 +88,12 @@ $stats_type = [
 		],
 		'numberOfCounters' => [
 			'id' => 13,
-			'name' => totranslate('Number of bids countered'),
+			'name' => totranslate('Number of bids doubled'),
 			'type' => 'int',
 		],
 		'numberOfCountersSuccess' => [
 			'id' => 14,
-			'name' => totranslate('Number of bids countered successfully'),
+			'name' => totranslate('Number of bids doubled successfully'),
 			'type' => 'int',
 		],
 	],
