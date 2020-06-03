@@ -284,7 +284,7 @@
 	margin-top: -55px;
 }
 .playerTables__table--W .playerTables__status {
-	top: 85%;
+	top: 80%;
 	left: 0;
 }
 .playerTables__table--W .playerTables__tricksWon {
@@ -310,7 +310,7 @@
 	margin-top: -55px;
 }
 .playerTables__table--E .playerTables__status {
-	top: 85%;
+	top: 80%;
 	right: 0;
 }
 .playerTables__table--E .playerTables__tricksWon {
@@ -335,6 +335,20 @@
 	background-position: 0 50%;
 	background-repeat: no-repeat;
 	padding-left: 28px;
+	text-align: left;
+}
+
+.playerTables__bid__item--counter {
+	display: block;
+	background-image: url(img/playerCounter.svg);
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding-left: 26px;
+	height: 25px;
+	text-align: left;
+	font-weight: 500;
+	font-size: 0.7rem;
+	line-height: 25px;
 }
 
 .playerTables__bid__item-value {

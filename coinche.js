@@ -169,13 +169,6 @@ define([
 				)
 			}
 
-			// Counter marker
-			this.addTooltipToClass(
-				'playerTables__counterMarker',
-				_('This player has counterd the taker'),
-				''
-			)
-
 			// Cards in player's hand
 			for (var i in this.gamedatas.hand) {
 				var card = this.gamedatas.hand[i]
@@ -433,11 +426,6 @@ define([
 		updateBidInfo: function(data) {
 			this.bidInfo.playerId = data.bidPlayer
 
-			// Hide all counter markers
-			dojo
-				.query('.playerTables__counterMarker')
-				.removeClass('playerTables__counterMarker--visible')
-
 			if (!(data.bid > 0) || !data.bidPlayerDisplay) {
 				// Hide bid panel
 				dojo.query('.currentBidInfo').removeClass('currentBidInfo--visible')
@@ -464,10 +452,10 @@ define([
 
 			// Activate countered marker of player
 			if (data.countered > 0 && data.counteringPlayer) {
-				this.getPlayerTableEl(
+				this.updatePlayerStatus(
 					data.counteringPlayer,
-					'counterMarker'
-				).classList.add('playerTables__counterMarker--visible')
+					this.format_block('jstpl_playerbidcounter', {})
+				)
 			}
 		},
 

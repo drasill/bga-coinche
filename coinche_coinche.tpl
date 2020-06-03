@@ -120,6 +120,7 @@
 	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="currentBidInfo__bid">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span> <span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span>  <div class="currentBidInfo__countered currentBidInfo__countered--${countered}">Coinché par ${counteringPlayerDisplay}</div> </div>';
 	var jstpl_playerbid = '<div class="playerTables__bid-item"><span class="playerTables__bid__item-value">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span></div>';
 	var jstpl_playerbidtaker = '<div class="playerTables__bid-item playerTables__bid__item--taker"><span class="playerTables__bid__item-value">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span></div>';
+	var jstpl_playerbidcounter = '<div class="playerTables__bid-item playerTables__bid__item--counter"></div>';
 	var jstpl_playerpass = '<div class="playerTables__bid-item"><em>passe</em></div>';
 
 </script>
