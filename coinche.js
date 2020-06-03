@@ -281,7 +281,7 @@ define([
 				if (this.isCurrentPlayerActive()) {
 					this.addActionButton(
 						'surcoinche_button',
-						_('Redouble !') + ' (points x4)' ,
+						_('Redouble !') + ' (points x4)',
 						'onPlayerSurcoinche',
 						null,
 						false,
@@ -976,6 +976,7 @@ define([
 			dojo.subscribe('belote', this, 'notif_belote')
 			dojo.subscribe('sayBelote', this, 'notif_sayBelote')
 			dojo.subscribe('scoreTable', this, 'notif_scoreTable')
+			dojo.subscribe('lastScoreSummary', this, 'notif_lastScoreSummary')
 		},
 
 		notif_newScores: function(notif) {
@@ -1118,7 +1119,6 @@ define([
 
 		notif_scoreTable: function(notif) {
 			this.lastScoreInfo = notif.args
-			this.setLastScoreSummaryButtonText(notif.args.summaryTitle)
 
 			this.showPlayerBubble(
 				this.bidInfo.playerId,
@@ -1139,6 +1139,12 @@ define([
 					.query('.playerTables__tricksWon')
 					.removeClass('playerTables__tricksWon--notEmpty')
 			}, 2500)
+		},
+
+		notif_lastScoreSummary: function(notif) {
+			this.setLastScoreSummaryButtonText(
+				this.format_string_recursive(notif.log, notif.args)
+			)
 		}
 	})
 })

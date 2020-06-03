@@ -1363,7 +1363,7 @@ class Coinche extends Table {
 		}
 
 		$table[] = [
-			self::_('Points'),
+			clienttranslate('Points'),
 			$tableValue($teamPoints[0]),
 			$tableValue($teamPoints[1]),
 		];
@@ -1380,7 +1380,7 @@ class Coinche extends Table {
 			$teamPoints[1] = round($teamPoints[1] * $arrangeMultiplier);
 
 			$table[] = [
-				self::_('Points (based on 152)'),
+				clienttranslate('Points (based on 152)'),
 				$tableValue($teamPoints[0]),
 				$tableValue($teamPoints[1]),
 			];
@@ -1390,7 +1390,7 @@ class Coinche extends Table {
 		$teamPoints[$dixDeDerTeamId] += 10;
 
 		$table[] = [
-			self::_('Dix de der'),
+			clienttranslate('Dix de der'),
 			$tableValue($dixDeDerTeamId === 0 ? '10' : '', true),
 			$tableValue($dixDeDerTeamId === 1 ? '10' : '', true),
 		];
@@ -1408,7 +1408,7 @@ class Coinche extends Table {
 
 		if ($isCapot) {
 			$table[] = [
-				self::_('Points (capot)'),
+				clienttranslate('Points (capot)'),
 				$tableValue($teamPoints[0]),
 				$tableValue($teamPoints[1]),
 			];
@@ -1425,7 +1425,7 @@ class Coinche extends Table {
 		}
 
 		$table[] = [
-			'<b>' . self::_('Points (total)') . '</b>',
+			'<b>' . clienttranslate('Points (total)') . '</b>',
 			$tableValue($teamPoints[0], false, true),
 			$tableValue($teamPoints[1], false, true),
 		];
@@ -1442,31 +1442,41 @@ class Coinche extends Table {
 		$coincheName = '';
 		if ($countered == 2) {
 			$multiplier = 4;
-			$coincheName = self::_('redoubled');
-		} else if ($countered == 1) {
+			$coincheName = clienttranslate('redoubled');
+		} elseif ($countered == 1) {
 			$multiplier = 2;
-			$coincheName = self::_('doubled');
+			$coincheName = clienttranslate('doubled');
 		} else {
 			$multiplier = 1;
 		}
 
 		$bidSuccessful = $teamPoints[$bidTeam] >= $bid;
+		$diffPoints = $teamPoints[$bidTeam] - $bid;
+		if ($diffPoints >= 0) {
+			$diffPoints = "+$diffPoints";
+		}
 
 		// Check bid success/failure
 		if ($bidSuccessful) {
 			// Success !
 
-			$tableTitle = self::_('Bid successful !');
+			$resultString = clienttranslate('Bid successful ') . "($diffPoints) !";
+
 			if ($bid == 82) {
 				$bid = 80;
 			}
+
 			// Bidding team : (bid + points) * coinche_multiplier
 			$scoreText = [];
-			$scoreText[$bidTeam] = "$bid (" . self::_('bid') . ')';
+			$scoreText[$bidTeam] = "$bid (" . clienttranslate('bid') . ')';
 			$teamScores[$bidTeam] = $bid;
 			if ($doAddPointsToScore) {
 				$scoreText[$bidTeam] .=
-					' + ' . $teamPoints[$bidTeam] . ' (' . self::_('points') . ')';
+					' + ' .
+					$teamPoints[$bidTeam] .
+					' (' .
+					clienttranslate('points') .
+					')';
 				$teamScores[$bidTeam] += $teamPoints[$bidTeam];
 			}
 			if ($multiplier > 1) {
@@ -1481,7 +1491,10 @@ class Coinche extends Table {
 				$teamScores[$defenseTeam] = 0;
 			} elseif ($doAddPointsToScore) {
 				$scoreText[$defenseTeam] =
-					$teamPoints[$defenseTeam] . ' (' . self::_('points') . ')';
+					$teamPoints[$defenseTeam] .
+					' (' .
+					clienttranslate('points') .
+					')';
 				$teamScores[$defenseTeam] = $teamPoints[$defenseTeam];
 			} else {
 				$scoreText[$defenseTeam] = 0;
@@ -1489,13 +1502,17 @@ class Coinche extends Table {
 			}
 			$table[] = [
 				$bidDisplay,
-				$bidTeam === 0 ? self::_('Bid successful') : '',
-				$bidTeam === 1 ? self::_('Bid successful') : '',
+				$bidTeam === 0 ? $resultString : '',
+				$bidTeam === 1 ? $resultString : '',
 			];
-			$table[] = [self::_('Score count'), $scoreText[0], $scoreText[1]];
+			$table[] = [
+				clienttranslate('Score count'),
+				$scoreText[0],
+				$scoreText[1],
+			];
 
 			self::notifyAllPlayers(
-				'message',
+				'lastScoreSummary',
 				clienttranslate(
 					'Bid successful, <b>${bidTeamPoints}</b> to <b>${defenseTeamPoints}</b> !'
 				),
@@ -1504,22 +1521,17 @@ class Coinche extends Table {
 					'defenseTeamPoints' => $teamPoints[$defenseTeam],
 				]
 			);
-			$summaryTitle = self::_(
-				sprintf(
-					'Bid successful, %d to %d points !',
-					$teamPoints[$bidTeam],
-					$teamPoints[$defenseTeam]
-				)
-			);
 
 			self::incStat(1, 'numberOfBidSucceeded', $bidPlayerId);
 		} else {
 			// Failure !
-			$tableTitle = self::_('Bid fails !');
+
+			$resultString = clienttranslate('Bid fails ') . "($diffPoints) !";
 
 			if ($bid == 82) {
 				$bid = 80;
 			}
+
 			// Bidding team : 0 + belote
 			$scoreText = [];
 			$scoreText[$bidTeam] = '0';
@@ -1530,10 +1542,11 @@ class Coinche extends Table {
 			}
 			// Defense team : (162 + bid + belote) * coinche_multiplier
 			$teamScores[$defenseTeam] = $bid;
-			$scoreText[$defenseTeam] = "$bid (" . self::_('bid') . ')';
+			$scoreText[$defenseTeam] = "$bid (" . clienttranslate('bid') . ')';
 			if ($doAddPointsToScore) {
 				$teamScores[$defenseTeam] += 162;
-				$scoreText[$defenseTeam] .= ' + 162 (' . self::_('points') . ')';
+				$scoreText[$defenseTeam] .=
+					' + 162 (' . clienttranslate('points') . ')';
 			}
 			if ($beloteTeamId === $defenseTeam) {
 				$scoreText[$defenseTeam] .= ' + 20 (belote)';
@@ -1541,18 +1554,24 @@ class Coinche extends Table {
 			}
 			if ($multiplier > 1) {
 				$scoreText[$defenseTeam] =
-					'( ' . $scoreText[$defenseTeam] . " ) ✖ $multiplier ($coincheName)";
+					'( ' .
+					$scoreText[$defenseTeam] .
+					" ) ✖ $multiplier ($coincheName)";
 				$teamScores[$defenseTeam] *= $multiplier;
 			}
 			$table[] = [
 				$bidDisplay,
-				$bidTeam === 0 ? self::_('Bid fails') : '',
-				$bidTeam === 1 ? self::_('Bid fails') : '',
+				$bidTeam === 0 ? $resultString : '',
+				$bidTeam === 1 ? $resultString : '',
 			];
-			$table[] = [self::_('Score count'), $scoreText[0], $scoreText[1]];
+			$table[] = [
+				clienttranslate('Score count'),
+				$scoreText[0],
+				$scoreText[1],
+			];
 
 			self::notifyAllPlayers(
-				'message',
+				'lastScoreSummary',
 				clienttranslate(
 					'Bid fails, <b>${bidTeamPoints}</b> to <b>${defenseTeamPoints}</b> !'
 				),
@@ -1560,13 +1579,6 @@ class Coinche extends Table {
 					'bidTeamPoints' => $teamPoints[$bidTeam],
 					'defenseTeamPoints' => $teamPoints[$defenseTeam],
 				]
-			);
-			$summaryTitle = self::_(
-				sprintf(
-					'Bid fails, %d to %d points !',
-					$teamPoints[$bidTeam],
-					$teamPoints[$defenseTeam]
-				)
 			);
 
 			self::incStat(1, 'numberOfBidsFailed', $bidPlayerId);
@@ -1603,7 +1615,7 @@ class Coinche extends Table {
 		}
 
 		$table[] = [
-			'<b>' . self::_('Score') . '</b>',
+			'<b>' . clienttranslate('Score') . '</b>',
 			$tableValue($teamScores[0], true, true),
 			$tableValue($teamScores[1], true, true),
 		];
@@ -1613,10 +1625,9 @@ class Coinche extends Table {
 
 		// Notify the table score
 		$this->notifyAllPlayers('scoreTable', '', [
-			'title' => $tableTitle,
+			'title' => $resultString,
 			'table' => $table,
 			'bidSuccessful' => $bidSuccessful,
-			'summaryTitle' => $summaryTitle,
 		]);
 
 		// Check if end of game (score must be strictly higher than maxScore)
