@@ -160,11 +160,16 @@ define([
 				_('First player for this hand'),
 				''
 			)
-			this.addTooltipToClass(
-				'playerTables__takerMarker',
-				_('Taker for this hand'),
-				''
-			)
+
+			// Taker marker
+			if (gamedatas.gamestate.name == 'playerTurn') {
+				this.updatePlayerStatus(
+					gamedatas.bidPlayer,
+					this.format_block('jstpl_playerbidtaker', gamedatas)
+				)
+			}
+
+			// Counter marker
 			this.addTooltipToClass(
 				'playerTables__counterMarker',
 				_('This player has counterd the taker'),
@@ -1029,15 +1034,8 @@ define([
 			this.clearPlayerStatuses()
 			this.updatePlayerStatus(
 				notif.args.player_id,
-				this.format_block('jstpl_playerbid', notif.args)
+				this.format_block('jstpl_playerbidtaker', notif.args)
 			)
-			dojo
-				.query(
-					'.playerTables__table--id--' +
-						notif.args.player_id +
-						' .playerTables__takerMarker'
-				)
-				.addClass('playerTables__takerMarker--visible')
 
 			this.currentTrump = notif.args.trumpColor
 			this.updateCardsWeights()
@@ -1131,10 +1129,6 @@ define([
 			setTimeout(function() {
 				// Remove "coinche" playerTables
 				dojo.query('.playerTables').removeClass('playerTables--coinched')
-				// Remove "taker" icon
-				dojo
-					.query('.playerTables__takerMarker')
-					.removeClass('playerTables__takerMarker--visible')
 				// Remove trick count icons
 				dojo
 					.query('.playerTables__tricksWon')

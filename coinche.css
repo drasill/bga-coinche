@@ -71,10 +71,10 @@
 	font-size: 14px;
 	transition: opacity 0.5s ease-in;
 	min-width: 40px;
+	pointer-events: none;
 }
 .playerTables__bubble:hover {
 	opacity: 0.5;
-	pointer-events: none;
 }
 
 .playerTables__bubble:after {
@@ -92,6 +92,7 @@
 .playerTables__bubble--visible {
 	opacity: 1;
 	display: block;
+	pointer-events: all;
 }
 
 .playerTables__bubble .playerTables__bid-item {
@@ -138,22 +139,6 @@
 	background-image: url('img/playerCounter.svg');
 }
 .playerTables__counterMarker--visible {
-	display: block;
-}
-
-.playerTables__takerMarker {
-	display: none;
-	position: absolute;
-	top: 0;
-	left: -5px;
-	width: 32px;
-	height: 32px;
-	background-size: contain;
-	background-repeat: no-repeat;
-	background-position: 100% 0%;
-	background-image: url('img/playerTaker.png');
-}
-.playerTables__takerMarker--visible {
 	display: block;
 }
 
@@ -344,6 +329,14 @@
 .playerTables__bid-item:last-child {
 	opacity: 1;
 }
+
+.playerTables__bid__item--taker {
+	background-image: url(img/playerTaker.png);
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding-left: 28px;
+}
+
 .playerTables__bid__item-value {
 	font-weight: bold;
 	vertical-align: middle;

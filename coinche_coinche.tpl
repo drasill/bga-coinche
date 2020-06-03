@@ -26,7 +26,6 @@
 			<div class="playerTables__avatar-wrapper">
 				<div class="playerTables__firstMarker"></div>
 				<div class="playerTables__counterMarker"></div>
-				<div class="playerTables__takerMarker"></div>
 				<div class="playerTables__avatar" style="background-image: url({PLAYER_AVATAR_URL_184})"></div>
 				<div class="playerTables__bubble"></div>
 				<div class="playerTables__name" style="background-color:#{PLAYER_COLOR}b0"><span>{PLAYER_NAME}</span></div>
@@ -120,6 +119,7 @@
 	var jstpl_playerbidconfirm = '<div class="bidPanel__btn__confirm__info"><span class="currentBidInfo__bid">${bid}</span><span class="card-color-icon card-color-icon--size48 card-color-icon--${trumpColor}"></span></div>';
 	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="currentBidInfo__bid">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span> <span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span>  <div class="currentBidInfo__countered currentBidInfo__countered--${countered}">Coinché par ${counteringPlayerDisplay}</div> </div>';
 	var jstpl_playerbid = '<div class="playerTables__bid-item"><span class="playerTables__bid__item-value">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span></div>';
+	var jstpl_playerbidtaker = '<div class="playerTables__bid-item playerTables__bid__item--taker"><span class="playerTables__bid__item-value">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span></div>';
 	var jstpl_playerpass = '<div class="playerTables__bid-item"><em>passe</em></div>';
 
 </script>
