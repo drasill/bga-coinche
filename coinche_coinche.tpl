@@ -97,6 +97,7 @@
 		</div>
 
 		<div class="lastScoreSummaryButton">
+			<span></span>
 		</div>
 
 	</div>

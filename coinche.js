@@ -717,8 +717,9 @@ define([
 
 		setLastScoreSummaryButtonText: function(text) {
 			var el = dojo.query('.lastScoreSummaryButton')[0]
+			var spanEl = el.children[0]
 			if (text) {
-				el.innerHTML = text
+				spanEl.innerHTML = text
 				el.classList.add('lastScoreSummaryButton--visible')
 			} else {
 				el.classList.remove('lastScoreSummaryButton--visible')

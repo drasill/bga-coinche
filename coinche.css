@@ -637,11 +637,15 @@
 	opacity: 0;
 	transition: opacity 1.5s ease-in;
 	font-size: 12px;
-	padding-left: 25px;
 	text-align: center;
-	padding-top: 14px;
 	color: white;
 	font-weight: 500;
+	padding-left: 56px;
+	padding-right: 30px;
+	padding-bottom: 16px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .lastScoreSummaryButton:hover {
 	background-image: url(img/scoreCorner--hover.svg);
