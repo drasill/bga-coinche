@@ -739,7 +739,7 @@ class Coinche extends Table {
 		$message = '';
 		if ($showMessage) {
 			$message = clienttranslate(
-				'${player_name} bids ${bid_value} ${color_symbol}'
+				'${player_name} bids ${bid_value} ${color_symbol} (${trumpColorDisplay})'
 			);
 		}
 
@@ -1140,6 +1140,7 @@ class Coinche extends Table {
 		$this->gamestate->nextState('startPlaying');
 		$bid = $this->getGameStateValue('bid');
 		$trumpColor = self::getGameStateValue('trumpColor');
+		$trumpColorDisplay = $this->colors[$trumpColor]['name'];
 		$bidPlayerId = self::getGameStateValue('bidPlayer');
 		$players = self::loadPlayersBasicInfos();
 		$bidPlayerDisplay = $players[$bidPlayerId]['player_name'] ?? '';
@@ -1151,9 +1152,11 @@ class Coinche extends Table {
 			'player_id' => $bidPlayerId,
 			'player_name' => $bidPlayerDisplay,
 			'color_symbol' => $trumpColor,
+			'bidPlayer' => $bidPlayerId,
 			'bid_value' => $bid,
 			'bid' => $bid,
 			'trumpColor' => $trumpColor,
+			'trumpColorDisplay' => $trumpColorDisplay,
 			'countered' => $countered,
 			'counteringPlayer' => $counteringPlayerId,
 			'counteringPlayerDisplay' =>

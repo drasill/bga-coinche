@@ -163,10 +163,7 @@ define([
 
 			// Taker marker
 			if (gamedatas.gamestate.name == 'playerTurn') {
-				this.updatePlayerStatus(
-					gamedatas.bidPlayer,
-					this.format_block('jstpl_playerbidtaker', gamedatas)
-				)
+				this.updatePlayerTaker(gamedatas)
 			}
 
 			// Cards in player's hand
@@ -395,6 +392,18 @@ define([
 			)
 		},
 
+		updatePlayerTaker: function(data) {
+			this.updatePlayerStatus(
+				data.bidPlayer,
+				this.format_block('jstpl_playerbidtaker', data)
+			)
+			this.addTooltipToClass(
+				'playerTables__bid__item--taker',
+				_('Bid : ' + data.bid + ' ' + data.trumpColorDisplay),
+				''
+			)
+		},
+
 		showPlayerBubble: function(playerId, html, duration) {
 			var target = this.getPlayerTableEl(playerId, 'bubble')
 			target.innerHTML = ''
@@ -458,11 +467,21 @@ define([
 					data.counteringPlayer,
 					this.format_block('jstpl_playerbidcounter', {})
 				)
+				this.addTooltipToClass(
+					'playerTables__bid__item--counter',
+					_('This player has doubled the bid !'),
+					''
+				)
 			}
 			if (data.countered > 1 && data.recounteringPlayer) {
 				this.updatePlayerStatus(
 					data.recounteringPlayer,
 					this.format_block('jstpl_playerbidrecounter', {})
+				)
+				this.addTooltipToClass(
+					'playerTables__bid__item--recounter',
+					_('This player has re-doubled the bid !'),
+					''
 				)
 			}
 		},
@@ -1028,10 +1047,7 @@ define([
 			// Updates trump informations & co
 			this.selectedCardId = null
 			this.clearPlayerStatuses()
-			this.updatePlayerStatus(
-				notif.args.player_id,
-				this.format_block('jstpl_playerbidtaker', notif.args)
-			)
+			this.updatePlayerTaker(notif.args)
 
 			this.currentTrump = notif.args.trumpColor
 			this.updateCardsWeights()
