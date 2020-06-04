@@ -336,6 +336,13 @@
 	background-repeat: no-repeat;
 	padding-left: 28px;
 	text-align: left;
+	opacity: 1 !important;
+}
+
+.playerTables__bid__item--taker > span {
+	background: white;
+	padding: 0px 6px 3px 6px;
+	border-radius: 6px;
 }
 
 .playerTables__bid__item--counter {
@@ -343,12 +350,25 @@
 	background-image: url(img/playerCounter.svg);
 	background-position: 0 50%;
 	background-repeat: no-repeat;
-	padding-left: 26px;
 	height: 25px;
 	text-align: left;
 	font-weight: 500;
 	font-size: 0.7rem;
 	line-height: 25px;
+	width: 25px;
+}
+
+.playerTables__bid__item--recounter {
+	display: block;
+	background-image: url(img/playerCounter.svg);
+	background-position: 0 50%;
+	background-repeat: repeat;
+	height: 25px;
+	text-align: left;
+	font-weight: 500;
+	font-size: 0.7rem;
+	line-height: 25px;
+	width: 50px;
 }
 
 .playerTables__bid__item-value {
@@ -689,6 +709,13 @@
 
 .currentBidInfo__countered--0 {
 	display: none;
+}
+
+.currentBidInfo__countered.currentBidInfo__recountered {
+	display: none;
+}
+.currentBidInfo__countered.currentBidInfo__recountered.currentBidInfo__countered--2 {
+	display: block;
 }
 
 /* My Hand */

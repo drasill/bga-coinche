@@ -198,7 +198,9 @@ define([
 				bidPlayerDisplay: gamedatas.bidPlayerDisplay,
 				countered: gamedatas.countered,
 				counteringPlayer: gamedatas.counteringPlayer,
-				counteringPlayerDisplay: gamedatas.counteringPlayerDisplay
+				counteringPlayerDisplay: gamedatas.counteringPlayerDisplay,
+				recounteringPlayer: gamedatas.recounteringPlayer,
+				recounteringPlayerDisplay: gamedatas.recounteringPlayerDisplay
 			})
 
 			if (gamedatas.gamestate.name == 'playerTurn') {
@@ -455,6 +457,12 @@ define([
 				this.updatePlayerStatus(
 					data.counteringPlayer,
 					this.format_block('jstpl_playerbidcounter', {})
+				)
+			}
+			if (data.countered > 1 && data.recounteringPlayer) {
+				this.updatePlayerStatus(
+					data.recounteringPlayer,
+					this.format_block('jstpl_playerbidrecounter', {})
 				)
 			}
 		},
@@ -1047,9 +1055,10 @@ define([
 		notif_updateBidCoinche: function(notif) {
 			this.showPlayerBubble(
 				notif.args.player_id,
-				'<span color="red">' + _('Countered !') + '</span>'
+				'<span color="red">' + _('Doubled !') + '</span>'
 			)
 			dojo.query('.playerTables').addClass('playerTables--coinched')
+			this.updateBidInfo(notif.args)
 		},
 
 		notif_updateBidSurCoinche: function(notif) {
@@ -1057,6 +1066,7 @@ define([
 				notif.args.player_id,
 				'<span color="red">' + _('Redoubled !') + '</span>'
 			)
+			this.updateBidInfo(notif.args)
 		},
 
 		notif_updateBidPass: function(notif) {

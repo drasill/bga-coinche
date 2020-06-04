@@ -41,8 +41,10 @@ class Coinche extends Table {
 			'bidPlayer' => 15,
 			// Countered ("coinché") : 0 = not doubled, 1 = doubled, 2 = redoubled
 			'countered' => 16,
-			// Player who did counter
+			// Player who did double
 			'counteringPlayer' => 17,
+			// Player who did redouble
+			'recounteringPlayer' => 25,
 			// Number of successive player passes (to trigger end of bidding)
 			'passCount' => 18,
 			// Current trick count (of current hand)
@@ -145,6 +147,7 @@ class Coinche extends Table {
 		self::setGameStateInitialValue('bid', 0);
 		self::setGameStateInitialValue('countered', 0);
 		self::setGameStateInitialValue('counteringPlayer', 0);
+		self::setGameStateInitialValue('recounteringPlayer', 0);
 		self::setGameStateInitialValue('passCount', 0);
 		self::setGameStateInitialValue('trickCount', 0);
 		self::setGameStateInitialValue('beloteCardId1', 0);
@@ -235,6 +238,7 @@ class Coinche extends Table {
 		$firstPlayer = self::getGameStateValue('firstPlayer');
 		$countered = self::getGameStateValue('countered');
 		$counteringPlayer = self::getGameStateValue('counteringPlayer');
+		$recounteringPlayer = self::getGameStateValue('recounteringPlayer');
 
 		$result['trumpColor'] = $trumpColor;
 		$result['trumpColorDisplay'] = $this->colors[$trumpColor]['name'] ?? null;
@@ -243,8 +247,11 @@ class Coinche extends Table {
 		$result['bidPlayerDisplay'] = $players[$bidPlayer]['player_name'] ?? null;
 		$result['countered'] = $countered;
 		$result['counteringPlayer'] = $counteringPlayer;
+		$result['recounteringPlayer'] = $recounteringPlayer;
 		$result['counteringPlayerDisplay'] =
 			$players[$counteringPlayer]['player_name'] ?? '';
+		$result['recounteringPlayerDisplay'] =
+			$players[$recounteringPlayer]['player_name'] ?? '';
 		$result['firstPlayer'] = $firstPlayer;
 
 		// Inform current player of the belote cards & status (if they have it)
@@ -744,7 +751,9 @@ class Coinche extends Table {
 		$bidPlayerDisplay = '';
 		$countered = self::getGameStateValue('countered');
 		$counteringPlayerId = self::getGameStateValue('counteringPlayer');
+		$recounteringPlayerId = self::getGameStateValue('recounteringPlayer');
 		$counteringPlayerDisplay = '';
+		$recounteringPlayerDisplay = '';
 
 		if ($bidPlayerId) {
 			$bidPlayer = $players[$bidPlayerId];
@@ -756,6 +765,10 @@ class Coinche extends Table {
 		if ($countered) {
 			$counteringPlayer = $players[$counteringPlayerId];
 			$counteringPlayerDisplay = $counteringPlayer['player_name'];
+			if ($countered == 2) {
+				$recounteringPlayer = $players[$recounteringPlayerId];
+				$recounteringPlayerDisplay = $recounteringPlayer['player_name'];
+			}
 		}
 
 		self::notifyAllPlayers('updateBid', $message, [
@@ -772,6 +785,8 @@ class Coinche extends Table {
 			'countered' => $countered,
 			'counteringPlayer' => $counteringPlayerId,
 			'counteringPlayerDisplay' => $counteringPlayerDisplay,
+			'recounteringPlayer' => $recounteringPlayerId,
+			'recounteringPlayerDisplay' => $recounteringPlayerDisplay,
 		]);
 	}
 
@@ -914,6 +929,7 @@ class Coinche extends Table {
 		}
 
 		self::setGameStateValue('countered', 2);
+		self::setGameStateValue('recounteringPlayer', $playerId);
 
 		// And notify
 		self::notifyAllPlayers(
@@ -1027,6 +1043,7 @@ class Coinche extends Table {
 		self::setGameStateValue('bidPlayer', 0);
 		self::setGameStateValue('countered', 0);
 		self::setGameStateValue('counteringPlayer', 0);
+		self::setGameStateValue('recounteringPlayer', 0);
 		self::setGameStateValue('trickCount', 0);
 		self::setGameStateValue('beloteCardId1', 0);
 		self::setGameStateValue('beloteCardId2', 0);
@@ -1126,6 +1143,9 @@ class Coinche extends Table {
 		$bidPlayerId = self::getGameStateValue('bidPlayer');
 		$players = self::loadPlayersBasicInfos();
 		$bidPlayerDisplay = $players[$bidPlayerId]['player_name'] ?? '';
+		$countered = self::getGameStateValue('countered');
+		$counteringPlayerId = self::getGameStateValue('counteringPlayer');
+		$recounteringPlayerId = self::getGameStateValue('recounteringPlayer');
 		$this->findAndNotifyBelote();
 		self::notifyAllPlayers('endBidding', '', [
 			'player_id' => $bidPlayerId,
@@ -1134,11 +1154,17 @@ class Coinche extends Table {
 			'bid_value' => $bid,
 			'bid' => $bid,
 			'trumpColor' => $trumpColor,
+			'countered' => $countered,
+			'counteringPlayer' => $counteringPlayerId,
+			'counteringPlayerDisplay' =>
+				$players[$counteringPlayerId]['player_name'] ?? '',
+			'recounteringPlayer' => $recounteringPlayerId,
+			'recounteringPlayerDisplay' =>
+				$players[$recounteringPlayerId]['player_name'] ?? '',
 		]);
+		$this->notifyBid();
 		self::incStat(1, 'numberOfHandsPlayed');
 		self::incStat(1, 'numberOfHandsTaken', $bidPlayerId);
-		$countered = self::getGameStateValue('countered');
-		$counteringPlayerId = self::getGameStateValue('counteringPlayer');
 		if ($countered && $counteringPlayerId) {
 			self::incStat(1, 'numberOfCounters');
 			self::incStat(1, 'numberOfCounters', $counteringPlayerId);
