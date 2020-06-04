@@ -1022,7 +1022,6 @@ define([
 					card.id
 				)
 			}
-			this.clearPlayerStatuses()
 			this.beloteInfo = {
 				cardId1: null,
 				cardId2: null,
@@ -1140,6 +1139,7 @@ define([
 					: _('We failed') + ' 😞'
 			)
 
+			var me = this
 			setTimeout(function() {
 				// Remove "coinche" playerTables
 				dojo.query('.playerTables').removeClass('playerTables--coinched')
@@ -1147,6 +1147,8 @@ define([
 				dojo
 					.query('.playerTables__tricksWon')
 					.removeClass('playerTables__tricksWon--notEmpty')
+				// Clear player statuses
+				me.clearPlayerStatuses()
 			}, 2500)
 		},
 
