@@ -897,7 +897,7 @@ class Coinche extends Table {
 		// And notify
 		self::notifyAllPlayers(
 			'updateBidCoinche',
-			clienttranslate('${player_name} coinches'),
+			clienttranslate('${player_name} doubles !'),
 			[
 				'player_id' => $playerId,
 				'player_name' => self::getCurrentPlayerName(),
@@ -911,6 +911,14 @@ class Coinche extends Table {
 	function nosurcoinche() {
 		$this->gamestate->checkPossibleAction('nosurcoinche');
 		$playerId = self::getCurrentPlayerId();
+		self::notifyAllPlayers(
+			'message',
+			clienttranslate('${player_name} does not redouble.'),
+			[
+				'player_id' => $playerId,
+				'player_name' => self::getCurrentPlayerName(),
+			]
+		);
 		$this->gamestate->setPlayerNonMultiactive($playerId, 'endBidding');
 	}
 
@@ -934,7 +942,7 @@ class Coinche extends Table {
 		// And notify
 		self::notifyAllPlayers(
 			'updateBidSurCoinche',
-			clienttranslate('${player_name} redoubles'),
+			clienttranslate('${player_name} redoubles !'),
 			[
 				'player_id' => $playerId,
 				'player_name' => self::getCurrentPlayerName(),
@@ -1289,7 +1297,6 @@ class Coinche extends Table {
 
 		// Score table
 		$table = [];
-		$tableTitle = '';
 
 		// Helper for score table
 		$tableValue = function ($value, $sign = false, $bold = false) {
@@ -1507,6 +1514,13 @@ class Coinche extends Table {
 					clienttranslate('points') .
 					')';
 				$teamScores[$bidTeam] += $teamPoints[$bidTeam];
+			} else {
+				// Add belote if in mode "bid only"
+				if ($beloteTeamId === $bidTeam) {
+					$scoreText[$bidTeam] .=
+						' + 20 (' .  clienttranslate('belote') .  ')';
+					$teamScores[$bidTeam] += 20;
+				}
 			}
 			if ($multiplier > 1) {
 				$scoreText[$bidTeam] =
@@ -1529,6 +1543,16 @@ class Coinche extends Table {
 				$scoreText[$defenseTeam] = 0;
 				$teamScores[$defenseTeam] = 0;
 			}
+
+			if (!$doAddPointsToScore) {
+				// Add belote if in mode "bid only", even when losing
+				if ($beloteTeamId === $defenseTeam) {
+					$scoreText[$defenseTeam] .=
+						' + 20 (' .  clienttranslate('belote') .  ')';
+					$teamScores[$defenseTeam] += 20;
+				}
+			}
+
 			$table[] = [
 				$bidDisplay,
 				$bidTeam === 0 ? $resultString : '',
@@ -1569,6 +1593,7 @@ class Coinche extends Table {
 				$scoreText[$bidTeam] .= ' + 20 (belote)';
 				$teamScores[$bidTeam] += 20;
 			}
+
 			// Defense team : (162 + bid + belote) * coinche_multiplier
 			$teamScores[$defenseTeam] = $bid;
 			$scoreText[$defenseTeam] = "$bid (" . clienttranslate('bid') . ')';
@@ -1719,6 +1744,12 @@ class Coinche extends Table {
 		}
 
 		if ($state['type'] === 'multipleactiveplayer') {
+
+			if ($statename === 'waitForRedouble') {
+				$this->nosurcoinche();
+				return;
+			}
+
 			// Make sure player is in a non blocking status for role turn
 			$this->gamestate->setPlayerNonMultiactive($active_player, '');
 
