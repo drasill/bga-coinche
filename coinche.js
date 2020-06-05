@@ -223,6 +223,14 @@ define([
 					}
 					isCoinchePanelVisible = true
 					break
+				case 'playerTurn':
+					if (
+						this.isCurrentPlayerActive() &&
+						args.args._private.possibleCards
+					) {
+						this.updatePossibleCards(args.args._private.possibleCards)
+					}
+					break
 			}
 
 			if (isBidPanelVisible) {
@@ -258,7 +266,11 @@ define([
 			}
 		},
 
-		onLeavingState: function(stateName) {},
+		onLeavingState: function(stateName) {
+			if (stateName === 'playerTurn') {
+				this.updatePossibleCards(null)
+			}
+		},
 
 		onUpdateActionButtons: function(stateName, args) {
 			if (stateName === 'playerBid') {
@@ -402,6 +414,24 @@ define([
 				_('Bid : ' + data.bid + ' ' + data.trumpColorDisplay),
 				''
 			)
+		},
+
+		updatePossibleCards: function(cards) {
+			dojo
+				.query('.stockitem--not-possible')
+				.removeClass('stockitem--not-possible')
+			if (cards === null) {
+				return
+			}
+			dojo.query('.stockitem').forEach(function(el) {
+				var id = el.id.match(/^myHand_item_(\d+)$/)[1]
+				var possible = cards.find(function(card) {
+					return card.id == id
+				})
+				if (!possible) {
+					el.classList.add('stockitem--not-possible')
+				}
+			})
 		},
 
 		showPlayerBubble: function(playerId, html, duration) {

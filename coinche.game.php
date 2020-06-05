@@ -732,6 +732,21 @@ class Coinche extends Table {
 		}
 	}
 
+	private function getPossibleCardsToPlay($playerId) {
+		// Loop the player hand, stopping at the first card which can be played
+		$playerCards = $this->cards->getCardsInLocation('hand', $playerId);
+		$possibleCards = [];
+		foreach ($playerCards as $playerCard) {
+			try {
+				$this->assertCardPlay($playerCard['id']);
+			} catch (\Exception $e) {
+				continue;
+			}
+			$possibleCards[] = $playerCard;
+		}
+		return $possibleCards;
+	}
+
 	/**
 	 * Notify the current bid informations
 	 */
@@ -1021,9 +1036,19 @@ class Coinche extends Table {
 	//////////// Game state arguments
 	////////////
 
-	function argGiveCards() {
-		return [];
+	function argPlayerTurn() {
+		// On player's turn, list possible cards
+		return [
+			'_private' => [
+				'active' => [
+					'possibleCards' => $this->getPossibleCardsToPlay(
+						self::getActivePlayerId()
+					),
+				],
+			],
+		];
 	}
+
 	//////////////////////////////////////////////////////////////////////////////
 	//////////// Game state actions
 	////////////
@@ -1518,7 +1543,7 @@ class Coinche extends Table {
 				// Add belote if in mode "bid only"
 				if ($beloteTeamId === $bidTeam) {
 					$scoreText[$bidTeam] .=
-						' + 20 (' .  clienttranslate('belote') .  ')';
+						' + 20 (' . clienttranslate('belote') . ')';
 					$teamScores[$bidTeam] += 20;
 				}
 			}
@@ -1548,7 +1573,7 @@ class Coinche extends Table {
 				// Add belote if in mode "bid only", even when losing
 				if ($beloteTeamId === $defenseTeam) {
 					$scoreText[$defenseTeam] .=
-						' + 20 (' .  clienttranslate('belote') .  ')';
+						' + 20 (' . clienttranslate('belote') . ')';
 					$teamScores[$defenseTeam] += 20;
 				}
 			}
@@ -1744,7 +1769,6 @@ class Coinche extends Table {
 		}
 
 		if ($state['type'] === 'multipleactiveplayer') {
-
 			if ($statename === 'waitForRedouble') {
 				$this->nosurcoinche();
 				return;

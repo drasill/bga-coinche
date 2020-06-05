@@ -818,6 +818,10 @@
 	transition: opacity 1.5s ease-in;
 }
 
+.stockitem--not-possible {
+	filter: brightness(0.8);
+}
+
 /* Score window */
 
 .scoreTableValue--bold {

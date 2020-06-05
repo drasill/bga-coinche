@@ -124,6 +124,7 @@ $machinestates = [
 		'type' => 'activeplayer',
 		'possibleactions' => ['playCard'],
 		'transitions' => ['playCard' => 42],
+		'args' => 'argPlayerTurn',
 	],
 	42 => [
 		'name' => 'nextPlayer',
