@@ -69,11 +69,11 @@
 				<a class="bidPanel__btn bidPanel__btn--color" data-color="2">
 					<span class="card-color-icon card-color-icon--heart"/>
 				</a>
-				<a class="bidPanel__btn bidPanel__btn--color" data-color="4">
-					<span class="card-color-icon card-color-icon--diamond"/>
-				</a>
 				<a class="bidPanel__btn bidPanel__btn--color" data-color="3">
 					<span class="card-color-icon card-color-icon--club"/>
+				</a>
+				<a class="bidPanel__btn bidPanel__btn--color" data-color="4">
+					<span class="card-color-icon card-color-icon--diamond"/>
 				</a>
 				<a class="bidPanel__btn bidPanel__btn--color" data-color="6">
 					<span class="card-color-icon card-color-icon--notrump"/>
