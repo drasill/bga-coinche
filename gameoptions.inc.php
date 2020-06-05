@@ -55,6 +55,19 @@ $game_options = [
 		],
 		'default' => 1,
 	],
+	103 => [
+		'name' => totranslate('All trumps / No trumps'),
+		'values' => [
+			1 => [
+				'name' => totranslate('Enabled'),
+			],
+			2 => [
+				'name' => totranslate('Disabled'),
+				'tmdisplay' => totranslate('Without All trumps / No trumps'),
+			],
+		],
+		'default' => 1,
+	],
 ];
 
 $game_preferences = [

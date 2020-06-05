@@ -27,6 +27,7 @@ define([
 			this.cardwidth = 72
 			this.cardheight = 104
 			this.scoringDialog = null
+			this.hasAllNoTrumps = true
 		},
 
 		/**
@@ -57,6 +58,16 @@ define([
 				cardId2: gamedatas.belote_card_id_2,
 				// Belote has been declared already ?
 				declared: gamedatas.belote_declared
+			}
+
+			// AllTrump/pNoTrump enabled ?
+			this.hasAllNoTrumps = gamedatas.hasAllNoTrumps
+			if (!this.hasAllNoTrumps) {
+				dojo
+					.query(
+						'.bidPanel__btn--color[data-color="5"], .bidPanel__btn--color[data-color="6"]'
+					)
+					.addClass('bidPanel__btn--hidden')
 			}
 
 			// Public information: current bid info

@@ -64,6 +64,8 @@ class Coinche extends Table {
 			'scoreType' => 101,
 			// Player teams (taken from the game "belote")
 			'playerTeams' => 102,
+			// AllTrum/NoTrump available ? (1 yes, 2 no)
+			'hasAllNoTrumps' => 103,
 		]);
 
 		$this->cards = self::getNew('module.common.deck');
@@ -240,6 +242,7 @@ class Coinche extends Table {
 		$counteringPlayer = self::getGameStateValue('counteringPlayer');
 		$recounteringPlayer = self::getGameStateValue('recounteringPlayer');
 
+		$result['hasAllNoTrumps'] = self::getGameStateValue('hasAllNoTrumps') == 1;
 		$result['trumpColor'] = $trumpColor;
 		$result['trumpColorDisplay'] = $this->colors[$trumpColor]['name'] ?? null;
 		$result['bid'] = $bid;
@@ -851,6 +854,13 @@ class Coinche extends Table {
 		if ($previousColor == $color && $playerId == $previousBidPlayer) {
 			throw new BgaUserException(
 				self::_('You must change color to bid higher on yourself')
+			);
+		}
+
+		// Bid cannot be "all trumps / no trump" if disabled
+		if ($color >= 5 && $this->getGameStateValue('hasAllNoTrumps') == 2) {
+			throw new BgaUserException(
+				'All Trumps / No Trumps disabled for this game'
 			);
 		}
 
