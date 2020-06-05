@@ -1034,7 +1034,7 @@ define([
 			this.notifqueue.setSynchronous('endBidding', 2000)
 			dojo.subscribe('playCard', this, 'notif_playCard')
 			dojo.subscribe('trickWin', this, 'notif_trickWin')
-			this.notifqueue.setSynchronous('trickWin', 1000)
+			this.notifqueue.setSynchronous('trickWin', 1500)
 			dojo.subscribe('belote', this, 'notif_belote')
 			dojo.subscribe('sayBelote', this, 'notif_sayBelote')
 			dojo.subscribe('scoreTable', this, 'notif_scoreTable')
@@ -1153,7 +1153,7 @@ define([
 					me.clearOldTricksLogs(notif.args.trick_count_value - 1)
 					me.updatePlayerTrickCount(notif.args.player_id, notif.args.trick_won)
 				})
-			}, 1000)
+			}, 1500)
 		},
 
 		// Private information, this player has the belote
