@@ -242,7 +242,8 @@ class Coinche extends Table {
 		$counteringPlayer = self::getGameStateValue('counteringPlayer');
 		$recounteringPlayer = self::getGameStateValue('recounteringPlayer');
 
-		$result['hasAllNoTrumps'] = self::getGameStateValue('hasAllNoTrumps') == 1;
+		$result['hasAllNoTrumps'] =
+			self::getGameStateValue('hasAllNoTrumps') == 1;
 		$result['trumpColor'] = $trumpColor;
 		$result['trumpColorDisplay'] = $this->colors[$trumpColor]['name'] ?? null;
 		$result['bid'] = $bid;
@@ -597,8 +598,10 @@ class Coinche extends Table {
 	 * Throws an exception if not.
 	 */
 	private function assertCardPlay($cardId) {
-		$currentCard = $this->cards->getCard($cardId);
-		$currentColor = $currentCard['type'];
+		$card = $this->cards->getCard($cardId);
+		$cardColor = $card['type'];
+		$cardStrength = $this->getCardStrength($card);
+
 		$trickColor = self::getGameStateValue('trickColor');
 		$trumpColor = self::getGameStateValue('trumpColor');
 		$playerId = self::getActivePlayerId();
@@ -609,22 +612,32 @@ class Coinche extends Table {
 		$isCardInHand = false;
 		$hasTrickColorInHand = false;
 		$hasTrumpColorInHand = false;
+
 		// Strongest trump card in player's hand
 		$trumpStrongestInHand = 0;
 		// Strongest trickcolor card in player's hand
 		$trickStrongestInHand = 0;
+
 		// Strongest trickcolor card played on table
-		$strongestTrickCard = null;
-		$strongestTrickValue = 0;
+		$strongestTrickCardOnTable = null;
+		$strongestTrickCardStrengthOnTable = 0;
 		$hasTrumpBeenPlayed = false;
 		// Strongest trump card played on table
-		$trumpStrongestPlayed = 0;
-		$cardStrength = $this->getCardStrength($currentCard);
+		$strongestTrumpCardOnTable = null;
+		$strongestTrumpCardStrengthOnTable = 0;
 
+		// Is the partner the currently strongest of this trick ?
+		$isPartnerTheStrongest = false;
+
+		// First card, no check
+		if ($trickColor == 0) {
+			return;
+		}
+
+		// Loop on player's cards to set the 'inhand' values
 		foreach ($playerCards as $playerCard) {
 			if ($playerCard['id'] === $cardId) {
 				$isCardInHand = true;
-				$currentCard = $playerCard;
 			}
 
 			$strength = $this->getCardStrength($playerCard);
@@ -644,38 +657,45 @@ class Coinche extends Table {
 			}
 		}
 
-		// Loop cards on table
+		// Loop cards on table to get the 'ontable' values
 		foreach ($cardsOnTable as $cardOnTable) {
 			$strength = $this->getCardStrength($cardOnTable);
 
 			// Keep track if trump is played, register strongest value
 			if ($cardOnTable['type'] === $trumpColor) {
 				$hasTrumpBeenPlayed = true;
-				if ($strength > $trumpStrongestPlayed) {
-					$trumpStrongestPlayed = $strength;
+				if ($strength > $strongestTrumpCardStrengthOnTable) {
+					$strongestTrumpCardOnTable = $cardOnTable;
+					$strongestTrumpCardStrengthOnTable = $strength;
 				}
 			}
 			// Keep track of strongest card for current trickColor
 			if ($cardOnTable['type'] === $trickColor) {
-				if ($strength > $strongestTrickValue) {
-					$strongestTrickCard = $cardOnTable;
-					$strongestTrickValue = $strength;
+				if ($strength > $strongestTrickCardStrengthOnTable) {
+					$strongestTrickCardOnTable = $cardOnTable;
+					$strongestTrickCardStrengthOnTable = $strength;
 				}
 			}
 		}
 
+		// Look up if partner has played the strongest card
+		if ($hasTrumpBeenPlayed) {
+			// When trump has been played...
+			$isPartnerTheStrongest =
+				$strongestTrumpCardOnTable['location_arg'] === "$partnerId";
+		} else {
+			// Otherwise.
+			$isPartnerTheStrongest =
+				$strongestTrickCardOnTable['location_arg'] === "$partnerId";
+		}
+
 		if (!$isCardInHand) {
-			// Woaw !
+			// Woaw ! Should not happen.
 			throw new BgaUserException('Card is not in hand'); // NOI18N
 		}
 
-		if ($trickColor == 0) {
-			// First card, no check
-			return;
-		}
-
-		if ($trickColor != $currentColor) {
-			// currentColor is not trick color
+		if ($trickColor != $cardColor) {
+			// cardColor is not trick color
 
 			if ($hasTrickColorInHand) {
 				// Player has trick color in hand, must play one
@@ -687,13 +707,10 @@ class Coinche extends Table {
 				);
 			}
 
-			if ($hasTrumpColorInHand && $currentColor !== $trumpColor) {
+			if ($hasTrumpColorInHand && $cardColor !== $trumpColor) {
 				// Player has trump color in hand;
 				// It must play one if its partner is not the strongest
-				if (
-					$hasTrumpBeenPlayed ||
-					$strongestTrickCard['location_arg'] !== "$partnerId"
-				) {
+				if (!$isPartnerTheStrongest) {
 					throw new BgaUserException(
 						sprintf(
 							self::_('You must cut with a %s'),
@@ -704,11 +721,11 @@ class Coinche extends Table {
 			}
 		}
 
-		if ($trumpColor == 5 && $trickColor === $currentColor) {
+		if ($trumpColor == 5 && $trickColor === $cardColor) {
 			// All trump: check if going up, if same as trick color
 			if (
-				$trickStrongestInHand > $strongestTrickValue &&
-				$cardStrength <= $strongestTrickValue
+				$trickStrongestInHand > $strongestTrickCardStrengthOnTable &&
+				$cardStrength <= $strongestTrickCardStrengthOnTable
 			) {
 				throw new BgaUserException(
 					sprintf(
@@ -719,11 +736,11 @@ class Coinche extends Table {
 			}
 		}
 
-		if ($currentColor === $trumpColor) {
+		if ($cardColor === $trumpColor) {
 			// Trump is played: check if going up
 			if (
-				$trumpStrongestInHand > $trumpStrongestPlayed &&
-				$cardStrength <= $trumpStrongestPlayed
+				$trumpStrongestInHand > $strongestTrumpCardStrengthOnTable &&
+				$cardStrength <= $strongestTrumpCardStrengthOnTable
 			) {
 				throw new BgaUserException(
 					sprintf(
