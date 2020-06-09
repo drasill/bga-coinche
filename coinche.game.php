@@ -629,11 +629,6 @@ class Coinche extends Table {
 		// Is the partner the currently strongest of this trick ?
 		$isPartnerTheStrongest = false;
 
-		// First card, no check
-		if ($trickColor == 0) {
-			return;
-		}
-
 		// Loop on player's cards to set the 'inhand' values
 		foreach ($playerCards as $playerCard) {
 			if ($playerCard['id'] === $cardId) {
@@ -692,6 +687,11 @@ class Coinche extends Table {
 		if (!$isCardInHand) {
 			// Woaw ! Should not happen.
 			throw new BgaUserException('Card is not in hand'); // NOI18N
+		}
+
+		// First card, no check
+		if ($trickColor == 0) {
+			return;
 		}
 
 		if ($trickColor != $cardColor) {

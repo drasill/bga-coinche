@@ -684,10 +684,23 @@ define([
 		},
 
 		playSelectedCard: function() {
+			// Check action
+			if (!this.checkAction('playCard', true)) {
+				return
+			}
+
+			// Check if there is a selected card
 			var cardId = this.selectedCardId
 			if (!cardId) {
 				return
 			}
+
+			// Check if selected card is in hand
+			if (!this.playerHand.getItemById(cardId)) {
+				this.selectedCardId = null
+				return
+			}
+
 			if (
 				!(this.beloteInfo.declared == 1) &&
 				this.wantToDeclareBelote === null &&
