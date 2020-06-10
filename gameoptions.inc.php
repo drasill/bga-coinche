@@ -87,4 +87,14 @@ $game_preferences = [
 			2 => ['name' => totranslate('Bid confirmation')],
 		],
 	],
+	102 => [
+		'name' => totranslate('Cards style'),
+		'needReload' => false,
+		'values' => [
+			1 => ['name' => totranslate('French')],
+			2 => ['name' => totranslate('English')],
+			3 => ['name' => totranslate('Stylish')],
+			4 => ['name' => 'Snap'],
+		],
+	],
 ];

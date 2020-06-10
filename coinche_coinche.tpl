@@ -104,12 +104,16 @@
 </div>
 
 
-<div class="myHand whiteblock">
+<div class="myHand">
 	<div id="myHand" class="myHand__cards">
 	</div>
 	<div class="currentBidInfo">
 		<div class="currentBidInfo__wrapper"></div>
 	</div>
+</div>
+
+<div class="userActions whiteblock">
+	<div class="userActions__action--card-style bgabutton bgabutton_gray"><span>{CARDS_STYLE}</span></div>
 </div>
 
 <script type="text/javascript">

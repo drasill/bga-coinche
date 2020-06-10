@@ -87,23 +87,20 @@ define([
 			// Update information about player bid
 			this.updatePlayerBid(false)
 
+			// Listen to preferences changes
+			this.initPreferencesObserver()
+
 			// Turn order
 			if (this.prefs[100].value == 2) {
 				this.swapPlayerTables()
 			}
-			dojo.connect(
-				$('preference_control_100'),
-				'onchange',
-				this,
-				'swapPlayerTables'
-			)
 
-			// Bid Confirmation
-			dojo.connect(
-				$('preference_control_101'),
-				'onchange',
-				this,
-				'onBidConfirmationPrefChange'
+			// Card style
+			this.applyCardStyle()
+			this.connectClass(
+				'userActions__action--card-style',
+				'onclick',
+				'showCardStyleSelectDialog'
 			)
 
 			// Player hand
@@ -756,6 +753,54 @@ define([
 			clsW.remove('playerTables__table--W')
 		},
 
+		// Apply class to body according to card style
+		applyCardStyle: function() {
+			var map = { 1: 'french', 2: 'english', 3: 'stylish', 4: 'snap' }
+			var style = map[this.prefs[102].value]
+			var classList = document.body.classList
+			classList.forEach(function(cls) {
+				if (cls.match(/^card-style--/)) {
+					classList.remove(cls)
+				}
+			})
+			classList.add('card-style--' + style)
+		},
+
+		showCardStyleSelectDialog: function() {
+			var map = { 1: 'french', 2: 'english', 3: 'stylish', 4: 'snap' }
+			var html = []
+			html.push('<div class="cardStyleSelect">')
+			for (var cardStyle in map) {
+				var divStyle = html.push(
+					'<div class="cardStyleSelect__option" data-style="' +
+						cardStyle +
+						'"><div class="cardStyleSelect__card-wrapper"><div class="cardStyleSelect__card card-style--' +
+						map[cardStyle] +
+						'" style="background-position: -900% -100%;"></div></div>' +
+						map[cardStyle] +
+						'</div>'
+				)
+			}
+			html.push('</div>')
+
+			var dialog = new ebg.popindialog()
+			dialog.create('multipleChoice_dialog')
+			dialog.setTitle(_('Select a card style'))
+			dialog.setContent(html.join(''))
+			dialog.show()
+
+			var me = this
+			dojo
+				.query('.cardStyleSelect__option')
+				.connect('onclick', this, function(e) {
+					e.preventDefault()
+					e.stopPropagation()
+					dialog.destroy()
+					var cardStyle = e.currentTarget.getAttribute('data-style')
+					me.setPreferenceValue(102, cardStyle)
+				})
+		},
+
 		onCreateNewCard: function(cardDiv, cardTypeId, cardHtmlId) {
 			if (this.currentTrump >= 1 && this.currentTrump <= 4) {
 				cardDiv.classList.add('stockitem--is-trump')
@@ -843,6 +888,69 @@ define([
 					this.updatePlayerBid(true)
 				}
 			)
+		},
+
+		///////////////////////////////////////////////////
+		//// Preferences
+
+		// Set a preference value
+		// (actually change the select in preference_control_NNN)
+		setPreferenceValue: function(number, newValue) {
+			var optionSel = 'option[value="' + newValue + '"]'
+			dojo
+				.query(
+					'#preference_control_' +
+						number +
+						' > ' +
+						optionSel +
+						', #preference_fontrol_' +
+						number +
+						' > ' +
+						optionSel
+				)
+				.attr('selected', true)
+			// Trigger the onchange event
+			var select = $('preference_control_' + number)
+			// IE does things differently
+			if (dojo.isIE) {
+				select.fireEvent('onchange')
+			} else {
+				// Not IE
+				var event = document.createEvent('HTMLEvents')
+				event.initEvent('change', false, true)
+				select.dispatchEvent(event)
+			}
+		},
+
+		// Listen for "change" events on preference_control_NNN select,
+		// then call this.onPreferenceChange
+		initPreferencesObserver: function() {
+			dojo.query('.preference_control').on('change', dojo.hitch(this, function(e) {
+				var match = e.target.id.match(/^preference_control_(\d+)$/)
+				if (!match) {
+					return
+				}
+				this.onPreferenceChange(match[1], e.target.value)
+			}))
+		},
+
+		// Called when a preference is set
+		onPreferenceChange: function(pref, value) {
+			switch (pref) {
+				case '100':
+					// Turn order
+					this.swapPlayerTables()
+					break;
+				case '101':
+					// Bid confirmation
+					this.prefs[pref].value = value
+					break;
+				case '102':
+					// Card style
+					this.prefs[pref].value = value
+					this.applyCardStyle()
+					break;
+			}
 		},
 
 		///////////////////////////////////////////////////
@@ -1021,12 +1129,6 @@ define([
 
 		onCoincheBtnClick: function(e) {
 			this.onPlayerCoinche()
-		},
-
-		// Update "prefs" based on new select option
-		// Too bad this is not managed by BGA
-		onBidConfirmationPrefChange: function(e) {
-			this.prefs[101].value = e.target.value
 		},
 
 		///////////////////////////////////////////////////
