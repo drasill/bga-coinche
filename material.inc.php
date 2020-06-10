@@ -46,3 +46,18 @@ $this->values_label = [
 	13 => clienttranslate('K'),
 	14 => clienttranslate('A'),
 ];
+
+$this->card_styles = [
+	1 => [
+		'id' => 'french',
+		'name' => clienttranslate('French'),
+	],
+	2 => [
+		'id' => 'english',
+		'name' => clienttranslate('English'),
+	],
+	3 => [
+		'id' => 'snap',
+		'name' => 'Snap',
+	],
+];

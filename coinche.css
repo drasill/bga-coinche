@@ -454,12 +454,6 @@
 	border: 1px solid #000000c9;
 	border-radius: 7px;
 }
-.cardStyleSelect__card.card-style--stylish,
-.card-style--stylish .stockitem,
-.card-style--stylish .cardontable {
-	background-image: url('img/cards-stylish.png') !important;
-	border-radius: 14px;
-}
 .cardStyleSelect__card.card-style--snap,
 .card-style--snap .stockitem,
 .card-style--snap .cardontable {

@@ -93,8 +93,7 @@ $game_preferences = [
 		'values' => [
 			1 => ['name' => totranslate('French')],
 			2 => ['name' => totranslate('English')],
-			3 => ['name' => totranslate('Stylish')],
-			4 => ['name' => 'Snap'],
+			3 => ['name' => 'Snap'],
 		],
 	],
 ];

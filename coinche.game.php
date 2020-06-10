@@ -222,6 +222,9 @@ class Coinche extends Table {
 			'SELECT player_id id, player_score score, player_no, player_tricks tricks FROM player ';
 		$result['players'] = self::getCollectionFromDb($sql);
 
+		// Cards styles
+		$result['cardStyles'] = $this->card_styles;
+
 		// Cards in player hand
 		$result['hand'] = $this->cards->getCardsInLocation(
 			'hand',

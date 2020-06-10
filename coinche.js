@@ -28,6 +28,7 @@ define([
 			this.cardheight = 104
 			this.scoringDialog = null
 			this.hasAllNoTrumps = true
+			this.cardStyles = {}
 		},
 
 		/**
@@ -40,6 +41,8 @@ define([
 		 * "gamedatas" argument contains all datas retrieved by your "getAllDatas" PHP method.
 		 */
 		setup: function(gamedatas) {
+			this.cardStyles = gamedatas.cardStyles
+
 			// Setting up player boards
 			for (var player_id in gamedatas.players) {
 				var player = gamedatas.players[player_id]
@@ -755,29 +758,30 @@ define([
 
 		// Apply class to body according to card style
 		applyCardStyle: function() {
-			var map = { 1: 'french', 2: 'english', 3: 'stylish', 4: 'snap' }
-			var style = map[this.prefs[102].value]
+			var style = this.cardStyles[this.prefs[102].value]
+			if (!style) {
+				return
+			}
 			var classList = document.body.classList
 			classList.forEach(function(cls) {
 				if (cls.match(/^card-style--/)) {
 					classList.remove(cls)
 				}
 			})
-			classList.add('card-style--' + style)
+			classList.add('card-style--' + style.id)
 		},
 
 		showCardStyleSelectDialog: function() {
-			var map = { 1: 'french', 2: 'english', 3: 'stylish', 4: 'snap' }
 			var html = []
 			html.push('<div class="cardStyleSelect">')
-			for (var cardStyle in map) {
-				var divStyle = html.push(
+			for (var cardStyle in this.cardStyles) {
+				html.push(
 					'<div class="cardStyleSelect__option" data-style="' +
 						cardStyle +
 						'"><div class="cardStyleSelect__card-wrapper"><div class="cardStyleSelect__card card-style--' +
-						map[cardStyle] +
+						this.cardStyles[cardStyle].id +
 						'" style="background-position: -900% -100%;"></div></div>' +
-						map[cardStyle] +
+						this.cardStyles[cardStyle].name +
 						'</div>'
 				)
 			}
@@ -925,13 +929,16 @@ define([
 		// Listen for "change" events on preference_control_NNN select,
 		// then call this.onPreferenceChange
 		initPreferencesObserver: function() {
-			dojo.query('.preference_control').on('change', dojo.hitch(this, function(e) {
-				var match = e.target.id.match(/^preference_control_(\d+)$/)
-				if (!match) {
-					return
-				}
-				this.onPreferenceChange(match[1], e.target.value)
-			}))
+			dojo.query('.preference_control').on(
+				'change',
+				dojo.hitch(this, function(e) {
+					var match = e.target.id.match(/^preference_control_(\d+)$/)
+					if (!match) {
+						return
+					}
+					this.onPreferenceChange(match[1], e.target.value)
+				})
+			)
 		},
 
 		// Called when a preference is set
@@ -940,16 +947,16 @@ define([
 				case '100':
 					// Turn order
 					this.swapPlayerTables()
-					break;
+					break
 				case '101':
 					// Bid confirmation
 					this.prefs[pref].value = value
-					break;
+					break
 				case '102':
 					// Card style
 					this.prefs[pref].value = value
 					this.applyCardStyle()
-					break;
+					break
 			}
 		},
 
