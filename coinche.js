@@ -934,9 +934,15 @@ define([
 				dojo.hitch(this, function(e) {
 					var match = e.target.id.match(/^preference_control_(\d+)$/)
 					if (!match) {
+						// Not a "game" preference control
 						return
 					}
-					this.onPreferenceChange(match[1], e.target.value)
+					var pref = match[1]
+					var newValue = e.target.value
+					// Change this.prefs
+					this.prefs[pref].value = newValue
+					// Call "onPreferenceChange"
+					this.onPreferenceChange(pref, newValue)
 				})
 			)
 		},
@@ -948,13 +954,8 @@ define([
 					// Turn order
 					this.swapPlayerTables()
 					break
-				case '101':
-					// Bid confirmation
-					this.prefs[pref].value = value
-					break
 				case '102':
 					// Card style
-					this.prefs[pref].value = value
 					this.applyCardStyle()
 					break
 			}
