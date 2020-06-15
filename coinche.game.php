@@ -90,7 +90,13 @@ class Coinche extends Table {
 		$gameinfos = self::getGameinfos();
 		$default_colors = $gameinfos['player_colors'];
 
-		$playerInitialOrder = array_column($players, 'player_table_order');
+		// Retrieve inital player order ([0=>playerId1, 1=>playerId2, ...])
+		$playerInitialOrder = [];
+		foreach ($players as $playerId => $player) {
+			$playerInitialOrder[$player['player_table_order']] = $playerId;
+		}
+		ksort($playerInitialOrder);
+		$playerInitialOrder = array_flip(array_values($playerInitialOrder));
 
 		// Player order based on 'playerTeams' option
 		$playerOrder = [0, 1, 2, 3];
@@ -116,7 +122,6 @@ class Coinche extends Table {
 			'INSERT INTO player (player_id, player_color, player_canal, player_name, player_avatar, player_no) VALUES ';
 		$values = [];
 
-		$playerIndex = 0;
 		foreach ($players as $playerId => $player) {
 			$color = array_shift($default_colors);
 			$values[] =
@@ -129,11 +134,10 @@ class Coinche extends Table {
 				"','" .
 				addslashes($player['player_avatar']) .
 				"','" .
-				$playerOrder[$playerInitialOrder[$playerIndex] - 1] .
+				$playerOrder[$playerInitialOrder[$playerId]] .
 				"')";
-			$playerIndex++;
 		}
-		$sql .= implode($values, ',');
+		$sql .= implode(',', $values);
 		self::DbQuery($sql);
 		self::reattributeColorsBasedOnPreferences(
 			$players,
