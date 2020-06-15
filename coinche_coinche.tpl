@@ -114,6 +114,11 @@
 
 <div class="userActions whiteblock">
 	<div class="userActions__action--card-style bgabutton bgabutton_gray"><span>{CARDS_STYLE}</span></div>
+	<div class="userActions__action--confirm-bids bgabutton bgabutton_gray">
+		<span>{CONFIRM_BIDS}</span>
+		<span class="userActions__action--confirm-bids__active-icon">☑️</span>
+		<span class="userActions__action--confirm-bids__inactive-icon">☐</span>
+	</div>
 </div>
 
 <script type="text/javascript">

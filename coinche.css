@@ -921,3 +921,17 @@
 	height: 104px;
 	position: relative;
 }
+
+/* Preferences / actions buttons */
+.userActions__action--confirm-bids__active-icon {
+	display: none;
+}
+.userActions__action--confirm-bids__inactive-icon {
+	display: inline-block;
+}
+.userActions__action--confirm-bids--active .userActions__action--confirm-bids__active-icon {
+	display:  inline-block;
+}
+.userActions__action--confirm-bids--active .userActions__action--confirm-bids__inactive-icon {
+	display: none;
+}

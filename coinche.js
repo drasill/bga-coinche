@@ -98,12 +98,21 @@ define([
 				this.swapPlayerTables()
 			}
 
+			// Bid Confirmation Button
+			this.updateBidConfirmationButton()
+
 			// Card style
 			this.applyCardStyle()
 			this.connectClass(
 				'userActions__action--card-style',
 				'onclick',
-				'showCardStyleSelectDialog'
+				'onCardStyleButtonClick'
+			)
+
+			this.connectClass(
+				'userActions__action--confirm-bids',
+				'onclick',
+				'onConfirmBidButtonClick'
 			)
 
 			// Player hand
@@ -776,7 +785,9 @@ define([
 			classList.add('card-style--' + style.id)
 		},
 
-		showCardStyleSelectDialog: function() {
+		onCardStyleButtonClick: function(e) {
+			e.preventDefault()
+			e.stopPropagation()
 			var html = []
 			html.push('<div class="cardStyleSelect">')
 			for (var cardStyle in this.cardStyles) {
@@ -808,6 +819,24 @@ define([
 					var cardStyle = e.currentTarget.getAttribute('data-style')
 					me.setPreferenceValue(102, cardStyle)
 				})
+		},
+
+		onConfirmBidButtonClick: function(e) {
+			e.preventDefault()
+			e.stopPropagation()
+			var currentValue = this.prefs[101].value
+			var newValue = currentValue == 1 ? 2 : 1
+			this.setPreferenceValue(101, newValue)
+		},
+
+		updateBidConfirmationButton: function() {
+			var currentValue = this.prefs[101].value
+			var el = dojo.query('.userActions__action--confirm-bids')[0]
+			if (currentValue == 1) {
+				el.classList.remove('userActions__action--confirm-bids--active')
+			} else {
+				el.classList.add('userActions__action--confirm-bids--active')
+			}
 		},
 
 		onCreateNewCard: function(cardDiv, cardTypeId, cardHtmlId) {
@@ -958,6 +987,10 @@ define([
 				case '100':
 					// Turn order
 					this.swapPlayerTables()
+					break
+				case '101':
+					// Bid confirmation
+					this.updateBidConfirmationButton()
 					break
 				case '102':
 					// Card style
