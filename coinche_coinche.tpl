@@ -121,12 +121,12 @@
 	// Javascript HTML templates
 	var jstpl_cardontable = '<div class="cardontable ${cls}" id="cardontable_${player_id}" style="background-position:-${x}px -${y}px"></div>';
 	var jstpl_playerbidconfirm = '<div class="bidPanel__btn__confirm__info"><span class="currentBidInfo__bid">${bid}</span><span class="card-color-icon card-color-icon--size48 card-color-icon--${trumpColor}"></span></div>';
-	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">Enchère : <span class="currentBidInfo__bid">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span> <span class="currentBidInfo__player">par <span>${bidPlayerDisplay}</span></span>  <div class="currentBidInfo__countered currentBidInfo__countered--${countered}">Coinché par ${counteringPlayerDisplay}</div> <div class="currentBidInfo__countered currentBidInfo__recountered currentBidInfo__countered--${countered}">Surcoinché par ${recounteringPlayerDisplay}</div> </div>';
+	var jstpl_currentbidinfo = '<div class="currentBidInfo__wrapper whiteblock">${BID} : <span class="currentBidInfo__bid">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span> <span class="currentBidInfo__player">${BY} <span>${bidPlayerDisplay}</span></span>  <div class="currentBidInfo__countered currentBidInfo__countered--${countered}">${DOUBLED_BY} ${counteringPlayerDisplay}</div> <div class="currentBidInfo__countered currentBidInfo__recountered currentBidInfo__countered--${countered}">${REDOUBLED_BY} ${recounteringPlayerDisplay}</div> </div>';
 	var jstpl_playerbid = '<div class="playerTables__bid-item"><span class="playerTables__bid__item-value">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span></div>';
 	var jstpl_playerbidtaker = '<div class="playerTables__bid-item playerTables__bid__item--taker"><span><span class="playerTables__bid__item-value">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span></span></div>';
 	var jstpl_playerbidcounter = '<div class="playerTables__bid-item playerTables__bid__item--counter"></div>';
 	var jstpl_playerbidrecounter = '<div class="playerTables__bid-item playerTables__bid__item--recounter"></div>';
-	var jstpl_playerpass = '<div class="playerTables__bid-item"><em>passe</em></div>';
+	var jstpl_playerpass = '<div class="playerTables__bid-item"><em>${PASS}</em></div>';
 
 </script>
 

@@ -405,6 +405,7 @@ define([
 
 		// Update a players's pass info
 		updatePlayerPassInfo: function(data) {
+			data.PASS = _('pass')
 			this.updatePlayerStatus(
 				data.player_id,
 				this.format_block('jstpl_playerpass', data)
@@ -486,6 +487,10 @@ define([
 
 			// Show bid info
 			dojo.query('.currentBidInfo').addClass('currentBidInfo--visible')
+			data.BID = _('Bid')
+			data.BY = _('by')
+			data.DOUBLED_BY = _('Doubled by')
+			data.REDOUBLED_BY = _('Redoubled by')
 			dojo.place(
 				this.format_block('jstpl_currentbidinfo', data),
 				dojo.query('.currentBidInfo__wrapper')[0],
