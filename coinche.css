@@ -923,15 +923,20 @@
 }
 
 /* Preferences / actions buttons */
-.userActions__action--confirm-bids__active-icon {
-	display: none;
+.userActions {
+	display: flex;
+	align-items: center;
 }
-.userActions__action--confirm-bids__inactive-icon {
-	display: inline-block;
+.userActions > * {
+	margin-right: 10px;
 }
-.userActions__action--confirm-bids--active .userActions__action--confirm-bids__active-icon {
-	display:  inline-block;
+
+.userActions__action--confirm-bids input {
+	pointer-events: none;
+	vertical-align: middle;
+	line-height: 14px;
 }
-.userActions__action--confirm-bids--active .userActions__action--confirm-bids__inactive-icon {
-	display: none;
+.userActions__action--confirm-bids span {
+	vertical-align: middle;
+	line-height: 14px;
 }

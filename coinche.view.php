@@ -56,6 +56,7 @@ class view_coinche_coinche extends game_view {
 		$this->tpl['CANCEL'] = self::_('Cancel');
 		$this->tpl['CARDS_STYLE'] = self::_('Cards style');
 		$this->tpl['CONFIRM_BIDS'] = self::_('Confirm bids');
+		$this->tpl['YOUR_PREFERENCES'] = self::_('Your preferences');
 
 		/*********** Do not change anything below this line  ************/
 	}

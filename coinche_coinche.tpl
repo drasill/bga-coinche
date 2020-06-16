@@ -113,11 +113,11 @@
 </div>
 
 <div class="userActions whiteblock">
+	<span>{YOUR_PREFERENCES} :</span>
 	<div class="userActions__action--card-style bgabutton bgabutton_gray"><span>{CARDS_STYLE}</span></div>
 	<div class="userActions__action--confirm-bids bgabutton bgabutton_gray">
+		<input type="checkbox">
 		<span>{CONFIRM_BIDS}</span>
-		<span class="userActions__action--confirm-bids__active-icon">☑️</span>
-		<span class="userActions__action--confirm-bids__inactive-icon">☐</span>
 	</div>
 </div>
 

@@ -98,8 +98,7 @@ define([
 				this.swapPlayerTables()
 			}
 
-			// Bid Confirmation Button
-			this.updateBidConfirmationButton()
+			/// Action/Preferences buttons
 
 			// Card style
 			this.applyCardStyle()
@@ -108,11 +107,23 @@ define([
 				'onclick',
 				'onCardStyleButtonClick'
 			)
+			this.addTooltipToClass(
+				'userActions__action--card-style',
+				'',
+				_('Change the visual aspect of the cards (only for you)')
+			)
 
+			// Bid Confirmation Button
+			this.updateBidConfirmationButton()
 			this.connectClass(
 				'userActions__action--confirm-bids',
 				'onclick',
 				'onConfirmBidButtonClick'
+			)
+			this.addTooltipToClass(
+				'userActions__action--confirm-bids',
+				_('If checked, your bids will need a confirmation'),
+				''
 			)
 
 			// Player hand
@@ -831,12 +842,8 @@ define([
 
 		updateBidConfirmationButton: function() {
 			var currentValue = this.prefs[101].value
-			var el = dojo.query('.userActions__action--confirm-bids')[0]
-			if (currentValue == 1) {
-				el.classList.remove('userActions__action--confirm-bids--active')
-			} else {
-				el.classList.add('userActions__action--confirm-bids--active')
-			}
+			var el = dojo.query('.userActions__action--confirm-bids input')[0]
+			el.checked = !(currentValue == 1)
 		},
 
 		onCreateNewCard: function(cardDiv, cardTypeId, cardHtmlId) {
