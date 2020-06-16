@@ -15,7 +15,7 @@ $gameinfos = [
 	'game_name' => 'Coinche',
 
 	// Game designer (or game designers, separated by commas)
-	'designer' => '(Uncredited)',
+	'designer' => '',
 
 	// Game artist (or game artists, separated by commas)
 	'artist' => '',
@@ -24,7 +24,7 @@ $gameinfos = [
 	'year' => 1930,
 
 	// Game publisher
-	'publisher' => '(Public Domain)',
+	'publisher' => '',
 
 	// Url of game publisher website
 	'publisher_website' => '',
