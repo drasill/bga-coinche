@@ -131,7 +131,7 @@
 	var jstpl_playerbidtaker = '<div class="playerTables__bid-item playerTables__bid__item--taker"><span><span class="playerTables__bid__item-value">${bid}</span><span class="card-color-icon card-color-icon--size16 card-color-icon--${trumpColor}"></span></span></div>';
 	var jstpl_playerbidcounter = '<div class="playerTables__bid-item playerTables__bid__item--counter"></div>';
 	var jstpl_playerbidrecounter = '<div class="playerTables__bid-item playerTables__bid__item--recounter"></div>';
-	var jstpl_playerpass = '<div class="playerTables__bid-item"><em>${PASS}</em></div>';
+	var jstpl_playerpass = '<div class="playerTables__bid-item"><em>{PASS}</em></div>';
 
 </script>
 
