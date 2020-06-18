@@ -54,7 +54,10 @@ class Coinche extends Table {
 			'beloteCardId1' => 20,
 			'beloteCardId2' => 21,
 			'belotePlayerId' => 22,
+			// 0: no, 1: yes, 2: did not want it to be declared
 			'beloteDeclared' => 23,
+
+			// Which player won the last trick
 			'dixDeDerPlayerId' => 24,
 
 			// Options
@@ -381,7 +384,7 @@ class Coinche extends Table {
 		}
 		$cardId1 = self::getGameStateValue('beloteCardId1');
 		$cardId2 = self::getGameStateValue('beloteCardId2');
-		$declared = !!self::getGameStateValue('beloteDeclared');
+		$declared = self::getGameStateValue('beloteDeclared');
 		self::notifyPlayer($playerId, 'belote', '', [
 			'belote_card_id_1' => $cardId1,
 			'belote_card_id_2' => $cardId2,
@@ -775,6 +778,57 @@ class Coinche extends Table {
 	}
 
 	/**
+	 * Check if the played card is a belote card.
+	 * Update db & notifyBelote accordingly
+	 *
+	 * @param int $cardId
+	 * @param boolean $wantBelote
+	 */
+	private function checkBeloteCardPlay($cardId, $wantBelote) {
+		$playerId = self::getActivePlayerId();
+		$cardId1 = self::getGameStateValue('beloteCardId1');
+		$cardId2 = self::getGameStateValue('beloteCardId2');
+		$isBeloteCard = ($cardId == $cardId1 || $cardId == $cardId2);
+		$beloteDeclared = self::getGameStateValue('beloteDeclared');
+
+		if (!$isBeloteCard) {
+			// Not a belote card
+			return;
+		}
+
+		if ($beloteDeclared == 3) {
+			// Player already decided not to declare the belote
+			return;
+		}
+
+		if ($beloteDeclared == 0 && !$wantBelote) {
+			// Player decides not to declare the belote
+			self::setGameStateValue('beloteDeclared', 3);
+			$this->notifyBelote();
+			return;
+		}
+
+		$beloteText = null;
+		if ($beloteDeclared == 0) {
+			$beloteText = 'Belote';
+			self::setGameStateValue('beloteDeclared', 1);
+			$this->notifyBelote();
+		} else {
+			$beloteText = 'Rebelote';
+		}
+
+		self::notifyAllPlayers(
+			'sayBelote',
+			clienttranslate('${player_name} says ${belote_text} !'),
+			[
+				'player_id' => $playerId,
+				'player_name' => self::getActivePlayerName(),
+				'belote_text' => $beloteText,
+			]
+		);
+	}
+
+	/**
 	 * Notify the current bid informations
 	 */
 	private function notifyBid($showMessage = false) {
@@ -1009,30 +1063,7 @@ class Coinche extends Table {
 		$this->assertCardPlay($cardId);
 
 		// Check for belote
-		$beloteDeclared = self::getGameStateValue('beloteDeclared');
-		if ($beloteDeclared || $wantBelote) {
-			$cardId1 = self::getGameStateValue('beloteCardId1');
-			$cardId2 = self::getGameStateValue('beloteCardId2');
-			if ($cardId == $cardId1 || $cardId == $cardId2) {
-				// Card is belote, and player want it declared
-				$beloteText = 'Belote';
-				if (!$beloteDeclared) {
-					self::setGameStateValue('beloteDeclared', 1);
-					$this->notifyBelote();
-				} else {
-					$beloteText = 'Rebelote';
-				}
-				self::notifyAllPlayers(
-					'sayBelote',
-					clienttranslate('${player_name} says ${belote_text} !'),
-					[
-						'player_id' => $playerId,
-						'player_name' => self::getActivePlayerName(),
-						'belote_text' => $beloteText,
-					]
-				);
-			}
-		}
+		$this->checkBeloteCardPlay($cardId, $wantBelote);
 
 		$this->cards->moveCard($cardId, 'cardsontable', $playerId);
 		$currentCard = $this->cards->getCard($cardId);
@@ -1415,7 +1446,7 @@ class Coinche extends Table {
 
 		// Belote
 		$beloteTeamId = null;
-		if (self::getGameStateValue('beloteDeclared')) {
+		if (self::getGameStateValue('beloteDeclared') == 1) {
 			$belotePlayerId = self::getGameStateValue('belotePlayerId');
 			$beloteTeamId = $playerIdTeam[$belotePlayerId];
 		}

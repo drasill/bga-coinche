@@ -727,7 +727,7 @@ define([
 			}
 
 			if (
-				!(this.beloteInfo.declared == 1) &&
+				this.beloteInfo.declared == 0 &&
 				this.wantToDeclareBelote === null &&
 				(cardId == this.beloteInfo.cardId1 || cardId == this.beloteInfo.cardId2)
 			) {
