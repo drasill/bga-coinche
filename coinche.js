@@ -29,6 +29,7 @@ define([
 			this.scoringDialog = null
 			this.hasAllNoTrumps = true
 			this.cardStyles = {}
+			this.numberOfCardsOnTable = 0
 		},
 
 		/**
@@ -348,9 +349,12 @@ define([
 		},
 
 		playCardOnTable: function(playerId, color, value, cardId) {
+
+			this.numberOfCardsOnTable++
+
 			// playerId => direction
 			var target = this.getPlayerTableEl(playerId, 'card')
-			dojo.place(
+			var cardEl = dojo.place(
 				this.format_block('jstpl_cardontable', {
 					x: this.cardwidth * (value - 2),
 					y: this.cardheight * (color - 1),
@@ -364,18 +368,19 @@ define([
 				// Some opponent played a card
 				// Move card from player avatar
 				var from = this.getPlayerTableEl(playerId, 'avatar-wrapper')
-				this.placeOnObject('cardontable_' + playerId, from)
+				this.placeOnObject(cardEl, from)
 			} else {
 				// You played a card. If it exists in your hand, move card from there and remove
 				// corresponding item
 				if ($('myHand_item_' + cardId)) {
-					this.placeOnObject('cardontable_' + playerId, 'myHand_item_' + cardId)
+					this.placeOnObject(cardEl, 'myHand_item_' + cardId)
 					this.playerHand.removeFromStockById(cardId)
 				}
 			}
 
 			// In any case: move it to its final destination
-			this.slideToObject('cardontable_' + playerId, target, 750, 0).play()
+			cardEl.style.zIndex = this.numberOfCardsOnTable
+			this.slideToObject(cardEl, target, 450, 0).play()
 		},
 
 		// Move all cards on table to given player, then destroy them
@@ -388,7 +393,7 @@ define([
 					var cardEl = dojo.byId('cardontable_' + player.id)
 					var anim = me.slideToObject(cardEl, target, 750, 0)
 					dojo.connect(anim, 'onEnd', function(node) {
-						dojo.destroy(cardEl)
+						me.fadeOutAndDestroy(cardEl, 1000)
 						count++
 						if (count >= 4) {
 							resolve()
