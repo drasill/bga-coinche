@@ -28,15 +28,25 @@ $game_options = [
 	100 => [
 		'name' => totranslate('Game length'),
 		'values' => [
-			1 => ['name' => totranslate('Classic (2000 points)')],
-			2 => ['name' => totranslate('Half-game (1000 points)')],
+			1 => [
+				'name' => totranslate('Classic (2000 points)'),
+			],
+			2 => [
+				'name' => totranslate('Half-game (1000 points)'),
+				'tmdisplay' => totranslate('Half-game (1000 points)'),
+			],
 		],
 	],
 	101 => [
 		'name' => totranslate('Score type'),
 		'values' => [
-			1 => ['name' => totranslate('Points + Bid')],
-			2 => ['name' => totranslate('Bid only')],
+			1 => [
+				'name' => totranslate('Points + Bid'),
+			],
+			2 => [
+				'name' => totranslate('Bid only'),
+				'tmdisplay' => totranslate('Bid only'),
+			],
 		],
 	],
 	102 => [
