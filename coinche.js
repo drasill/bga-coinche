@@ -425,7 +425,7 @@ define([
 
 		// Update a players's pass info
 		updatePlayerPassInfo: function(data) {
-			data.PASS = _('pass')
+			data.pass = _('pass')
 			this.updatePlayerStatus(
 				data.player_id,
 				this.format_block('jstpl_playerpass', data)
