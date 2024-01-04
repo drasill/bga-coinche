@@ -60,4 +60,8 @@ $this->card_styles = [
 		'id' => 'snap',
 		'name' => 'Snap',
 	],
+	4 => [
+		'id' => 'four-colors',
+		'name' => clienttranslate('Four Colors'),
+	]
 ];
