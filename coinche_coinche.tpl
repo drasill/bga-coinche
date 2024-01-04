@@ -57,6 +57,12 @@
 					<a class="bidPanel__btn bidPanel__btn--value" data-value="160">160</a>
 					<a class="bidPanel__btn bidPanel__btn--value" data-value="170">170</a>
 					<a class="bidPanel__btn bidPanel__btn--value" data-value="180">180</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="190">190</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="200">200</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="210">210</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="220">220</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="230">230</a>
+					<a class="bidPanel__btn bidPanel__btn--value" data-value="240">240</a>
 					<a class="bidPanel__btn bidPanel__btn--value bidPanel__btn--value-capot" data-value="250">Capot</a>
 				</div>
 				<a class="bidPanel__btn bidPanel__btn--value-right">&gt;</a>
