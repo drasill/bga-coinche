@@ -461,6 +461,13 @@
 	border: 1px solid #000000c9;
 	border-radius: 6px;
 }
+.cardStyleSelect__card.card-style--four-colors,
+.card-style--four-colors .stockitem,
+.card-style--four-colors .cardontable {
+	background-image: url('img/cards-four-colors.svg') !important;
+	border: 1px solid #000000c9;
+	border-radius: 3px;
+}
 
 /*** bid panel ***/
 
