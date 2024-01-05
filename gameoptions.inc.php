@@ -104,6 +104,7 @@ $game_preferences = [
 			1 => ['name' => totranslate('French')],
 			2 => ['name' => totranslate('English')],
 			3 => ['name' => 'Snap'],
+			4 => ['name' => totranslate('Four Colors')],
 		],
 	],
 ];
