@@ -62,38 +62,6 @@ class view_coinche_coinche extends game_view {
 	}
 
 	private function getPlayerAvatar($player, $size) {
-		$avatarPlayerId = (string) $player['player_id'];
-
-		// Zero means "0", otherwise, length of the string from the start
-		$lengthMap = [
-			8 => [0, 2, 5],
-			7 => [0, 1, 4],
-			6 => [0, 0, 3],
-			5 => [0, 0, 1], // ? no case found
-			4 => [0, 0, 1],
-			3 => [0, 0, 0],
-			2 => [0, 0, 0],
-			1 => [0, 0, 0],
-		];
-
-		$length = strlen($avatarPlayerId);
-		if (!isset($lengthMap[$length])) {
-			return null;
-		}
-		$len0 = $lengthMap[$length][0];
-		$len1 = $lengthMap[$length][1];
-		$len2 = $lengthMap[$length][2];
-
-		$avatarUrl = sprintf(
-			'https://x.boardgamearena.net/data/avatar/%s/%s/%s/%s_%s.jpg?h=%s',
-			$len0 === 0 ? '0' : substr($avatarPlayerId, 0, $len0),
-			$len1 === 0 ? '0' : substr($avatarPlayerId, 0, $len1),
-			$len2 === 0 ? '0' : substr($avatarPlayerId, 0, $len2),
-			$avatarPlayerId,
-			$size,
-			$player['player_avatar']
-		);
-
-		return $avatarUrl;
+		return get_avatar_filename($player['player_id'], $player['player_avatar'], $size);
 	}
 }
