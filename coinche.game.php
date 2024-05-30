@@ -687,11 +687,11 @@ class Coinche extends Table {
 		if ($hasTrumpBeenPlayed) {
 			// When trump has been played...
 			$isPartnerTheStrongest =
-				$strongestTrumpCardOnTable['location_arg'] === "$partnerId";
+				($strongestTrickCardOnTable['location_arg'] ?? null) === "$partnerId";
 		} else {
 			// Otherwise.
 			$isPartnerTheStrongest =
-				$strongestTrickCardOnTable['location_arg'] === "$partnerId";
+				($strongestTrickCardOnTable['location_arg'] ?? null) === "$partnerId";
 		}
 
 		if (!$isCardInHand) {

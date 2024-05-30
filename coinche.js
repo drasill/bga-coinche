@@ -163,12 +163,12 @@ define([
 
 			// Coinche Button
 			this.connectClass(
-				'.playerTables__coinche-btn > a',
+				'playerTables__coinche-btn > a',
 				'onclick',
 				'onCoincheBtnClick'
 			)
 			this.connectClass(
-				'.bidPanel__btn--coinche',
+				'bidPanel__btn--coinche',
 				'onclick',
 				'onCoincheBtnClick'
 			)
@@ -188,7 +188,7 @@ define([
 			// First Player
 			this.updateFirstPlayer(gamedatas.firstPlayer)
 			this.addTooltipToClass(
-				'.playerTables__table--first .playerTables__firstMarker',
+				'playerTables__table--first .playerTables__firstMarker',
 				_('First player for this hand'),
 				''
 			)
