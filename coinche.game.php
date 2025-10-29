@@ -75,11 +75,6 @@ class Coinche extends Table {
 		$this->cards->init('card');
 	}
 
-	protected function getGameName() {
-		// Used for translations and stuff. Please do not modify.
-		return 'coinche';
-	}
-
 	/**
 	 *  setupNewGame:
 	 *  This method is called only once, when a new game is launched.
