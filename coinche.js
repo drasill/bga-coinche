@@ -294,7 +294,7 @@ define([
 
 			// Auto play card if one is selected
 			if (stateName === 'playerTurn' && this.isCurrentPlayerActive()) {
-				this.playSelectedCard()
+                setTimeout(() => this.playSelectedCard());
 			}
 		},
 
