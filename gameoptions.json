@@ -1,0 +1,57 @@
+{
+    "100": {
+        "name": "Game length",
+        "values": {
+            "1": {
+                "name": "Classic (2000 points)"
+            },
+            "2": {
+                "name": "Half-game (1000 points)",
+                "tmdisplay": "Half-game (1000 points)"
+            }
+        }
+    },
+    "101": {
+        "name": "Score type",
+        "values": {
+            "1": {
+                "name": "Points + Bid"
+            },
+            "2": {
+                "name": "Bid only",
+                "tmdisplay": "Bid only"
+            }
+        }
+    },
+    "102": {
+        "name": "Teams",
+        "values": {
+            "1": {
+                "name": "By table order (1rst\/3rd versus 2nd\/4th)"
+            },
+            "2": {
+                "name": "By table order (1rst\/2nd versus 3rd\/4th)"
+            },
+            "3": {
+                "name": "By table order (1rst\/4th versus 2nd\/3rd)"
+            },
+            "4": {
+                "name": "At random"
+            }
+        },
+        "default": 1
+    },
+    "103": {
+        "name": "All trumps \/ No trumps",
+        "values": {
+            "1": {
+                "name": "Enabled"
+            },
+            "2": {
+                "name": "Disabled",
+                "tmdisplay": "Without All trumps \/ No trumps"
+            }
+        },
+        "default": 1
+    }
+}

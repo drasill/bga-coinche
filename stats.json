@@ -1,0 +1,46 @@
+{
+  "table": {
+    "numberOfHands": {
+      "id": 10,
+      "name": "Number of hands",
+      "type": "int"
+    },
+    "numberOfHandsPlayed": {
+      "id": 11,
+      "name": "Number of hands actually played",
+      "type": "int"
+    },
+    "numberOfCounters": {
+      "id": 12,
+      "name": "Number of hands doubled",
+      "type": "int"
+    }
+  },
+  "player": {
+    "numberOfHandsTaken": {
+      "id": 10,
+      "name": "Number of hands taken",
+      "type": "int"
+    },
+    "numberOfBidSucceeded": {
+      "id": 11,
+      "name": "Number of bids succeeded",
+      "type": "int"
+    },
+    "numberOfBidsFailed": {
+      "id": 12,
+      "name": "Number of bids failed",
+      "type": "int"
+    },
+    "numberOfCounters": {
+      "id": 13,
+      "name": "Number of bids doubled",
+      "type": "int"
+    },
+    "numberOfCountersSuccess": {
+      "id": 14,
+      "name": "Number of bids doubled successfully",
+      "type": "int"
+    }
+  }
+}

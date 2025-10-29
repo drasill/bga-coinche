@@ -1,0 +1,42 @@
+{
+    "100": {
+        "name": "Turn order",
+        "needReload": false,
+        "values": {
+            "1": {
+                "name": "Clockwise"
+            },
+            "2": {
+                "name": "Counterclockwise"
+            }
+        }
+    },
+    "101": {
+        "name": "Confirm Bid",
+        "needReload": false,
+        "values": {
+            "1": {
+                "name": "No confirmation"
+            },
+            "2": {
+                "name": "Bid confirmation"
+            }
+        }
+    },
+    "102": {
+        "name": "Cards style",
+        "needReload": false,
+        "values": {
+            "1": {
+                "name": "French"
+            },
+            "2": {
+                "name": "English"
+            },
+            "3": {
+                "name": "Snap"
+            }
+        }
+    }
+}
+
