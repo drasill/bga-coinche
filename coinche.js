@@ -750,17 +750,11 @@ define([
         );
         return;
       }
-      this.ajaxcall(
-        "/" + this.game_name + "/" + this.game_name + "/" + "playCard.html",
-        {
-          id: cardId,
-          lock: true,
-          belote: this.wantToDeclareBelote,
-        },
-        this,
-        function (result) {},
-        function (is_error) {},
-      );
+      this.bgaPerformAction("playCard", {
+        id: cardId,
+        lock: true,
+        belote: this.wantToDeclareBelote,
+      });
       this.selectedCardId = null;
       this.playerHand.unselectAll();
     },
@@ -927,21 +921,17 @@ define([
       if (!this.playerBid.value && this.playerBid.color) {
         return;
       }
-      this.ajaxcall(
-        "/" + this.game_name + "/" + this.game_name + "/" + "bid" + ".html",
-        {
-          value: this.playerBid.value,
-          color: this.playerBid.color,
-          lock: true,
-        },
-        this,
-        function (result) {
+      this.bgaPerformAction("bid", {
+        value: this.playerBid.value,
+        color: this.playerBid.color,
+        lock: true,
+      })
+        .then(() => {
           this.updatePlayerBid(true);
-        },
-        function (is_error) {
+        })
+        .catch(() => {
           this.updatePlayerBid(true);
-        },
-      );
+        });
     },
 
     ///////////////////////////////////////////////////
@@ -1034,107 +1024,41 @@ define([
     },
 
     onPlayerBid: function () {
-      if (this.checkAction("bid")) {
-        this.ajaxcall(
-          "/" + this.game_name + "/" + this.game_name + "/" + "bid" + ".html",
-          {
-            value: 100,
-            color: 2,
-            lock: true,
-          },
-          this,
-          function (result) {},
-          function (is_error) {},
-        );
-      }
+      this.bgaPerformAction("bid", {
+        value: 100,
+        color: 2,
+        lock: true,
+      });
     },
 
     onPlayerPass: function () {
-      if (this.checkAction("pass")) {
-        this.ajaxcall(
-          "/" + this.game_name + "/" + this.game_name + "/" + "pass" + ".html",
-          {
-            lock: true,
-          },
-          this,
-          function (result) {},
-          function (is_error) {},
-        );
-      }
+      this.bgaPerformAction("pass", {
+        lock: true,
+      });
     },
 
     onPlayerCoinche: function () {
-      if (this.checkPossibleActions("coinche")) {
-        this.ajaxcall(
-          "/" +
-            this.game_name +
-            "/" +
-            this.game_name +
-            "/" +
-            "coinche" +
-            ".html",
-          {
-            lock: true,
-          },
-          this,
-          function (result) {},
-          function (is_error) {},
-        );
-      }
+      this.bgaPerformAction("coinche", {
+        lock: true,
+      });
     },
 
     onPlayerPass: function () {
-      if (this.checkAction("pass")) {
-        this.ajaxcall(
-          "/" + this.game_name + "/" + this.game_name + "/" + "pass" + ".html",
-          {
-            lock: true,
-          },
-          this,
-          function (result) {},
-          function (is_error) {},
-        );
-      }
+      this.bgaPerformAction("pass", {
+        lock: true,
+      });
     },
 
     onPlayerSurcoinche: function () {
-      if (this.checkPossibleActions("surcoinche")) {
-        this.ajaxcall(
-          "/" +
-            this.game_name +
-            "/" +
-            this.game_name +
-            "/" +
-            "surcoinche" +
-            ".html",
-          {
-            lock: true,
-          },
-          this,
-          function (result) {},
-          function (is_error) {},
-        );
-      }
+      this.bgaPerformAction("surcoinche", {
+        lock: true,
+      });
     },
 
     onPlayerNoSurcoinche: function () {
-      if (this.checkPossibleActions("nosurcoinche")) {
-        this.ajaxcall(
-          "/" +
-            this.game_name +
-            "/" +
-            this.game_name +
-            "/" +
-            "nosurcoinche" +
-            ".html",
-          {
-            lock: true,
-          },
-          this,
-          function (result) {},
-          function (is_error) {},
-        );
-      }
+      this.bgaPerformAction("nosurcoinche", {
+        lock: true,
+      });
     },
 
     onBidPanelBtnClick: function (e) {
